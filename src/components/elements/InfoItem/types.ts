@@ -1,4 +1,5 @@
 export type InfoItemProps = {
   title: string;
-  value: any;
+  subtitle?: string;
+  value: number;
 };

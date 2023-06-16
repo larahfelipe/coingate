@@ -37,8 +37,8 @@ export const useStyles = createStyles((theme) => ({
     }
   },
   SearchIcon: {
-    width: '20px',
-    height: '20px',
+    width: '18px',
+    height: '18px',
     marginLeft: '0.5rem',
     color: theme.colors.gray[6]
   },

@@ -12,7 +12,7 @@ export const M_PROPS: HTMLMotionProps<'div'> = {
 
 export const SKELETON_TABLE_COLUMNS = 7;
 
-export const SKELETON_TABLE_ROWS = 15;
+export const SKELETON_TABLE_ROWS = 14;
 
 export const COINS_TABLE_HEADERS = [
   '',

@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { REFETCH_INTERVAL_MS } from '@/constants';
-import { formatCurrency, formatNumber } from '@/utils';
 
 import { useCoinGeckoApi } from '../';
 
@@ -30,17 +29,13 @@ const useGlobalData = () => {
       return acc + curr.current_price * curr.circulating_supply;
     }, 0);
 
-    return formatCurrency(totalMarketCap, { notation: 'compact' });
+    return totalMarketCap;
   };
 
   const getTotalMarketCapChangePercentage = () => {
     if (!globalData) return 0;
 
-    const totalMarketCapChangePercentage = formatNumber(
-      globalData.market_cap_change_percentage_24h_usd
-    );
-
-    return totalMarketCapChangePercentage;
+    return globalData.market_cap_change_percentage_24h_usd;
   };
 
   const getTotalMarketVolume = () => {
@@ -51,28 +46,19 @@ const useGlobalData = () => {
       0
     );
 
-    return formatCurrency(totalMarketVolume, {
-      maximumFractionDigits: 2,
-      notation: 'compact'
-    });
+    return totalMarketVolume;
   };
 
   const getBTCMarketCapPercentage = () => {
     if (!globalData) return 0;
 
-    const btcMarketCapPercentage = formatNumber(
-      globalData.market_cap_percentage.btc
-    );
-
-    return `${btcMarketCapPercentage}%`;
+    return globalData.market_cap_percentage.btc;
   };
 
-  const getTotalActiveCryptocurrencies = (preferFormatted = true) => {
+  const getTotalActiveCryptocurrencies = () => {
     if (!globalData) return 0;
 
-    return preferFormatted
-      ? formatNumber(globalData.active_cryptocurrencies)
-      : globalData.active_cryptocurrencies;
+    return globalData.active_cryptocurrencies;
   };
 
   return {

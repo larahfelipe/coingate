@@ -7,7 +7,7 @@ export const useStyles = createStyles((theme) => ({
     flexDirection: 'column'
   },
   Content: {
-    width: '80%',
+    width: '75%',
     margin: '0 auto',
     marginTop: '3.15rem',
 
