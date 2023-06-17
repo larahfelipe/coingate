@@ -1,7 +1,7 @@
 import { Fragment, type FunctionComponent } from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 
-import { Pagination, Skeleton, Table as MTable, Text } from '@mantine/core';
+import { Table as MTable, Pagination, Skeleton, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 
 import {
@@ -41,7 +41,9 @@ const Table: FunctionComponent<TableProps> = ({
     if (loading) {
       return Array.from({ length: SKELETON_TABLE_COLUMNS }).map((_, i) => (
         <th key={i}>
-          <Skeleton width="150px" height="40px" />
+          <thead>
+            <Skeleton width="180px" height="40px" />
+          </thead>
         </th>
       ));
     }
@@ -59,15 +61,13 @@ const Table: FunctionComponent<TableProps> = ({
     if (loading)
       return Array.from({ length: SKELETON_TABLE_ROWS }).map((_, i) => (
         <tr key={i}>
-          {Array.from({ length: SKELETON_TABLE_COLUMNS }).map((_, j) => (
-            <td key={j}>
-              <Skeleton width="150px" height="40px" />
-            </td>
-          ))}
+          <td colSpan={headers.length}>
+            <Skeleton width="100%" height="45px" />
+          </td>
         </tr>
       ));
 
-    if (!data || !data.length)
+    if (!data?.length)
       return (
         <tr>
           <td className={CenteredRow} colSpan={headers.length}>
@@ -102,7 +102,7 @@ const Table: FunctionComponent<TableProps> = ({
 
           {totalItems ? (
             <Pagination
-              color="gray"
+              color="gray.5"
               size={matchSmallVW ? 'sm' : 'md'}
               total={totalItems}
               onChange={onChangePage}

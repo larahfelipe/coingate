@@ -1,7 +1,7 @@
 {
   "name": "coingate",
   "version": "0.0.0",
-  "author": "larafe1",
+  "author": "larahfelipe",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

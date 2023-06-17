@@ -3,9 +3,8 @@ import Marquee from 'react-fast-marquee';
 
 import { Skeleton } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { motion } from 'framer-motion';
 
-import { M_PROPS, SMALL_VW, TABS } from '@/constants';
+import { SMALL_VW, TABS } from '@/constants';
 import { useGlobalData, useTrendingCoins } from '@/hooks';
 import { formatNumber } from '@/utils';
 
@@ -21,8 +20,7 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
     MarketInfoWrapper,
     SkeletonsWrapper,
     BadgeWrapper,
-    TrendingCoinsMarqueeWrapper,
-    TrendingCoinsMarquee
+    TrendingCoinsMarqueeWrapper
   } = classes;
 
   const { trendingCoins } = useTrendingCoins();
@@ -68,11 +66,7 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
         {isLoading && <Skeleton width="100%" height="20px" />}
 
         {!isLoading && (
-          <Marquee
-            pauseOnHover
-            gradient={!matchSmallVW}
-            className={TrendingCoinsMarquee}
-          >
+          <Marquee pauseOnHover gradient={!matchSmallVW}>
             {trendingCoins.map(({ item }) => (
               <MarqueeItem
                 key={item.id}
@@ -95,9 +89,10 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
 
         {!isLoading && (
           <>
-            <motion.div transition={{ delay: 1.5, type: 'tween' }} {...M_PROPS}>
+            <div>
               <InfoItem
                 title="MARKET CAPITALIZATION"
+                subtitle="USD"
                 value={getTotalMarketCap()}
               />
 
@@ -117,31 +112,24 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
                   />
                 </Badge>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              transition={{ delay: 1.75, type: 'tween' }}
-              {...M_PROPS}
-            >
-              <InfoItem title="24H VOLUME" value={getTotalMarketVolume()} />
-            </motion.div>
+            <InfoItem
+              title="24H VOLUME"
+              subtitle="USD"
+              value={getTotalMarketVolume()}
+            />
 
-            <motion.div transition={{ delay: 2, type: 'tween' }} {...M_PROPS}>
-              <InfoItem
-                title="BTC DOMINANCE"
-                value={getBTCMarketCapPercentage()}
-              />
-            </motion.div>
+            <InfoItem
+              title="BTC DOMINANCE"
+              subtitle="%"
+              value={getBTCMarketCapPercentage()}
+            />
 
-            <motion.div
-              transition={{ delay: 2.25, type: 'tween' }}
-              {...M_PROPS}
-            >
-              <InfoItem
-                title="ACTIVE COINS"
-                value={getTotalActiveCryptocurrencies()}
-              />
-            </motion.div>
+            <InfoItem
+              title="ACTIVE COINS"
+              value={getTotalActiveCryptocurrencies()}
+            />
           </>
         )}
       </div>

@@ -9,11 +9,8 @@ export const useStyles = createStyles(() => ({
   },
   TrendingCoinsMarqueeWrapper: {
     height: '2.2rem',
-    marginTop: '3.8rem',
+    marginTop: '4rem',
     cursor: 'default'
-  },
-  TrendingCoinsMarquee: {
-    backgroundColor: '#f5f5f5'
   },
   MarketInfoWrapper: {
     width: '75%',
@@ -21,7 +18,7 @@ export const useStyles = createStyles(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     margin: '0 auto',
-    marginTop: '3.15rem',
+    marginTop: '2.25rem',
 
     '@media (max-width: 1585px)': {
       width: '90%'

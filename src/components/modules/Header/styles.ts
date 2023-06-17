@@ -3,7 +3,7 @@ import { createStyles } from '@mantine/core';
 export const useStyles = createStyles((theme) => ({
   Wrapper: {
     width: '100%',
-    height: '3.8rem',
+    height: '3.5rem',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -11,7 +11,9 @@ export const useStyles = createStyles((theme) => ({
     top: 0,
     zIndex: 3,
     borderBottom: '1px solid ' + theme.colors.border,
-    backgroundColor: theme.colors.shapeLight
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backdropFilter: 'blur(6.5px)',
+    WebkitBackdropFilter: 'blur(6.5px)'
   },
   Container: {
     width: '100%',

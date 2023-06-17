@@ -21,7 +21,7 @@ const Sparklines: FunctionComponent<SparklinesProps> = ({
   const { colors } = useMantineTheme();
 
   if (dynamicColorBasedOnValue && data)
-    color = dynamicColorBasedOnValue > 0 ? colors.green[6] : colors.red[7];
+    color = dynamicColorBasedOnValue > 0 ? colors.green[6] : colors.red[6];
 
   return (
     <DSparklines data={data?.length ? data : DEFAULT_SPARKLINE_DATA} {...props}>

@@ -10,10 +10,10 @@ import Table from './Table';
 export {
   Badge,
   InfoItem,
+  MarqueeItem,
   PercentageText,
   ScrollBtn,
   SectionItem,
-  MarqueeItem,
   Sparklines,
   Table
 };

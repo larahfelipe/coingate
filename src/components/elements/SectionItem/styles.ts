@@ -14,15 +14,7 @@ export const useStyles = createStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '0.5rem',
-    transition: 'all 0.2s ease',
-
-    '&:hover': {
-      padding: '0.2rem',
-      borderRadius: '5px',
-      color: theme.colors.text,
-      backgroundColor: theme.colors.gray[1]
-    }
+    gap: '0.5rem'
   },
   Underline: {
     width: '100%',

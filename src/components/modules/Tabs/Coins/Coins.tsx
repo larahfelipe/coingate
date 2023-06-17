@@ -62,7 +62,7 @@ const Coins: FunctionComponent = () => {
     coinsState.isLoading || coinsState.isFetching || coinState.isFetching;
 
   const totalCoinsPerPage =
-    +getTotalActiveCryptocurrencies(false) / TOTAL_ITEMS_PER_PAGE;
+    getTotalActiveCryptocurrencies() / TOTAL_ITEMS_PER_PAGE;
 
   const handleWatchListCoin = useCallback(
     (coinId: string) => watchlistCoin(coinId),
