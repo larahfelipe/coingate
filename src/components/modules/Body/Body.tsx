@@ -2,9 +2,8 @@ import type { FunctionComponent } from 'react';
 import Marquee from 'react-fast-marquee';
 
 import { Skeleton } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 
-import { SMALL_VW, TABS } from '@/constants';
+import { TABS } from '@/constants';
 import { useGlobalData, useTrendingCoins } from '@/hooks';
 import { formatNumber } from '@/utils';
 
@@ -36,8 +35,6 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
 
   const totalMarketCapChangePercentage = +getTotalMarketCapChangePercentage();
 
-  const matchSmallVW = useMediaQuery(`(max-width: ${SMALL_VW}px)`);
-
   const renderSkeletons = () =>
     Array.from({ length: 4 }).map((_, i) => (
       <div key={i} className={SkeletonsWrapper}>
@@ -66,7 +63,7 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
         {isLoading && <Skeleton width="100%" height="20px" />}
 
         {!isLoading && (
-          <Marquee pauseOnHover gradient={!matchSmallVW}>
+          <Marquee pauseOnHover gradient={false}>
             {trendingCoins.map(({ item }) => (
               <MarqueeItem
                 key={item.id}

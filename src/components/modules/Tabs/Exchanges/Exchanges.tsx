@@ -20,7 +20,7 @@ import {
   EXCHANGES_TABLE_HEADERS,
   UNKNOWN_VALUE_CHAR
 } from '@/constants';
-import { useExchanges, useWatchlist } from '@/hooks';
+import { useExchanges, useTheme, useWatchlist } from '@/hooks';
 import { formatNumber, isValidURL } from '@/utils';
 
 import { useStyles } from './styles';
@@ -35,6 +35,8 @@ const Exchanges: FunctionComponent = () => {
     DEBOUNCE_INTERVAL_MS
   );
 
+  const { colorScheme } = useTheme();
+
   const { classes } = useStyles();
   const { Wrapper, Content, TableData, StarIconFilled, StarIcon, LinkIcon } =
     classes;
@@ -45,6 +47,8 @@ const Exchanges: FunctionComponent = () => {
   });
 
   const { watchlistExchange, exchangesWatchlist } = useWatchlist();
+
+  const subItemTextColor = colorScheme === 'light' ? 'gray' : 'gray.6';
 
   const isLoading =
     exchangesState.isLoading ||
@@ -86,7 +90,9 @@ const Exchanges: FunctionComponent = () => {
           </td>
 
           <td>
-            <Text color="gray">{formatNumber(exchange.trust_score_rank)}</Text>
+            <Text color={subItemTextColor}>
+              {formatNumber(exchange.trust_score_rank)}
+            </Text>
           </td>
 
           <td>
@@ -111,7 +117,7 @@ const Exchanges: FunctionComponent = () => {
           </td>
 
           <td>
-            <Text color="gray">
+            <Text color={subItemTextColor}>
               {exchange.year_established ?? UNKNOWN_VALUE_CHAR}
             </Text>
           </td>
@@ -121,7 +127,7 @@ const Exchanges: FunctionComponent = () => {
               <div className={TableData}>
                 <Text>{exchange.trust_score}</Text>
 
-                <Text color="gray">/ 10</Text>
+                <Text color={subItemTextColor}>/ 10</Text>
               </div>
             ) : (
               <Text>{UNKNOWN_VALUE_CHAR}</Text>
@@ -136,7 +142,7 @@ const Exchanges: FunctionComponent = () => {
                 })}
               </Text>
 
-              <Text color="gray">BTC</Text>
+              <Text color={subItemTextColor}>BTC</Text>
             </div>
           </td>
 

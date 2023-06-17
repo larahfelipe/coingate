@@ -2,8 +2,6 @@ import type { NextPage } from 'next';
 
 import { MainTemplate } from '@/components/templates';
 
-const Main: NextPage = () => {
-  return <MainTemplate />;
-};
+const Main: NextPage = () => <MainTemplate />;
 
 export default Main;
