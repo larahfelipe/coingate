@@ -1,6 +1,8 @@
-import { useEffect, useState, type FunctionComponent } from 'react';
+import { useEffect, useMemo, useState, type FunctionComponent } from 'react';
 
 import { Text } from '@mantine/core';
+
+import { useTheme } from '@/hooks';
 
 import { useStyles } from './styles';
 import type { InfoItemProps } from './types';
@@ -12,8 +14,15 @@ const InfoItem: FunctionComponent<InfoItemProps> = ({
 }) => {
   const [currentValue, setCurrentValue] = useState(0);
 
+  const { colorScheme } = useTheme();
+
   const { classes } = useStyles();
   const { Wrapper, TitleSection, Title, Subtitle, Value } = classes;
+
+  const subItemTextColor = useMemo(
+    () => (colorScheme === 'light' ? 'gray' : 'gray.6'),
+    [colorScheme]
+  );
 
   useEffect(() => {
     let count = 0;
@@ -36,12 +45,12 @@ const InfoItem: FunctionComponent<InfoItemProps> = ({
   return (
     <div className={Wrapper}>
       <div className={TitleSection}>
-        <Text color="gray" weight={600} className={Title}>
+        <Text color={subItemTextColor} weight={600} className={Title}>
           {title}
         </Text>
 
         {!!subtitle && (
-          <Text color="gray" weight={600} className={Subtitle}>
+          <Text color={subItemTextColor} weight={600} className={Subtitle}>
             {subtitle}
           </Text>
         )}

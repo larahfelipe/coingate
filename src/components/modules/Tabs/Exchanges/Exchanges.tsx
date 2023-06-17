@@ -48,8 +48,6 @@ const Exchanges: FunctionComponent = () => {
 
   const { watchlistExchange, exchangesWatchlist } = useWatchlist();
 
-  const subItemTextColor = colorScheme === 'light' ? 'gray' : 'gray.6';
-
   const isLoading =
     exchangesState.isLoading ||
     exchangesState.isFetching ||
@@ -70,6 +68,11 @@ const Exchanges: FunctionComponent = () => {
 
     setSearchedExchange(formattedExchangeId);
   };
+
+  const subItemTextColor = useMemo(
+    () => (colorScheme === 'light' ? 'gray' : 'gray.6'),
+    [colorScheme]
+  );
 
   const memoizedExchanges = useMemo(
     () =>
