@@ -46,6 +46,7 @@ export const useStyles = createStyles((theme) => ({
     width: '100%',
     padding: '0.5rem 0.9rem',
     fontSize: '14px',
+    backgroundColor: theme.colors.shapeLight,
 
     '@media (max-width: 610px)': {
       padding: '0.4rem'

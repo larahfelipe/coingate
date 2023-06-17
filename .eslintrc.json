@@ -15,7 +15,9 @@
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "plugin:@next/next/recommended",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "plugins": ["react", "react-hooks", "eslint-plugin-import-helpers"],
   "parser": "@typescript-eslint/parser",
@@ -32,6 +34,10 @@
       {
         "allow": ["error", "warn"]
       }
+    ],
+    "@typescript-eslint/consistent-type-imports": [
+      "warn",
+      { "fixStyle": "inline-type-imports" }
     ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",

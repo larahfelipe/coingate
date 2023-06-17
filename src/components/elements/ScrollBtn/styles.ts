@@ -7,7 +7,7 @@ export const useStyles = createStyles((theme) => ({
     right: '2rem',
     padding: '0.75rem',
     borderRadius: '50%',
-    border: `1px solid ${theme.colors.gray['3']}`,
+    border: '1px solid ' + theme.colors.border,
     backgroundColor: theme.colors.shapeLight
   },
   ScrollIcon: {

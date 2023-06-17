@@ -11,7 +11,7 @@ export const useStyles = createStyles((theme) => ({
     top: 0,
     zIndex: 3,
     borderBottom: '1px solid ' + theme.colors.border,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: theme.colors.transparentBackground,
     backdropFilter: 'blur(6.5px)',
     WebkitBackdropFilter: 'blur(6.5px)'
   },
@@ -21,13 +21,13 @@ export const useStyles = createStyles((theme) => ({
     display: 'flex',
     gap: '15rem',
 
-    '@media (max-width: 620px)': {
+    '@media (max-width: 768px)': {
       gap: '8rem'
     },
-    '@media (max-width: 510px)': {
+    '@media (max-width: 600px)': {
       gap: '4rem'
     },
-    '@media (max-width: 440px)': {
+    '@media (max-width: 500px)': {
       gap: '1rem'
     }
   },
@@ -36,17 +36,34 @@ export const useStyles = createStyles((theme) => ({
     alignSelf: 'center',
     marginLeft: '3.25rem',
     cursor: 'default',
+    transition: 'all 0.2s ease',
+
+    '&:hover': {
+      transform: 'translateY(-2px)'
+    },
 
     '@media (max-width: 440px)': {
       marginLeft: '1rem'
     },
     '@media (max-width: 400px)': {
-      fontSize: '22px'
+      display: 'none'
     }
   },
   AppSections: {
     width: 'fit-content',
     display: 'flex',
-    gap: '1rem'
+    gap: '1rem',
+
+    '@media (max-width: 400px)': {
+      marginLeft: '1rem'
+    }
+  },
+  ThemeBtn: {
+    color: theme.colors.text,
+    marginRight: '1rem',
+
+    '@media (max-width: 400px)': {
+      marginRight: 'unset'
+    }
   }
 }));

@@ -1,4 +1,9 @@
-import { Fragment, type FunctionComponent } from 'react';
+import {
+  Fragment,
+  useState,
+  type ChangeEvent,
+  type FunctionComponent
+} from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 
 import { Table as MTable, Pagination, Skeleton, Text } from '@mantine/core';
@@ -25,6 +30,8 @@ const Table: FunctionComponent<TableProps> = ({
   highlightOnHover,
   ...props
 }) => {
+  const [isSearching, setIsSearching] = useState(false);
+
   const { classes } = useStyles();
   const {
     CenteredRow,
@@ -36,6 +43,13 @@ const Table: FunctionComponent<TableProps> = ({
   } = classes;
 
   const matchSmallVW = useMediaQuery(`(max-width: ${SMALL_VW}px)`);
+
+  const handleOnSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+
+    setIsSearching(value.length > 0);
+    if (onSearch) onSearch(value);
+  };
 
   const renderTableHeaders = () => {
     if (loading) {
@@ -71,7 +85,7 @@ const Table: FunctionComponent<TableProps> = ({
       return (
         <tr>
           <td className={CenteredRow} colSpan={headers.length}>
-            <Text color="gray" weight="bold">
+            <Text color="gray.6" weight="bold">
               No data to display
             </Text>
           </td>
@@ -94,20 +108,20 @@ const Table: FunctionComponent<TableProps> = ({
                   type="text"
                   placeholder={searchPlaceholder ?? 'Search...'}
                   className={Input}
-                  onChange={(e) => onSearch && onSearch(e.target.value)}
+                  onChange={handleOnSearch}
                 />
               </>
             )}
           </div>
 
-          {totalItems ? (
+          {!!totalItems && !isSearching && (
             <Pagination
-              color="gray.5"
+              color="gray"
               size={matchSmallVW ? 'sm' : 'md'}
               total={totalItems}
               onChange={onChangePage}
             />
-          ) : null}
+          )}
         </div>
       )}
 

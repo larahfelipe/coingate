@@ -18,7 +18,7 @@ import {
   DEBOUNCE_INTERVAL_MS,
   TOTAL_ITEMS_PER_PAGE
 } from '@/constants';
-import { useCoins, useGlobalData, useWatchlist } from '@/hooks';
+import { useCoins, useGlobalData, useTheme, useWatchlist } from '@/hooks';
 import { formatCurrency, formatNumber, isValidURL } from '@/utils';
 
 import {
@@ -39,6 +39,8 @@ const Coins: FunctionComponent = () => {
     DEBOUNCE_INTERVAL_MS
   );
 
+  const { colorScheme } = useTheme();
+
   const { classes } = useStyles();
   const {
     Wrapper,
@@ -57,6 +59,8 @@ const Coins: FunctionComponent = () => {
   const { getTotalActiveCryptocurrencies } = useGlobalData();
 
   const { watchlistCoin, coinsWatchlist } = useWatchlist();
+
+  const subItemTextColor = colorScheme === 'light' ? 'gray' : 'gray.6';
 
   const isLoading =
     coinsState.isLoading || coinsState.isFetching || coinState.isFetching;
@@ -93,7 +97,9 @@ const Coins: FunctionComponent = () => {
           </td>
 
           <td>
-            <Text color="gray">{formatNumber(coin.market_cap_rank)}</Text>
+            <Text color={subItemTextColor}>
+              {formatNumber(coin.market_cap_rank)}
+            </Text>
           </td>
 
           <td>
@@ -110,7 +116,9 @@ const Coins: FunctionComponent = () => {
               <div className={TableData}>
                 <Text weight={600}>{coin.name}</Text>
 
-                <Text color="gray">{coin.symbol.toUpperCase()}</Text>
+                <Text color={subItemTextColor}>
+                  {coin.symbol.toUpperCase()}
+                </Text>
               </div>
             </div>
           </td>
@@ -158,7 +166,7 @@ const Coins: FunctionComponent = () => {
               </Text>
 
               {!!coin.total_volume && (
-                <Text size="xs" color="gray">
+                <Text size="xs" color={subItemTextColor}>
                   {formatNumber(coin.total_volume / coin.current_price)}{' '}
                   {coin.symbol.toUpperCase()}
                 </Text>

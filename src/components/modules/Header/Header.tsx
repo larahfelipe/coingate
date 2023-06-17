@@ -2,18 +2,22 @@ import type { FunctionComponent } from 'react';
 import { CgArrowsExchange } from 'react-icons/cg';
 import { RiCoinLine } from 'react-icons/ri';
 
-import { Text } from '@mantine/core';
+import { Button, Text } from '@mantine/core';
+import { FiMoon, FiSun } from 'react-icons/fi';
 
 import { TABS } from '@/constants';
 import type { AppTab } from '@/hooks/useTabs/types';
 
+import { useTheme } from '@/hooks';
 import { SectionItem } from '../../elements';
 import { useStyles } from './styles';
 import type { HeaderProps } from './types';
 
 const Header: FunctionComponent<HeaderProps> = ({ onChangeTab, activeTab }) => {
   const { classes } = useStyles();
-  const { Wrapper, Container, AppName, AppSections } = classes;
+  const { Wrapper, Container, AppName, AppSections, ThemeBtn } = classes;
+
+  const { toggleColorScheme, colorScheme } = useTheme();
 
   return (
     <div className={Wrapper}>
@@ -42,6 +46,15 @@ const Header: FunctionComponent<HeaderProps> = ({ onChangeTab, activeTab }) => {
           />
         </div>
       </div>
+
+      <Button
+        variant="subtle"
+        color="gray"
+        className={ThemeBtn}
+        onClick={toggleColorScheme}
+      >
+        {colorScheme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
+      </Button>
     </div>
   );
 };
