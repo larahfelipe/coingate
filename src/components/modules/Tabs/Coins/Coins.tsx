@@ -60,8 +60,6 @@ const Coins: FunctionComponent = () => {
 
   const { watchlistCoin, coinsWatchlist } = useWatchlist();
 
-  const subItemTextColor = colorScheme === 'light' ? 'gray' : 'gray.6';
-
   const isLoading =
     coinsState.isLoading || coinsState.isFetching || coinState.isFetching;
 
@@ -77,6 +75,11 @@ const Coins: FunctionComponent = () => {
 
   const handleSearchCoin = (desiredCoin: string) =>
     setSearchedCoin(desiredCoin.toLowerCase());
+
+  const subItemTextColor = useMemo(
+    () => (colorScheme === 'light' ? 'gray' : 'gray.6'),
+    [colorScheme]
+  );
 
   const memoizedCoinsList = useMemo(
     () =>
