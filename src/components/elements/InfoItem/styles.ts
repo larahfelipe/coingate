@@ -9,8 +9,7 @@ export const useStyles = createStyles(() => ({
   TitleSection: {
     display: 'flex',
     gap: '10px',
-    alignItems: 'flex-end',
-    position: 'relative'
+    alignItems: 'flex-end'
   },
   Title: {
     fontSize: '14px'

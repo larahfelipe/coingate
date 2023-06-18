@@ -201,6 +201,7 @@ const Coins: FunctionComponent = () => {
       TableData,
       coins,
       StarIcon,
+      subItemTextColor,
       StarIconFilled,
       coinsWatchlist,
       handleWatchListCoin

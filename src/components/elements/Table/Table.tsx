@@ -56,7 +56,7 @@ const Table: FunctionComponent<TableProps> = ({
       return Array.from({ length: SKELETON_TABLE_COLUMNS }).map((_, i) => (
         <th key={i}>
           <thead>
-            <Skeleton width="180px" height="40px" />
+            <Skeleton width="180px" height="30px" />
           </thead>
         </th>
       ));
