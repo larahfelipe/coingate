@@ -160,6 +160,7 @@ const Exchanges: FunctionComponent = () => {
       exchanges,
       exchangesWatchlist,
       handleWatchlistExchange,
+      subItemTextColor,
       StarIcon,
       StarIconFilled,
       TableData,

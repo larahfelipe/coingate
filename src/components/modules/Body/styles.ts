@@ -20,17 +20,25 @@ export const useStyles = createStyles(() => ({
     margin: '0 auto',
     marginTop: '2.25rem',
 
-    '@media (max-width: 1585px)': {
-      width: '90%'
+    '& > div:nth-child(1), & > div:nth-child(2)': {
+      width: '300px'
     },
-    '@media (max-width: 768px)': {
+
+    '@media (max-width: 1425px)': {
+      width: '95%'
+    },
+    '@media (max-width: 890px)': {
       flexWrap: 'wrap',
-      gap: '2rem'
+      gap: '2rem',
+
+      '& > div:nth-child(1), & > div:nth-child(2)': {
+        width: 'unset'
+      }
     },
     '@media (max-width: 400px)': {
+      width: 'unset',
       flexDirection: 'column',
-      gap: '1.25rem',
-      paddingLeft: '1rem'
+      gap: '1.25rem'
     }
   },
   SkeletonsWrapper: {
