@@ -26,26 +26,22 @@ const PercentageText: FunctionComponent<PercentageTextProps> = ({
   let color: string | Array<string> = colors.shapeDark;
 
   if (dynamicColorBasedOnValue && !isNeutral)
-    color = isPositive ? colors.green[7] : colors.red[6];
+    color = isPositive ? colors.green[7] : colors.red[5];
 
-  const parsedIndicator = () => {
-    if (isNeutral) return;
+  const getChangeIndicator = () => {
+    if (isNeutral) return null;
 
-    if (isPositive) {
+    if (isPositive)
       return (
         <IoMdArrowDropup className={Icon} style={{ color: color as string }} />
       );
-    } else {
-      return (
-        <IoMdArrowDropdown
-          className={Icon}
-          style={{ color: color as string }}
-        />
-      );
-    }
+
+    return (
+      <IoMdArrowDropdown className={Icon} style={{ color: color as string }} />
+    );
   };
 
-  const parsedValue = () => {
+  const getChangeValue = () => {
     if (isNeutral) return UNKNOWN_VALUE_CHAR;
 
     const formattedValue = `${formatNumber(value, {
@@ -60,10 +56,10 @@ const PercentageText: FunctionComponent<PercentageTextProps> = ({
 
   return (
     <div className={Wrapper}>
-      {prefersIndicatorIcon && parsedIndicator()}
+      {prefersIndicatorIcon && getChangeIndicator()}
 
       <Text weight={weight} color={color as string}>
-        {parsedValue()}
+        {getChangeValue()}
       </Text>
     </div>
   );
