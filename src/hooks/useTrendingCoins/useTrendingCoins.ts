@@ -1,26 +1,25 @@
+import toast from 'react-hot-toast';
+
 import { useQuery } from '@tanstack/react-query';
 
 import { REFETCH_INTERVAL_MS } from '@/constants';
 
-import useCoinGeckoApi from '../useCoinGeckoApi';
-import type { TrendingCoin } from '../useCoinGeckoApi/types';
+import { getTrendingCoinsInLast24h } from '../../api/coingecko';
 
 const useTrendingCoins = () => {
-  const { getTrendingCoinsInLast24h } = useCoinGeckoApi();
-
-  let trendingCoins = [] as Array<TrendingCoin>;
-
-  const { data, ...restTrendingCoinsState } = useQuery({
+  const { data: trendingCoins, ...trendingCoinsState } = useQuery({
     queryKey: ['trending'],
     queryFn: getTrendingCoinsInLast24h,
+    onError: () =>
+      toast.error(
+        'Could not get the trending coins data. Please try again later'
+      ),
     refetchOnWindowFocus: false,
     refetchInterval: REFETCH_INTERVAL_MS
   });
 
-  if (data?.length) trendingCoins = data;
-
   return {
-    trendingCoinsState: { ...restTrendingCoinsState },
+    trendingCoinsState,
     trendingCoins
   };
 };

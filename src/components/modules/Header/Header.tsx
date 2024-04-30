@@ -1,14 +1,14 @@
 import type { FunctionComponent } from 'react';
 import { CgArrowsExchange } from 'react-icons/cg';
+import { FiMoon, FiSun } from 'react-icons/fi';
 import { RiCoinLine } from 'react-icons/ri';
 
 import { Button, Text } from '@mantine/core';
-import { FiMoon, FiSun } from 'react-icons/fi';
 
 import { TABS } from '@/constants';
+import { useTheme } from '@/hooks';
 import type { AppTab } from '@/hooks/useTabs/types';
 
-import { useTheme } from '@/hooks';
 import { SectionItem } from '../../elements';
 import { useStyles } from './styles';
 import type { HeaderProps } from './types';
@@ -53,7 +53,7 @@ const Header: FunctionComponent<HeaderProps> = ({ onChangeTab, activeTab }) => {
         className={ThemeBtn}
         onClick={toggleColorScheme}
       >
-        {colorScheme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
+        {colorScheme === 'light' ? <FiMoon size={18} /> : <FiSun size={18} />}
       </Button>
     </div>
   );

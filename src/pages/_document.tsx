@@ -1,10 +1,10 @@
 import Document, {
-  DocumentContext,
-  DocumentInitialProps,
   Head,
   Html,
   Main,
-  NextScript
+  NextScript,
+  type DocumentContext,
+  type DocumentInitialProps
 } from 'next/document';
 
 import { createStylesServer, ServerStyles } from '@mantine/next';
