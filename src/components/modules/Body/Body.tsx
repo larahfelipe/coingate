@@ -64,7 +64,7 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
 
         {!isLoading && (
           <Marquee pauseOnHover gradient={false}>
-            {trendingCoins.map(({ item }) => (
+            {trendingCoins?.map(({ item }) => (
               <MarqueeItem
                 key={item.id}
                 iconUrl={item.thumb}

@@ -34,24 +34,19 @@ const Exchanges: FunctionComponent = () => {
     searchedExchange,
     DEBOUNCE_INTERVAL_MS
   );
-
   const { colorScheme } = useTheme();
-
   const { classes } = useStyles();
+
   const { Wrapper, Content, TableData, StarIconFilled, StarIcon, LinkIcon } =
     classes;
 
-  const { exchanges, exchangesState, exchangeState } = useExchanges({
+  const { exchanges, exchangesState } = useExchanges({
     desiredPage: currentPage,
     exchangeId: debouncedSearch
   });
-
   const { watchlistExchange, exchangesWatchlist } = useWatchlist();
 
-  const isLoading =
-    exchangesState.isLoading ||
-    exchangesState.isFetching ||
-    exchangeState.isFetching;
+  const isLoading = exchangesState.isLoading || exchangesState.isFetching;
 
   const handleWatchlistExchange = useCallback(
     (exchangeId: string) => watchlistExchange(exchangeId),
@@ -168,7 +163,7 @@ const Exchanges: FunctionComponent = () => {
     ]
   );
 
-  useEffect(() => void setIsMounting(false), []);
+  useEffect(() => setIsMounting(false), []);
 
   return (
     <div className={Wrapper}>

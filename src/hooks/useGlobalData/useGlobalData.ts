@@ -1,22 +1,28 @@
+import toast from 'react-hot-toast';
+
 import { useQuery } from '@tanstack/react-query';
 
 import { REFETCH_INTERVAL_MS } from '@/constants';
 
-import { useCoinGeckoApi } from '../';
+import { getCoins, getGlobalData } from '../../api/coingecko';
 
 const useGlobalData = () => {
-  const { getGlobalData, getCoins } = useCoinGeckoApi();
-
   const { data: globalData, isLoading: isGlobalDataLoading } = useQuery({
     queryKey: ['globalData'],
     queryFn: getGlobalData,
+    onError: () =>
+      toast.error(
+        'Could not get the global market data. Please try again later'
+      ),
     refetchOnWindowFocus: false,
     refetchInterval: REFETCH_INTERVAL_MS
   });
 
   const { data: coinsData, isLoading: isCoinsLoading } = useQuery({
     queryKey: ['coins'],
-    queryFn: () => getCoins({ total: 100 }),
+    queryFn: () => getCoins({ perPage: 100 }),
+    onError: () =>
+      toast.error('Could not get the coins data. Please try again later'),
     refetchOnWindowFocus: false
   });
 
@@ -32,11 +38,8 @@ const useGlobalData = () => {
     return totalMarketCap;
   };
 
-  const getTotalMarketCapChangePercentage = () => {
-    if (!globalData) return 0;
-
-    return globalData.market_cap_change_percentage_24h_usd;
-  };
+  const getTotalMarketCapChangePercentage = () =>
+    globalData?.market_cap_change_percentage_24h_usd ?? 0;
 
   const getTotalMarketVolume = () => {
     if (!coinsData) return 0;
@@ -49,17 +52,11 @@ const useGlobalData = () => {
     return totalMarketVolume;
   };
 
-  const getBTCMarketCapPercentage = () => {
-    if (!globalData) return 0;
+  const getBTCMarketCapPercentage = () =>
+    globalData?.market_cap_percentage.btc ?? 0;
 
-    return globalData.market_cap_percentage.btc;
-  };
-
-  const getTotalActiveCryptocurrencies = () => {
-    if (!globalData) return 0;
-
-    return globalData.active_cryptocurrencies;
-  };
+  const getTotalActiveCryptocurrencies = () =>
+    globalData?.active_cryptocurrencies ?? 0;
 
   return {
     isLoading: isGlobalDataLoading || isCoinsLoading,

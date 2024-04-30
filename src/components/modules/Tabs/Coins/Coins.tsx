@@ -38,10 +38,9 @@ const Coins: FunctionComponent = () => {
     searchedCoin,
     DEBOUNCE_INTERVAL_MS
   );
-
   const { colorScheme } = useTheme();
-
   const { classes } = useStyles();
+
   const {
     Wrapper,
     Content,
@@ -51,17 +50,14 @@ const Coins: FunctionComponent = () => {
     StarIcon
   } = classes;
 
-  const { coins, coinsState, coinState } = useCoins({
+  const { coins, coinsState } = useCoins({
     desiredPage: currentPage,
     coinId: debouncedSearch
   });
-
   const { getTotalActiveCryptocurrencies } = useGlobalData();
-
   const { watchlistCoin, coinsWatchlist } = useWatchlist();
 
-  const isLoading =
-    coinsState.isLoading || coinsState.isFetching || coinState.isFetching;
+  const isLoading = coinsState.isLoading || coinsState.isFetching;
 
   const totalCoinsPerPage =
     getTotalActiveCryptocurrencies() / TOTAL_ITEMS_PER_PAGE;
@@ -208,7 +204,7 @@ const Coins: FunctionComponent = () => {
     ]
   );
 
-  useEffect(() => void setIsMounting(false), []);
+  useEffect(() => setIsMounting(false), []);
 
   return (
     <div className={Wrapper}>

@@ -63,6 +63,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools />
+
           <Toaster position="bottom-right" />
 
           <WatchlistProvider>

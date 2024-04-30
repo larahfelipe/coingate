@@ -1,4 +1,3 @@
-import useCoinGeckoApi from './useCoinGeckoApi';
 import useCoins from './useCoins';
 import useExchanges from './useExchanges';
 import useGlobalData from './useGlobalData';
@@ -8,7 +7,6 @@ import useTrendingCoins from './useTrendingCoins';
 import { useWatchlist, WatchlistProvider } from './useWatchlist';
 
 export {
-  useCoinGeckoApi,
   useCoins,
   useExchanges,
   useGlobalData,
