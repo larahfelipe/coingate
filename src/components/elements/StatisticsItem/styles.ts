@@ -1,16 +1,6 @@
 import { createStyles } from '@mantine/core';
 
 export const useStyles = createStyles(() => ({
-  Wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem'
-  },
-  TitleSection: {
-    display: 'flex',
-    gap: '10px',
-    alignItems: 'flex-end'
-  },
   Title: {
     fontSize: '14px'
   },

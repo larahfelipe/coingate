@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
 import type { ReactNode } from 'react';
 
 export type WatchlistContextProps = {
   coinsWatchlist: Array<string>;
   exchangesWatchlist: Array<string>;
-  watchlistCoin: (coin: string) => void;
-  watchlistExchange: (exchange: string) => void;
+  coinsWatchlistInclude: (coinId: string) => void;
+  exchangesWatchlistInclude: (exchangeId: string) => void;
 };
 
 export type WatchlistProviderProps = {

@@ -1,5 +1,7 @@
 import type { FunctionComponent } from 'react';
 
+import { Flex } from '@mantine/core';
+
 import { useStyles } from './styles';
 import type { BadgeProps } from './types';
 
@@ -8,9 +10,14 @@ const Badge: FunctionComponent<BadgeProps> = ({ color, children }) => {
   const { Wrapper } = classes;
 
   return (
-    <div className={Wrapper} style={{ backgroundColor: color as string }}>
+    <Flex
+      justify="center"
+      p="0.15rem 0"
+      className={Wrapper}
+      style={{ backgroundColor: color as string }}
+    >
       {children}
-    </div>
+    </Flex>
   );
 };
 

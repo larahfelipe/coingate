@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-newline */
 import {
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
@@ -10,23 +11,18 @@ import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
 
 import Image from 'next/image';
 
-import { Skeleton, Text } from '@mantine/core';
+import { Box, Skeleton, Text } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 
 import {
   COINS_TABLE_HEADERS,
   DEBOUNCE_INTERVAL_MS,
   TOTAL_ITEMS_PER_PAGE
-} from '@/constants';
+} from '@/common';
 import { useCoins, useGlobalData, useTheme, useWatchlist } from '@/hooks';
 import { formatCurrency, formatNumber, isValidURL } from '@/utils';
 
-import {
-  PercentageText,
-  ScrollBtn,
-  Sparklines,
-  Table
-} from '../../../elements';
+import { PercentageText, Sparklines, Table } from '../../../elements';
 import { useStyles } from './styles';
 
 const Coins: FunctionComponent = () => {
@@ -40,11 +36,13 @@ const Coins: FunctionComponent = () => {
   );
   const { colorScheme } = useTheme();
   const { classes } = useStyles();
-
   const {
     Wrapper,
-    Content,
     TableData,
+    FixedColumn,
+    Column1,
+    Column2,
+    Column3,
     SparklinesWrapper,
     StarIconFilled,
     StarIcon
@@ -55,7 +53,7 @@ const Coins: FunctionComponent = () => {
     coinId: debouncedSearch
   });
   const { getTotalActiveCryptocurrencies } = useGlobalData();
-  const { watchlistCoin, coinsWatchlist } = useWatchlist();
+  const { coinsWatchlistInclude, coinsWatchlist } = useWatchlist();
 
   const isLoading = coinsState.isLoading || coinsState.isFetching;
 
@@ -63,8 +61,8 @@ const Coins: FunctionComponent = () => {
     getTotalActiveCryptocurrencies() / TOTAL_ITEMS_PER_PAGE;
 
   const handleWatchListCoin = useCallback(
-    (coinId: string) => watchlistCoin(coinId),
-    [watchlistCoin]
+    (coinId: string) => coinsWatchlistInclude(coinId),
+    [coinsWatchlistInclude]
   );
 
   const handleChangePage = (desiredPage: number) => setCurrentPage(desiredPage);
@@ -77,11 +75,11 @@ const Coins: FunctionComponent = () => {
     [colorScheme]
   );
 
-  const memoizedCoinsList = useMemo(
+  const coinsTableData = useMemo(
     () =>
       coins?.map((coin) => (
-        <tr key={coin.id}>
-          <td>
+        <Fragment key={coin.id}>
+          <td className={`${FixedColumn} ${Column1}`}>
             {coinsWatchlist.includes(coin.id) ? (
               <AiFillStar
                 className={StarIconFilled}
@@ -95,13 +93,13 @@ const Coins: FunctionComponent = () => {
             )}
           </td>
 
-          <td>
+          <td className={`${FixedColumn} ${Column2}`}>
             <Text color={subItemTextColor}>
               {formatNumber(coin.market_cap_rank)}
             </Text>
           </td>
 
-          <td>
+          <td className={`${FixedColumn} ${Column3}`}>
             <div className={TableData}>
               {isValidURL(coin.image) && (
                 <Image
@@ -159,7 +157,7 @@ const Coins: FunctionComponent = () => {
           <td>
             <div>
               <Text>
-                {formatNumber(coin.total_volume, {
+                {formatCurrency(coin.total_volume, {
                   maximumFractionDigits: 0
                 })}
               </Text>
@@ -182,7 +180,6 @@ const Coins: FunctionComponent = () => {
           <td>
             <div className={SparklinesWrapper}>
               <Sparklines
-                strokeWidth="3"
                 data={coin.sparkline_in_7d.price}
                 dynamicColorBasedOnValue={
                   coin.price_change_percentage_7d_in_currency
@@ -190,11 +187,15 @@ const Coins: FunctionComponent = () => {
               />
             </div>
           </td>
-        </tr>
+        </Fragment>
       )),
     [
       SparklinesWrapper,
       TableData,
+      FixedColumn,
+      Column1,
+      Column2,
+      Column3,
       coins,
       StarIcon,
       subItemTextColor,
@@ -207,28 +208,25 @@ const Coins: FunctionComponent = () => {
   useEffect(() => setIsMounting(false), []);
 
   return (
-    <div className={Wrapper}>
-      <div className={Content}>
-        {isMounting && <Skeleton height={1200} />}
+    <Box className={Wrapper}>
+      {isMounting && <Skeleton height={1200} />}
 
-        {!isMounting && (
-          <Table
-            withBorder
-            searchable
-            highlightOnHover
-            loading={isLoading}
-            searchPlaceholder="Search a coin by name"
-            totalItems={totalCoinsPerPage}
-            onChangePage={handleChangePage}
-            onSearch={handleSearchCoin}
-            headers={COINS_TABLE_HEADERS}
-            data={memoizedCoinsList}
-          />
-        )}
-      </div>
-
-      <ScrollBtn />
-    </div>
+      {!isMounting && (
+        <Table
+          withBorder
+          searchable
+          highlightOnHover
+          loading={isLoading}
+          fixedColsLength={3}
+          searchPlaceholder="Search a coin by name"
+          totalItems={totalCoinsPerPage}
+          onChangePage={handleChangePage}
+          onSearch={handleSearchCoin}
+          headers={COINS_TABLE_HEADERS}
+          data={coinsTableData}
+        />
+      )}
+    </Box>
   );
 };
 

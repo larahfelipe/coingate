@@ -1,4 +1,4 @@
-import { TOTAL_ITEMS_PER_PAGE } from '@/constants';
+import { TOTAL_ITEMS_PER_PAGE } from '@/common';
 import { api } from '@/lib';
 
 export type Coin = {

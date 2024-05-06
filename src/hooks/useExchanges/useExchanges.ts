@@ -2,8 +2,6 @@ import toast from 'react-hot-toast';
 
 import { useQuery } from '@tanstack/react-query';
 
-import { REFETCH_INTERVAL_MS } from '@/constants';
-
 import { getExchanges, type Exchange } from '../../api/coingecko';
 import type { UseExchangesProps } from './types';
 
@@ -13,9 +11,7 @@ const useExchanges = ({ desiredPage, exchangeId }: UseExchangesProps) => {
     queryFn: () => getExchanges({ page: desiredPage }),
     onError: () =>
       toast.error('Could not get exchanges data. Please try again later'),
-    keepPreviousData: true,
-    refetchOnWindowFocus: false,
-    refetchInterval: REFETCH_INTERVAL_MS
+    keepPreviousData: true
   });
 
   const { data: exchangeData, ...exchangeState } = useQuery({
@@ -25,8 +21,6 @@ const useExchanges = ({ desiredPage, exchangeId }: UseExchangesProps) => {
       toast.error(
         'Could not get the desired exchange data. Please try again later'
       ),
-    refetchOnWindowFocus: false,
-    refetchInterval: REFETCH_INTERVAL_MS,
     enabled: !!exchangeId
   });
 

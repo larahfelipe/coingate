@@ -3,24 +3,41 @@ import { createStyles } from '@mantine/core';
 export const useStyles = createStyles(() => ({
   Wrapper: {
     width: '100%',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column'
+    height: '100%'
   },
-  TrendingCoinsMarqueeWrapper: {
+  MarqueeWrapper: {
     height: '2.2rem',
-    marginTop: '4rem',
+    marginTop: '3.6rem',
     cursor: 'default'
   },
-  MarketInfoWrapper: {
-    width: '75%',
-    height: 'fit-content',
+  Content: {
+    width: '80%',
     display: 'flex',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    gap: '3.15rem',
+    margin: '0 auto',
+
+    '@media (max-width: 1670px)': {
+      width: '90%'
+    },
+    '@media (max-width: 1425px)': {
+      width: '95%'
+    },
+    '@media (max-width: 1360px)': {
+      width: '100%'
+    },
+    '@media (max-width: 768px)': {
+      margin: 'unset',
+      gap: '3rem'
+    }
+  },
+  MarketStatistics: {
+    width: '100%',
+    height: 'fit-content',
     margin: '0 auto',
     marginTop: '2.25rem',
 
-    '& > div:nth-child(1), & > div:nth-child(2)': {
+    '& > div:nth-of-type(1), & > div:nth-of-type(2)': {
       width: '300px'
     },
 
@@ -31,7 +48,7 @@ export const useStyles = createStyles(() => ({
       flexWrap: 'wrap',
       gap: '2rem',
 
-      '& > div:nth-child(1), & > div:nth-child(2)': {
+      '& > div:nth-of-type(1), & > div:nth-of-type(2)': {
         width: 'unset'
       }
     },
@@ -40,11 +57,6 @@ export const useStyles = createStyles(() => ({
       flexDirection: 'column',
       gap: '1.25rem'
     }
-  },
-  SkeletonsWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem'
   },
   BadgeWrapper: {
     width: '7rem',
