@@ -1,19 +1,19 @@
+import AppSection from './AppSection';
 import Badge from './Badge';
-import InfoItem from './InfoItem';
 import MarqueeItem from './MarqueeItem';
 import PercentageText from './PercentageText';
 import ScrollBtn from './ScrollBtn';
-import SectionItem from './SectionItem';
 import Sparklines from './Sparklines';
+import StatisticsItem from './StatisticsItem';
 import Table from './Table';
 
 export {
+  AppSection,
   Badge,
-  InfoItem,
   MarqueeItem,
   PercentageText,
   ScrollBtn,
-  SectionItem,
   Sparklines,
+  StatisticsItem,
   Table
 };

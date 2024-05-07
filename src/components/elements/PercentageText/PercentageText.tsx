@@ -2,9 +2,9 @@
 import type { FunctionComponent } from 'react';
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 
-import { Text, useMantineTheme } from '@mantine/core';
+import { Flex, Text, useMantineTheme } from '@mantine/core';
 
-import { UNKNOWN_VALUE_CHAR } from '@/constants';
+import { UNKNOWN_VALUE_CHAR } from '@/common';
 import { formatNumber } from '@/utils';
 
 import { useStyles } from './styles';
@@ -17,7 +17,7 @@ const PercentageText: FunctionComponent<PercentageTextProps> = ({
   dynamicColorBasedOnValue
 }) => {
   const { classes } = useStyles();
-  const { Wrapper, Icon } = classes;
+  const { Icon } = classes;
 
   const { colors } = useMantineTheme();
 
@@ -31,12 +31,9 @@ const PercentageText: FunctionComponent<PercentageTextProps> = ({
   const getChangeIndicator = () => {
     if (isNeutral) return null;
 
-    if (isPositive)
-      return (
-        <IoMdArrowDropup className={Icon} style={{ color: color as string }} />
-      );
-
-    return (
+    return isPositive ? (
+      <IoMdArrowDropup className={Icon} style={{ color: color as string }} />
+    ) : (
       <IoMdArrowDropdown className={Icon} style={{ color: color as string }} />
     );
   };
@@ -48,20 +45,19 @@ const PercentageText: FunctionComponent<PercentageTextProps> = ({
       prefersAbsoluteValue: true
     })}%`;
 
-    if (!prefersIndicatorIcon)
-      return `${isPositive ? '+' : ''}${formattedValue}`;
+    if (!prefersIndicatorIcon) return `${isPositive && '+'}${formattedValue}`;
 
     return formattedValue;
   };
 
   return (
-    <div className={Wrapper}>
+    <Flex align="center">
       {prefersIndicatorIcon && getChangeIndicator()}
 
       <Text weight={weight} color={color as string}>
         {getChangeValue()}
       </Text>
-    </div>
+    </Flex>
   );
 };
 

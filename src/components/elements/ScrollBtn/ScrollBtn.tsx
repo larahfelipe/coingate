@@ -19,6 +19,7 @@ const ScrollBtn: FunctionComponent = () => {
   return (
     <motion.button
       type="button"
+      aria-label="Scroll top"
       className={ScrollButton}
       onClick={handleScrollToTop}
       initial={{ scale: 0 }}

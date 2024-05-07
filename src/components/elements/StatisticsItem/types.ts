@@ -1,4 +1,4 @@
-export type InfoItemProps = {
+export type StatisticsItemProps = {
   title: string;
   subtitle?: string;
   value: number;

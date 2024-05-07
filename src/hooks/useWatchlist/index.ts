@@ -1,1 +1,1 @@
-export { useWatchlist, WatchlistProvider } from './useWatchlist';
+export { default } from './useWatchlist';

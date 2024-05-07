@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type SectionItemProps = {
+export type AppSectionProps = {
   title: string;
   active: boolean;
   icon?: ReactNode;

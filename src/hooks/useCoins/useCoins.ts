@@ -2,8 +2,6 @@ import toast from 'react-hot-toast';
 
 import { useQuery } from '@tanstack/react-query';
 
-import { REFETCH_INTERVAL_MS } from '@/constants';
-
 import { getCoins, type Coin } from '../../api/coingecko';
 import type { UseCoinsProps } from './types';
 
@@ -13,9 +11,7 @@ const useCoins = ({ desiredPage, coinId }: UseCoinsProps) => {
     queryFn: () => getCoins({ page: desiredPage, includeTimeSeries: true }),
     onError: () =>
       toast.error('Could not get the coins data. Please try again later'),
-    keepPreviousData: true,
-    refetchOnWindowFocus: false,
-    refetchInterval: REFETCH_INTERVAL_MS
+    keepPreviousData: true
   });
 
   const { data: coinData, ...coinState } = useQuery({
@@ -25,8 +21,6 @@ const useCoins = ({ desiredPage, coinId }: UseCoinsProps) => {
       toast.error(
         'Could not get the desired coin data. Please try again later'
       ),
-    refetchOnWindowFocus: false,
-    refetchInterval: REFETCH_INTERVAL_MS,
     enabled: !!coinId
   });
 

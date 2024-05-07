@@ -8,6 +8,7 @@ export type TableProps = MTableProps & {
   searchable?: boolean;
   searchPlaceholder?: string;
   totalItems?: number;
+  fixedColsLength?: number;
   onSearch?: (search: string) => void;
   onChangePage?: (page: number) => void;
   headers: string[];

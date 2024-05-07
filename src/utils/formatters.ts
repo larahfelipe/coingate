@@ -1,4 +1,4 @@
-import { UNKNOWN_VALUE_CHAR } from '@/constants';
+import { UNKNOWN_VALUE_CHAR } from '@/common';
 
 type FormatOptions = Partial<{
   maximumFractionDigits: number;

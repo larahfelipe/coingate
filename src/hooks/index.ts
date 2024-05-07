@@ -4,7 +4,7 @@ import useGlobalData from './useGlobalData';
 import useTabs from './useTabs';
 import useTheme from './useTheme';
 import useTrendingCoins from './useTrendingCoins';
-import { useWatchlist, WatchlistProvider } from './useWatchlist';
+import useWatchlist from './useWatchlist';
 
 export {
   useCoins,
@@ -13,6 +13,5 @@ export {
   useTabs,
   useTheme,
   useTrendingCoins,
-  useWatchlist,
-  WatchlistProvider
+  useWatchlist
 };

@@ -5,17 +5,14 @@ import { useTabs } from '@/hooks';
 import { Body, Header } from '../../modules';
 
 const MainTemplate: FunctionComponent = () => {
-  const { handleChangeTab, activeTab } = useTabs();
+  const { changeTab, activeTab } = useTabs();
 
   return (
-    <>
-      <Header
-        activeTab={activeTab}
-        onChangeTab={(current) => handleChangeTab(current)}
-      />
+    <main>
+      <Header tab={activeTab} onChangeTab={(tab) => changeTab(tab)} />
 
-      <Body activeTab={activeTab} />
-    </>
+      <Body tab={activeTab} />
+    </main>
   );
 };
 

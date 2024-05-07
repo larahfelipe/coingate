@@ -2,8 +2,6 @@ import toast from 'react-hot-toast';
 
 import { useQuery } from '@tanstack/react-query';
 
-import { REFETCH_INTERVAL_MS } from '@/constants';
-
 import { getCoins, getGlobalData } from '../../api/coingecko';
 
 const useGlobalData = () => {
@@ -14,8 +12,7 @@ const useGlobalData = () => {
       toast.error(
         'Could not get the global market data. Please try again later'
       ),
-    refetchOnWindowFocus: false,
-    refetchInterval: REFETCH_INTERVAL_MS
+    keepPreviousData: true
   });
 
   const { data: coinsData, isLoading: isCoinsLoading } = useQuery({
@@ -23,7 +20,7 @@ const useGlobalData = () => {
     queryFn: () => getCoins({ perPage: 100 }),
     onError: () =>
       toast.error('Could not get the coins data. Please try again later'),
-    refetchOnWindowFocus: false
+    keepPreviousData: true
   });
 
   const getTotalMarketCap = () => {

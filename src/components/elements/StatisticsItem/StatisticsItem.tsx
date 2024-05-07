@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState, type FunctionComponent } from 'react';
 
-import { Text } from '@mantine/core';
+import { Flex, Text } from '@mantine/core';
 
 import { useTheme } from '@/hooks';
 
 import { useStyles } from './styles';
-import type { InfoItemProps } from './types';
+import type { StatisticsItemProps } from './types';
 
-const InfoItem: FunctionComponent<InfoItemProps> = ({
+const StatisticsItem: FunctionComponent<StatisticsItemProps> = ({
   title,
   subtitle,
   value
@@ -17,7 +17,7 @@ const InfoItem: FunctionComponent<InfoItemProps> = ({
   const { colorScheme } = useTheme();
 
   const { classes } = useStyles();
-  const { Wrapper, TitleSection, Title, Subtitle, Value } = classes;
+  const { Title, Subtitle, Value } = classes;
 
   const subItemTextColor = useMemo(
     () => (colorScheme === 'light' ? 'gray' : 'gray.6'),
@@ -43,8 +43,8 @@ const InfoItem: FunctionComponent<InfoItemProps> = ({
   }, [value]);
 
   return (
-    <div className={Wrapper}>
-      <div className={TitleSection}>
+    <Flex direction="column" gap="0.5rem">
+      <Flex align="flex-end" gap="10px">
         <Text color={subItemTextColor} weight={600} className={Title}>
           {title}
         </Text>
@@ -54,15 +54,15 @@ const InfoItem: FunctionComponent<InfoItemProps> = ({
             {subtitle}
           </Text>
         )}
-      </div>
+      </Flex>
 
       <Text className={Value}>
         {Intl.NumberFormat('en-US', {
           maximumFractionDigits: 0
         }).format(currentValue)}
       </Text>
-    </div>
+    </Flex>
   );
 };
 
-export default InfoItem;
+export default StatisticsItem;

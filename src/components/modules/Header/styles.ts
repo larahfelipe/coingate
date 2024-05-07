@@ -15,7 +15,7 @@ export const useStyles = createStyles((theme) => ({
     backdropFilter: 'blur(6.5px)',
     WebkitBackdropFilter: 'blur(6.5px)'
   },
-  Container: {
+  LeftSide: {
     width: '100%',
     height: '100%',
     display: 'flex',
@@ -51,8 +51,6 @@ export const useStyles = createStyles((theme) => ({
   },
   AppSections: {
     width: 'fit-content',
-    display: 'flex',
-    gap: '1rem',
 
     '@media (max-width: 400px)': {
       marginLeft: '1rem'

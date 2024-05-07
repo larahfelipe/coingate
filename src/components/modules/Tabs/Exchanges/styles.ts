@@ -2,31 +2,9 @@ import { createStyles } from '@mantine/core';
 
 export const useStyles = createStyles((theme) => ({
   Wrapper: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  Content: {
-    width: '75%',
-    margin: '0 auto',
-    marginTop: '3.15rem',
-
     td: {
-      overflowY: 'hidden'
-    },
-
-    '@media (max-width: 1670px)': {
-      width: '90%'
-    },
-    '@media (max-width: 1425px)': {
-      width: '95%'
-    },
-    '@media (max-width: 1360px)': {
-      width: '100%'
-    },
-    '@media (max-width: 768px)': {
-      margin: 'unset',
-      marginTop: '3rem'
+      overflowY: 'hidden',
+      backgroundColor: theme.colors.shapeLight
     }
   },
   TableData: {
@@ -35,6 +13,28 @@ export const useStyles = createStyles((theme) => ({
     '> div': {
       marginLeft: '0.4rem'
     }
+  },
+  FixedColumn: {
+    width: 'fit-content',
+    position: 'sticky'
+  },
+  Column1: {
+    width: '50px',
+    minWidth: '50px',
+    maxWidth: '50px',
+    left: '0px'
+  },
+  Column2: {
+    width: '50px',
+    minWidth: '50px',
+    maxWidth: '50px',
+    left: '50px'
+  },
+  Column3: {
+    width: '225px',
+    minWidth: '225px',
+    maxWidth: '225px',
+    left: '100px'
   },
   StarIconFilled: {
     width: '20px',

@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
@@ -11,15 +12,15 @@ import { HiOutlineExternalLink } from 'react-icons/hi';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Skeleton, Text } from '@mantine/core';
+import { Box, Skeleton, Text } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 
-import { ScrollBtn, Table } from '@/components/elements';
 import {
   DEBOUNCE_INTERVAL_MS,
   EXCHANGES_TABLE_HEADERS,
   UNKNOWN_VALUE_CHAR
-} from '@/constants';
+} from '@/common';
+import { Table } from '@/components/elements';
 import { useExchanges, useTheme, useWatchlist } from '@/hooks';
 import { formatNumber, isValidURL } from '@/utils';
 
@@ -36,21 +37,29 @@ const Exchanges: FunctionComponent = () => {
   );
   const { colorScheme } = useTheme();
   const { classes } = useStyles();
-
-  const { Wrapper, Content, TableData, StarIconFilled, StarIcon, LinkIcon } =
-    classes;
+  const {
+    Wrapper,
+    FixedColumn,
+    Column1,
+    Column2,
+    Column3,
+    TableData,
+    StarIconFilled,
+    StarIcon,
+    LinkIcon
+  } = classes;
 
   const { exchanges, exchangesState } = useExchanges({
     desiredPage: currentPage,
     exchangeId: debouncedSearch
   });
-  const { watchlistExchange, exchangesWatchlist } = useWatchlist();
+  const { exchangesWatchlistInclude, exchangesWatchlist } = useWatchlist();
 
   const isLoading = exchangesState.isLoading || exchangesState.isFetching;
 
   const handleWatchlistExchange = useCallback(
-    (exchangeId: string) => watchlistExchange(exchangeId),
-    [watchlistExchange]
+    (exchangeId: string) => exchangesWatchlistInclude(exchangeId),
+    [exchangesWatchlistInclude]
   );
 
   const handleChangePage = (desiredPage: number) => setCurrentPage(desiredPage);
@@ -69,11 +78,11 @@ const Exchanges: FunctionComponent = () => {
     [colorScheme]
   );
 
-  const memoizedExchanges = useMemo(
+  const exchangesTableData = useMemo(
     () =>
-      exchanges.map((exchange) => (
-        <tr key={exchange.id}>
-          <td>
+      exchanges?.map((exchange) => (
+        <Fragment key={exchange.id}>
+          <td className={`${FixedColumn} ${Column1}`}>
             {exchangesWatchlist.includes(exchange.id) ? (
               <AiFillStar
                 className={StarIconFilled}
@@ -87,13 +96,13 @@ const Exchanges: FunctionComponent = () => {
             )}
           </td>
 
-          <td>
+          <td className={`${FixedColumn} ${Column2}`}>
             <Text color={subItemTextColor}>
               {formatNumber(exchange.trust_score_rank)}
             </Text>
           </td>
 
-          <td>
+          <td className={`${FixedColumn} ${Column3}`}>
             <div className={TableData}>
               {isValidURL(exchange.image) && (
                 <Image
@@ -149,13 +158,17 @@ const Exchanges: FunctionComponent = () => {
               <HiOutlineExternalLink className={LinkIcon} />
             </Link>
           </td>
-        </tr>
+        </Fragment>
       )),
     [
       exchanges,
       exchangesWatchlist,
       handleWatchlistExchange,
       subItemTextColor,
+      FixedColumn,
+      Column1,
+      Column2,
+      Column3,
       StarIcon,
       StarIconFilled,
       TableData,
@@ -166,29 +179,25 @@ const Exchanges: FunctionComponent = () => {
   useEffect(() => setIsMounting(false), []);
 
   return (
-    <div className={Wrapper}>
-      <div className={Content}>
-        {isMounting && <Skeleton height={1200} />}
+    <Box className={Wrapper}>
+      {isMounting && <Skeleton height={1200} />}
 
-        {!isMounting && (
-          <Table
-            withBorder
-            searchable
-            highlightOnHover
-            verticalSpacing="sm"
-            loading={isLoading}
-            searchPlaceholder="Search an exchange by name"
-            totalItems={25}
-            onChangePage={handleChangePage}
-            onSearch={handleSearchExchange}
-            headers={EXCHANGES_TABLE_HEADERS}
-            data={memoizedExchanges}
-          />
-        )}
-      </div>
-
-      <ScrollBtn />
-    </div>
+      {!isMounting && (
+        <Table
+          withBorder
+          searchable
+          highlightOnHover
+          verticalSpacing="sm"
+          loading={isLoading}
+          searchPlaceholder="Search an exchange by name"
+          totalItems={25}
+          onChangePage={handleChangePage}
+          onSearch={handleSearchExchange}
+          headers={EXCHANGES_TABLE_HEADERS}
+          data={exchangesTableData}
+        />
+      )}
+    </Box>
   );
 };
 

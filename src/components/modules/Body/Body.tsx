@@ -1,26 +1,27 @@
 import type { FunctionComponent } from 'react';
 import Marquee from 'react-fast-marquee';
 
-import { Skeleton } from '@mantine/core';
+import { Box, Flex, Skeleton } from '@mantine/core';
 
-import { TABS } from '@/constants';
+import { TABS } from '@/common';
 import { useGlobalData, useTrendingCoins } from '@/hooks';
 import { formatNumber } from '@/utils';
 
 import { CoinsTab, ExchangesTab } from '../';
-import { Badge, InfoItem, MarqueeItem, PercentageText } from '../../elements';
+import {
+  Badge,
+  MarqueeItem,
+  PercentageText,
+  ScrollBtn,
+  StatisticsItem
+} from '../../elements';
 import { useStyles } from './styles';
 import type { BodyProps } from './types';
 
-const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
+const Body: FunctionComponent<BodyProps> = ({ tab }) => {
   const { classes, theme } = useStyles();
-  const {
-    Wrapper,
-    MarketInfoWrapper,
-    SkeletonsWrapper,
-    BadgeWrapper,
-    TrendingCoinsMarqueeWrapper
-  } = classes;
+  const { Wrapper, Content, MarketStatistics, MarqueeWrapper, BadgeWrapper } =
+    classes;
 
   const { trendingCoins } = useTrendingCoins();
 
@@ -37,17 +38,17 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
 
   const renderSkeletons = () =>
     Array.from({ length: 4 }).map((_, i) => (
-      <div key={i} className={SkeletonsWrapper}>
+      <Flex direction="column" gap="0.5rem" key={i}>
         <Skeleton width="250px" height="20px" />
 
         <Skeleton width="250px" height="45px" />
 
         {i === 0 && <Skeleton width="100px" height="20px" />}
-      </div>
+      </Flex>
     ));
 
   const renderActiveTab = () => {
-    switch (activeTab) {
+    switch (tab) {
       case TABS.Coins:
         return <CoinsTab />;
       case TABS.Exchanges:
@@ -58,8 +59,8 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
   };
 
   return (
-    <div className={Wrapper}>
-      <div className={TrendingCoinsMarqueeWrapper}>
+    <Flex direction="column" className={Wrapper}>
+      <section className={MarqueeWrapper}>
         {isLoading && <Skeleton width="100%" height="20px" />}
 
         {!isLoading && (
@@ -79,60 +80,64 @@ const Body: FunctionComponent<BodyProps> = ({ activeTab }) => {
             ))}
           </Marquee>
         )}
-      </div>
+      </section>
 
-      <div className={MarketInfoWrapper}>
-        {isLoading && renderSkeletons()}
+      <section className={Content}>
+        <Flex justify="space-between" className={MarketStatistics}>
+          {isLoading && renderSkeletons()}
 
-        {!isLoading && (
-          <>
-            <div>
-              <InfoItem
-                title="MARKET CAPITALIZATION"
+          {!isLoading && (
+            <>
+              <Box>
+                <StatisticsItem
+                  title="MARKET CAPITALIZATION"
+                  subtitle="USD"
+                  value={getTotalMarketCap()}
+                />
+
+                <div className={BadgeWrapper}>
+                  <Badge
+                    color={
+                      totalMarketCapChangePercentage > 0
+                        ? theme.colors.successLight
+                        : theme.colors.dangerLight
+                    }
+                  >
+                    <PercentageText
+                      prefersIndicatorIcon
+                      dynamicColorBasedOnValue
+                      value={totalMarketCapChangePercentage}
+                      weight="bold"
+                    />
+                  </Badge>
+                </div>
+              </Box>
+
+              <StatisticsItem
+                title="24H VOLUME"
                 subtitle="USD"
-                value={getTotalMarketCap()}
+                value={getTotalMarketVolume()}
               />
 
-              <div className={BadgeWrapper}>
-                <Badge
-                  color={
-                    totalMarketCapChangePercentage > 0
-                      ? theme.colors.successLight
-                      : theme.colors.dangerLight
-                  }
-                >
-                  <PercentageText
-                    prefersIndicatorIcon
-                    dynamicColorBasedOnValue
-                    value={totalMarketCapChangePercentage}
-                    weight="bold"
-                  />
-                </Badge>
-              </div>
-            </div>
+              <StatisticsItem
+                title="BTC DOMINANCE"
+                subtitle="%"
+                value={getBTCMarketCapPercentage()}
+              />
 
-            <InfoItem
-              title="24H VOLUME"
-              subtitle="USD"
-              value={getTotalMarketVolume()}
-            />
+              <StatisticsItem
+                title="ACTIVE COINS"
+                value={getTotalActiveCryptocurrencies()}
+              />
+            </>
+          )}
+        </Flex>
 
-            <InfoItem
-              title="BTC DOMINANCE"
-              subtitle="%"
-              value={getBTCMarketCapPercentage()}
-            />
+        {renderActiveTab()}
 
-            <InfoItem
-              title="ACTIVE COINS"
-              value={getTotalActiveCryptocurrencies()}
-            />
-          </>
-        )}
-      </div>
-
-      {renderActiveTab()}
-    </div>
+        <ScrollBtn />
+      </section>
+    </Flex>
   );
 };
 

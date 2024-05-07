@@ -1,19 +1,17 @@
-import {
-  Fragment,
-  useState,
-  type ChangeEvent,
-  type FunctionComponent
-} from 'react';
+import { useState, type ChangeEvent, type FunctionComponent } from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 
-import { Table as MTable, Pagination, Skeleton, Text } from '@mantine/core';
+import {
+  Box,
+  Flex,
+  Table as MTable,
+  Pagination,
+  Skeleton,
+  Text
+} from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 
-import {
-  SKELETON_TABLE_COLUMNS,
-  SKELETON_TABLE_ROWS,
-  SMALL_VW
-} from '@/constants';
+import { MOBILE_VW } from '@/common';
 
 import { useStyles } from './styles';
 import type { TableProps } from './types';
@@ -23,6 +21,7 @@ const Table: FunctionComponent<TableProps> = ({
   searchable,
   searchPlaceholder,
   totalItems,
+  fixedColsLength,
   onSearch,
   onChangePage,
   headers,
@@ -42,7 +41,7 @@ const Table: FunctionComponent<TableProps> = ({
     TableWrapper
   } = classes;
 
-  const matchSmallVW = useMediaQuery(`(max-width: ${SMALL_VW}px)`);
+  const matchMobileVW = useMediaQuery(`(max-width: ${MOBILE_VW}px)`);
 
   const handleOnSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -53,17 +52,22 @@ const Table: FunctionComponent<TableProps> = ({
 
   const renderTableHeaders = () => {
     if (loading) {
-      return Array.from({ length: SKELETON_TABLE_COLUMNS }).map((_, i) => (
+      return Array.from({ length: 5 }).map((_, i) => (
         <th key={i}>
-          <thead>
-            <Skeleton width="180px" height="30px" />
-          </thead>
+          <Skeleton width="200px" height="30px" />
         </th>
       ));
     }
 
-    return headers.map((header) => (
-      <th key={header}>
+    return headers.map((header, i) => (
+      <th
+        key={header}
+        className={
+          fixedColsLength && fixedColsLength >= i
+            ? classes[`Column${++i}` as keyof typeof classes]
+            : ''
+        }
+      >
         <Text size="sm" weight={700}>
           {header}
         </Text>
@@ -73,7 +77,7 @@ const Table: FunctionComponent<TableProps> = ({
 
   const renderTableData = () => {
     if (loading)
-      return Array.from({ length: SKELETON_TABLE_ROWS }).map((_, i) => (
+      return Array.from({ length: 14 }).map((_, i) => (
         <tr key={i}>
           <td colSpan={headers.length}>
             <Skeleton width="100%" height="45px" />
@@ -92,14 +96,18 @@ const Table: FunctionComponent<TableProps> = ({
         </tr>
       );
 
-    return data.map((row, i) => <Fragment key={i}>{row}</Fragment>);
+    return data.map((row, i) => <tr key={i}>{row}</tr>);
   };
 
   return (
     <>
       {(searchable || totalItems) && (
-        <div className={NavigationWrapper}>
-          <div className={InputWrapper}>
+        <Flex
+          justify="space-between"
+          align="center"
+          className={NavigationWrapper}
+        >
+          <Flex align="center" className={InputWrapper}>
             {searchable && (
               <>
                 <IoSearchOutline className={SearchIcon} />
@@ -112,20 +120,21 @@ const Table: FunctionComponent<TableProps> = ({
                 />
               </>
             )}
-          </div>
+          </Flex>
 
           {!!totalItems && !isSearching && (
             <Pagination
               color="gray"
-              size={matchSmallVW ? 'sm' : 'md'}
+              aria-label="Pagination"
+              size={matchMobileVW ? 'sm' : 'md'}
               total={totalItems}
               onChange={onChangePage}
             />
           )}
-        </div>
+        </Flex>
       )}
 
-      <div className={TableWrapper}>
+      <Box className={TableWrapper}>
         <MTable
           verticalSpacing="xs"
           horizontalSpacing="xs"
@@ -138,7 +147,7 @@ const Table: FunctionComponent<TableProps> = ({
 
           <tbody>{renderTableData()}</tbody>
         </MTable>
-      </div>
+      </Box>
     </>
   );
 };

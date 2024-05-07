@@ -6,16 +6,16 @@ import {
 
 import { useMantineTheme } from '@mantine/core';
 
-import { DEFAULT_SPARKLINE_DATA } from '@/constants';
+import { DEFAULT_SPARKLINE_DATA } from '@/common';
 
 import type { SparklinesProps } from './types';
 
 const Sparklines: FunctionComponent<SparklinesProps> = ({
   dynamicColorBasedOnValue,
   color = 'gray',
-  strokeWidth = '2',
+  strokeWidth = '3',
   filled = false,
-  data,
+  data = DEFAULT_SPARKLINE_DATA,
   ...props
 }) => {
   const { colors } = useMantineTheme();
@@ -24,7 +24,7 @@ const Sparklines: FunctionComponent<SparklinesProps> = ({
     color = dynamicColorBasedOnValue > 0 ? colors.green[6] : colors.red[6];
 
   return (
-    <DSparklines data={data?.length ? data : DEFAULT_SPARKLINE_DATA} {...props}>
+    <DSparklines data={data} {...props}>
       <DSparklinesLine
         color={color}
         style={{ strokeWidth, fill: filled ? '' : 'none' }}
