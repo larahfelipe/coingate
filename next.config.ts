@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    unoptimized: true,
+  },
+  redirects: async () => [
+    {
+      source: "/",
+      destination: "/coins",
+      permanent: true,
+    }
+  ]
 };
 
 export default nextConfig;
