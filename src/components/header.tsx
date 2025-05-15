@@ -1,11 +1,13 @@
 'use client';
 
+import { ConnectWalletBtn } from '@/components/connect-wallet-btn';
 import { NavLink } from '@/components/navlink';
 import { Bank, Coins } from '@phosphor-icons/react';
 import { usePathname } from 'next/navigation';
+import { FC } from 'react';
 import { Logo } from './logo';
 
-export const Header: React.FC = () => {
+export const Header: FC = () => {
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname.startsWith(path);
@@ -33,6 +35,7 @@ export const Header: React.FC = () => {
           </li>
         </ul>
       </nav>
+      <ConnectWalletBtn />
     </header>
   );
 };

@@ -1,7 +1,7 @@
 export default function ExchangesPage() {
   return (
-    <div>
-      <h2>Exchanges page</h2>
+    <div className="h-full flex">
+      <h2 className="mx-auto">Coming soon...</h2>
     </div>
   )
 }

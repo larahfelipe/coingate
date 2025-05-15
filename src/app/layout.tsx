@@ -1,4 +1,5 @@
 import { Header } from "@/components/header";
+import { AppProvider } from "@/providers/app-provider";
 import { Children } from "@/types";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
@@ -21,10 +22,12 @@ export default function RootLayout({ children }: Children) {
       <body
         className={`${poppins.variable} font-sans antialiased p-4 min-h-screen bg-gradient-to-br from-[#1e0037] via-black to-[#2c0056]`}
       >
-        <Header />
-        <main className="my-12">
-          {children}
-        </main>
+        <AppProvider>
+          <Header />
+          <main className="my-12">
+            {children}
+          </main>
+        </AppProvider>
       </body>
     </html>
   );
