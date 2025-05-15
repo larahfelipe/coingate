@@ -39,7 +39,7 @@ export const useCoinsTable = () => {
     useState<CoinColumnVisibilityState>({
       fullyDilutedValue: false,
       circulatingSupply: false,
-      totalSupply: false,
+      maxSupply: false,
     });
 
   const { coinsQuery } = useCoingecko();
@@ -85,162 +85,169 @@ export const useCoinsTable = () => {
 const getCoinsTableColumns = (
   setStarFilter: (filter: StarFilterState) => void,
 ): ColumnDef<Coin>[] => [
-    {
-      id: 'star',
-      meta: {
-        onSelect: setStarFilter,
-      },
-      header: ({ column }) => {
-        const onSelect = (
-          column.columnDef.meta as unknown as Record<
-            'onSelect',
-            (filter: StarFilterState) => void
-          >
-        )?.onSelect;
-        return (
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="ml-1.5">
-                <ChevronDown size={18} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white/10 backdrop-blur-md">
-              <DropdownMenuItem
-                className="focus:bg-white/5"
-                onClick={() => onSelect?.('all')}
-              >
-                <List size={18} className="text-white" />
-                All
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="focus:bg-white/5"
-                onClick={() => onSelect?.('starred')}
-              >
-                <ListStar size={18} className="text-white" />
-                Starred
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-      cell: ({ row, table }) => {
-        const coin = row.original;
-        const { coins, addCoin } =
-          (table.options.meta as unknown as WatchlistTableMeta)?.watchlist ?? {};
-        const isStarred = coins.includes(coin.id);
-        return (
-          <Star
-            weight={isStarred ? 'fill' : 'regular'}
-            className={`cursor-pointer ${isStarred ? 'text-yellow-400' : ''}`}
-            size={20}
-            onClick={() => addCoin(coin.id)}
-          />
-        );
-      },
+  {
+    id: 'star',
+    meta: {
+      onSelect: setStarFilter,
     },
-    {
-      accessorKey: 'rank',
-      enableSorting: true,
-      header: ({ column }) => (
-        <THeadBtn tooltip="Market capitalization rank" column={column}>
-          #
-        </THeadBtn>
-      ),
+    header: ({ column }) => {
+      const onSelect = (
+        column.columnDef.meta as unknown as Record<
+          'onSelect',
+          (filter: StarFilterState) => void
+        >
+      )?.onSelect;
+      return (
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="ml-1.5">
+              <ChevronDown size={18} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white/10 backdrop-blur-md">
+            <DropdownMenuItem
+              className="focus:bg-white/5"
+              onClick={() => onSelect?.('all')}
+            >
+              <List size={18} className="text-white" />
+              All
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="focus:bg-white/5"
+              onClick={() => onSelect?.('starred')}
+            >
+              <ListStar size={18} className="text-white" />
+              Starred
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
     },
-    {
-      accessorKey: 'name',
-      enableSorting: true,
-      header: ({ column }) => <THeadBtn column={column}>Name</THeadBtn>,
-      cell: ({ row }) => {
-        const coin = row.original;
-        return (
-          <div className="flex items-center gap-4">
-            <Image src={coin.icon} alt={coin.name} width={20} height={20} />
-            <span>
-              {coin.name} <small className="text-gray-400">{coin.symbol}</small>
-            </span>
-          </div>
-        );
-      },
+    cell: ({ row, table }) => {
+      const coin = row.original;
+      const { coins, addCoin } =
+        (table.options.meta as unknown as WatchlistTableMeta)?.watchlist ?? {};
+      const isStarred = coins.includes(coin.id);
+      return (
+        <Star
+          weight={isStarred ? 'fill' : 'regular'}
+          className={`cursor-pointer ${isStarred ? 'text-yellow-400' : ''}`}
+          size={20}
+          onClick={(e) => {
+            e.stopPropagation();
+            addCoin(coin.id);
+          }}
+        />
+      );
     },
-    {
-      accessorKey: 'price',
-      enableSorting: true,
-      header: ({ column }) => <THeadBtn column={column}>Price</THeadBtn>,
+  },
+  {
+    accessorKey: 'rank',
+    enableSorting: true,
+    header: ({ column }) => (
+      <THeadBtn tooltip="Market capitalization rank" column={column}>
+        #
+      </THeadBtn>
+    ),
+  },
+  {
+    accessorKey: 'name',
+    enableSorting: true,
+    header: ({ column }) => <THeadBtn column={column}>Name</THeadBtn>,
+    cell: ({ row }) => {
+      const coin = row.original;
+      return (
+        <div className="flex items-center gap-4">
+          <Image src={coin.icon} alt={coin.name} width={20} height={20} />
+          <span>
+            {coin.name} <small className="text-gray-400">{coin.symbol}</small>
+          </span>
+        </div>
+      );
     },
-    {
-      accessorKey: 'priceChange1h',
-      enableSorting: true,
-      enableHiding: true,
-      header: ({ column }) => (
-        <THeadBtn tooltip="Price change over the last hour" column={column}>
-          1h
-        </THeadBtn>
-      ),
-      cell: ({ getValue }) => <PercentChange value={getValue<number>()} />,
-    },
-    {
-      accessorKey: 'priceChange24h',
-      enableSorting: true,
-      enableHiding: true,
-      header: ({ column }) => (
-        <THeadBtn tooltip="Price change over the last 24 hours" column={column}>
-          24h
-        </THeadBtn>
-      ),
-      cell: ({ getValue }) => <PercentChange value={getValue<number>()} />,
-    },
-    {
-      accessorKey: 'priceChange7d',
-      enableSorting: true,
-      enableHiding: true,
-      header: ({ column }) => (
-        <THeadBtn tooltip="Price change over the last 7 days" column={column}>
-          7d
-        </THeadBtn>
-      ),
-      cell: ({ getValue }) => <PercentChange value={getValue<number>()} />,
-    },
-    {
-      accessorKey: 'marketCap',
-      enableSorting: true,
-      enableHiding: true,
-      header: ({ column }) => (
-        <THeadBtn tooltip="Market capitalization" column={column}>
-          Mkt. Cap.
-        </THeadBtn>
-      ),
-    },
-    {
-      accessorKey: 'volume24h',
-      enableSorting: true,
-      enableHiding: true,
-      header: ({ column }) => <THeadBtn column={column}>Volume (24h)</THeadBtn>,
-    },
-    {
-      accessorKey: 'fullyDilutedValue',
-      enableSorting: true,
-      enableHiding: true,
-      header: ({ column }) => (
-        <THeadBtn tooltip="Fully diluted value" column={column}>
-          FDV
-        </THeadBtn>
-      ),
-    },
-    {
-      accessorKey: 'circulatingSupply',
-      enableSorting: true,
-      enableHiding: true,
-      header: ({ column }) => (
-        <THeadBtn tooltip="Circulating supply" column={column}>
-          Circ. Supply
-        </THeadBtn>
-      ),
-    },
-    {
-      accessorKey: 'totalSupply',
-      enableSorting: true,
-      enableHiding: true,
-      header: ({ column }) => <THeadBtn column={column}>Total Supply</THeadBtn>,
-    },
-  ];
+  },
+  {
+    accessorKey: 'price',
+    enableSorting: true,
+    header: ({ column }) => <THeadBtn column={column}>Price</THeadBtn>,
+  },
+  {
+    accessorKey: 'priceChange1h',
+    enableSorting: true,
+    enableHiding: true,
+    header: ({ column }) => (
+      <THeadBtn tooltip="Price change over the last hour" column={column}>
+        1h
+      </THeadBtn>
+    ),
+    cell: ({ getValue }) => <PercentChange value={getValue<number>()} />,
+  },
+  {
+    accessorKey: 'priceChange24h',
+    enableSorting: true,
+    enableHiding: true,
+    header: ({ column }) => (
+      <THeadBtn tooltip="Price change over the last 24 hours" column={column}>
+        24h
+      </THeadBtn>
+    ),
+    cell: ({ getValue }) => <PercentChange value={getValue<number>()} />,
+  },
+  {
+    accessorKey: 'priceChange7d',
+    enableSorting: true,
+    enableHiding: true,
+    header: ({ column }) => (
+      <THeadBtn tooltip="Price change over the last 7 days" column={column}>
+        7d
+      </THeadBtn>
+    ),
+    cell: ({ getValue }) => <PercentChange value={getValue<number>()} />,
+  },
+  {
+    accessorKey: 'marketCap',
+    enableSorting: true,
+    enableHiding: true,
+    header: ({ column }) => (
+      <THeadBtn tooltip="Market capitalization" column={column}>
+        Mkt. Cap.
+      </THeadBtn>
+    ),
+  },
+  {
+    accessorKey: 'volume24h',
+    enableSorting: true,
+    enableHiding: true,
+    header: ({ column }) => <THeadBtn column={column}>Volume (24h)</THeadBtn>,
+  },
+  {
+    accessorKey: 'fullyDilutedValue',
+    enableSorting: true,
+    enableHiding: true,
+    header: ({ column }) => (
+      <THeadBtn tooltip="Fully diluted value" column={column}>
+        FDV
+      </THeadBtn>
+    ),
+  },
+  {
+    accessorKey: 'circulatingSupply',
+    enableSorting: true,
+    enableHiding: true,
+    header: ({ column }) => (
+      <THeadBtn tooltip="Circulating supply" column={column}>
+        Circ. Supply
+      </THeadBtn>
+    ),
+  },
+  {
+    accessorKey: 'maxSupply',
+    enableSorting: true,
+    enableHiding: true,
+    header: ({ column }) => (
+      <THeadBtn tooltip="Maximum supply" column={column}>
+        Max. Supply
+      </THeadBtn>
+    ),
+  },
+];

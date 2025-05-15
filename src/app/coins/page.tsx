@@ -1,15 +1,24 @@
-"use client";
+'use client';
 
-import { CoinsTable } from "@/components/coins-table";
+import { CoinSheet } from '@/components/coin-sheet';
+import { CoinsTable } from '@/components/coins-table';
+import { useDisclosure } from '@/hooks/use-disclosure';
+import { useState } from 'react';
 
 export default function CoinsPage() {
-  const handleClick = (coinId: string) => {
-    console.log(coinId)
-  }
+  const [coinId, setCoinId] = useState<string>();
+
+  const [opened, { toggle }] = useDisclosure(false);
+
+  const handleToggleCoinSheet = (id: string) => {
+    setCoinId(id);
+    toggle();
+  };
 
   return (
-    <div>
-      <CoinsTable onRowClick={handleClick} />
-    </div>
-  )
+    <main>
+      <CoinSheet opened={opened} coinId={coinId} onClose={toggle} />
+      <CoinsTable onRowClick={handleToggleCoinSheet} />
+    </main>
+  );
 }
