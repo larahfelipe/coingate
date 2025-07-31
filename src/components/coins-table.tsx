@@ -33,7 +33,6 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
         value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
         onChange={(e) => searchCoin(e.target.value)}
       />
-
       <Table className="bg-white/5 backdrop-blur-md rounded-md">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

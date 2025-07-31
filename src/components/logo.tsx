@@ -33,7 +33,7 @@ export const Logo: React.FC<LogoProps> = ({ className }) => {
         <h1
           className={cn(
             chakraPetch.className,
-            'font-semibold text-white text-xl tracking-wide group-hover-text-glow max-sm:hidden',
+            'font-semibold text-white text-[22px] tracking-wide group-hover-text-glow max-sm:hidden',
           )}
         >
           coingate

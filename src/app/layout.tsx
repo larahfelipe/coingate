@@ -12,7 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'coingate | Real-Time Cryptocurrency data & Market Insights',
+  title: 'coingate | Real-time Cryptocurrency data & Market Insights',
   description:
     'coingate provides real-time crypto market data, in-depth charts, and comprehensive analytics to help you make informed investment decisions. Track thousands of cryptocurrencies with up-to-the-minute insights and performance metrics.',
 };
@@ -21,7 +21,7 @@ export default function RootLayout({ children }: Children) {
   return (
     <html lang="en" className="dark">
       <body
-        className={`${poppins.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-[#1b0030] via-black to-[#190031]`}
+        className={`${poppins.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-black via-[#03003b] to-[#08086b]`}
       >
         <div className="p-4 space-y-18">
           <AppProvider>
