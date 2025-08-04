@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { ComponentProps, FC, JSX } from 'react';
 
-type NavLinkProps = {
+type AppHeaderNavLinkProps = {
   activePath: boolean;
   href: string;
   name: string;
@@ -11,7 +11,7 @@ type NavLinkProps = {
   className?: ComponentProps<'a'>['className'];
 };
 
-export const NavLink: FC<NavLinkProps> = ({
+export const AppHeaderNavLink: FC<AppHeaderNavLinkProps> = ({
   activePath,
   href,
   name,
@@ -24,16 +24,13 @@ export const NavLink: FC<NavLinkProps> = ({
   return (
     <Link
       href={href}
-      className={cn(
-        'flex items-center gap-2 py-1 border-b-1 transition-all',
-        activePath
-          ? 'border-white text-white'
-          : 'border-transparent text-white/70 hover:border-white/30',
-        className,
-      )}
+      className={cn('flex items-center gap-2 relative', className)}
     >
       {icon}
       <span className="group-hover-text-glow max-sm:hidden">{name}</span>
+      {activePath && (
+        <div className="w-full h-[1px] absolute bottom-[-1rem] bg-white" />
+      )}
     </Link>
   );
 };

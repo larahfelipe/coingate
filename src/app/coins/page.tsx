@@ -1,6 +1,6 @@
 'use client';
 
-import { CoinSheet } from '@/components/coin-sheet';
+import { CoinSheet } from '@/components/coin-sheet/coin-sheet';
 import { CoinsTable } from '@/components/coins-table';
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useState } from 'react';
@@ -10,8 +10,8 @@ export default function CoinsPage() {
 
   const [opened, { toggle }] = useDisclosure(false);
 
-  const handleToggleCoinSheet = (id: string) => {
-    setCoinId(id);
+  const handleToggleCoinSheet = (cId: string) => {
+    setCoinId(cId);
     toggle();
   };
 

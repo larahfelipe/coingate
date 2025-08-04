@@ -2,14 +2,14 @@ import { cn } from '@/lib/utils';
 import { CaretDown, CaretUp, Minus } from '@phosphor-icons/react';
 import { FC, HTMLAttributes } from 'react';
 
-type PercentChangeProps = {
+type PercentChangeIconProps = {
   value: number;
   textSize?: number;
   iconSize?: number;
   className?: HTMLAttributes<HTMLDivElement>['className'];
 };
 
-export const PercentChange: FC<PercentChangeProps> = ({
+export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
   className,
   value,
   textSize,
