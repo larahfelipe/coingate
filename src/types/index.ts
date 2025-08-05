@@ -121,6 +121,7 @@ export type CoingeckoV3CoinResponseData = {
     price_change_percentage_1y_in_currency: CurrencyToValue;
     market_cap_change_24h_in_currency: CurrencyToValue;
     market_cap_change_percentage_24h_in_currency: CurrencyToValue;
+    sparkline_7d: Record<'price', number[]>;
     total_supply: number;
     max_supply: number;
     max_supply_infinite: boolean;

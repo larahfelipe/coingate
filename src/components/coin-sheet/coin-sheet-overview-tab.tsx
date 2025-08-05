@@ -35,7 +35,7 @@ const MarketInfoGridCard: FC<
       icon={<Activity className="size-4 text-purple-400" />}
     />
     <MarketInfoCard
-      title="Circulating supply"
+      title="Circ. supply"
       value={`${(marketData.circulating_supply / 1e6).toFixed(2)}M`}
       icon={<PieChart className="size-4 text-emerald-400" />}
     />

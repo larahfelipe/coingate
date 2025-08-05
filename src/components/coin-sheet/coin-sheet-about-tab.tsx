@@ -1,7 +1,8 @@
+import { cn } from '@/lib/utils';
 import { CoingeckoV3CoinResponseData } from '@/types';
 import { Books, GithubLogo, Scroll } from '@phosphor-icons/react';
-import { ExternalLink, Info } from 'lucide-react';
-import { FC, ReactNode } from 'react';
+import { ExternalLink as ExternalLinkIcon, Info } from 'lucide-react';
+import { ComponentProps, FC, ReactNode } from 'react';
 
 type CoinSheetAboutTabProps = {
   coinData: CoingeckoV3CoinResponseData;
@@ -37,41 +38,41 @@ const LinksSection: FC<Pick<CoinSheetAboutTabProps['coinData'], 'links'>> = ({
     <section className="pt-4 border-t border-indigo-700/20">
       <h4 className="text-sm text-slate-200 mb-3">Links</h4>
       <div className="flex flex-wrap gap-3">
-        <LinkButton
+        <ExternalLink
           href={links.homepage?.[0]}
-          icon={<ExternalLink className="size-3" />}
+          icon={<ExternalLinkIcon className="size-3" />}
           label="Website"
-          colorClass="text-cyan-400 hover:text-cyan-300 bg-cyan-900/20 border-cyan-700/30 hover:border-cyan-500/50"
+          className="text-cyan-400 hover:text-cyan-300 bg-cyan-900/20 border-cyan-700/30 hover:border-cyan-500/50"
         />
-        <LinkButton
+        <ExternalLink
           href={links.whitepaper}
           icon={<Scroll className="size-3" />}
           label="Whitepaper"
-          colorClass="text-yellow-400 hover:text-yellow-300 bg-yellow-900/20 border-yellow-700/30 hover:border-yellow-500/50"
+          className="text-yellow-400 hover:text-yellow-300 bg-yellow-900/20 border-yellow-700/30 hover:border-yellow-500/50"
         />
-        <LinkButton
+        <ExternalLink
           href={links.blockchain_site?.[0]}
           icon={<Books className="size-3" />}
           label="Explorer"
-          colorClass="text-purple-400 hover:text-purple-300 bg-purple-900/20 border-purple-700/30 hover:border-purple-500/50"
+          className="text-purple-400 hover:text-purple-300 bg-purple-900/20 border-purple-700/30 hover:border-purple-500/50"
         />
-        <LinkButton
+        <ExternalLink
           href={links.repos_url?.github?.[0]}
           icon={<GithubLogo className="size-3" />}
           label="GitHub"
-          colorClass="text-indigo-400 hover:text-indigo-300 bg-indigo-900/20 border-indigo-700/30 hover:border-indigo-500/50"
+          className="text-indigo-400 hover:text-indigo-300 bg-indigo-900/20 border-indigo-700/30 hover:border-indigo-500/50"
         />
       </div>
     </section>
   );
 };
 
-const LinkButton: FC<{
+const ExternalLink: FC<{
   href?: string;
   label: string;
   icon: ReactNode;
-  colorClass: string;
-}> = ({ href, icon, label, colorClass }) => {
+  className?: ComponentProps<'a'>['className'];
+}> = ({ href, icon, label, className }) => {
   if (!href) return null;
 
   return (
@@ -79,11 +80,14 @@ const LinkButton: FC<{
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`flex items-center gap-2 text-xs px-3 py-2 rounded-md border transition-all ${colorClass}`}
       aria-label={`View ${label}`}
+      className={cn(
+        'flex items-center gap-2 text-xs px-3 py-2 rounded-md border transition-all',
+        className,
+      )}
     >
       {icon}
-      {label.toLowerCase()}
+      {label}
     </a>
   );
 };

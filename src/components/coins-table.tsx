@@ -38,7 +38,7 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
-              className="[&>th]:font-semibold [&>th]:py-2"
+              className="[&>th]:font-semibold [&>th]:py-1"
             >
               {headerGroup.headers.map((header) => (
                 <TableHead

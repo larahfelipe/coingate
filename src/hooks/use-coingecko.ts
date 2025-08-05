@@ -41,7 +41,6 @@ export const useCoingecko = () => {
         per_page: '50',
         page: '1',
         price_change_percentage: '1h,24h,7d',
-        // sparkline: 'true',
       });
 
       const res = await fetch(
@@ -81,7 +80,13 @@ export const useCoingecko = () => {
       queryFn: async () => {
         if (!coinId) throw new Error('Missing required param: coinId');
 
-        const res = await fetch(`${COINGECKO_BASE_URL}/coins/${coinId}`);
+        const params = new URLSearchParams({
+          sparkline: 'true',
+        });
+
+        const res = await fetch(
+          `${COINGECKO_BASE_URL}/coins/${coinId}?${params.toString()}`,
+        );
         if (!res.ok) throw new Error('Failed to fetch coin');
 
         const data: CoingeckoV3CoinResponseData = await res.json();

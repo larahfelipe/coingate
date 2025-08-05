@@ -39,7 +39,9 @@ export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
         <CoinSheetHeader coinData={coinData} />
 
         <div className="p-4 space-y-4">
-          <CoinSheetPriceChart />
+          <CoinSheetPriceChart
+            priceData={coinData.market_data.sparkline_7d.price}
+          />
 
           <Tabs defaultValue={CoinSheetTabs.Overview.value}>
             <TabsList className="w-full p-1 bg-slate-800/20">

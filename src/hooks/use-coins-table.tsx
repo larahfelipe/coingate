@@ -3,6 +3,7 @@
 import { PercentChangeIcon } from '@/components/percent-change-icon';
 import { THeadBtn } from '@/components/table-header-btn';
 import {
+  Badge,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -110,14 +111,14 @@ const getCoinsTableColumns = (
               onClick={() => onSelect?.('all')}
             >
               <List size={18} className="text-white" />
-              all
+              All
             </DropdownMenuItem>
             <DropdownMenuItem
               className="focus:bg-white/5"
               onClick={() => onSelect?.('starred')}
             >
               <ListStar size={18} className="text-white" />
-              starred
+              Starred
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -153,15 +154,21 @@ const getCoinsTableColumns = (
   {
     accessorKey: 'name',
     enableSorting: true,
-    header: ({ column }) => <THeadBtn column={column}>name</THeadBtn>,
+    header: ({ column }) => <THeadBtn column={column}>Name</THeadBtn>,
     cell: ({ row }) => {
       const coin = row.original;
       return (
         <div className="flex items-center gap-4">
           <Image src={coin.icon} alt={coin.name} width={20} height={20} />
-          <span>
-            {coin.name} <small className="text-gray-400">{coin.symbol}</small>
-          </span>
+          <p className="space-x-2">
+            <span>{coin.name}</span>
+            <Badge
+              variant="outline"
+              className="border-slate-600/30 bg-slate-800/25 text-xs text-gray-400"
+            >
+              {coin.symbol}
+            </Badge>
+          </p>
         </div>
       );
     },
@@ -169,14 +176,14 @@ const getCoinsTableColumns = (
   {
     accessorKey: 'price',
     enableSorting: true,
-    header: ({ column }) => <THeadBtn column={column}>price</THeadBtn>,
+    header: ({ column }) => <THeadBtn column={column}>Price</THeadBtn>,
   },
   {
     accessorKey: 'priceChange1h',
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="price change over the last hour" column={column}>
+      <THeadBtn tooltip="Price change over the last hour" column={column}>
         1h
       </THeadBtn>
     ),
@@ -187,7 +194,7 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="price change over the last 24 hours" column={column}>
+      <THeadBtn tooltip="Price change over the last 24 hours" column={column}>
         24h
       </THeadBtn>
     ),
@@ -198,7 +205,7 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="price change over the last 7 days" column={column}>
+      <THeadBtn tooltip="Price change over the last 7 days" column={column}>
         7d
       </THeadBtn>
     ),
@@ -209,8 +216,8 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="market capitalization" column={column}>
-        mkt. cap.
+      <THeadBtn tooltip="Market capitalization" column={column}>
+        Mkt. cap.
       </THeadBtn>
     ),
   },
@@ -220,10 +227,10 @@ const getCoinsTableColumns = (
     enableHiding: true,
     header: ({ column }) => (
       <THeadBtn
-        tooltip="volume transacted over the last 24 hours"
+        tooltip="Volume transacted over the last 24 hours"
         column={column}
       >
-        volume (24h)
+        Volume (24h)
       </THeadBtn>
     ),
   },
@@ -232,7 +239,7 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="fully diluted value" column={column}>
+      <THeadBtn tooltip="Fully diluted value" column={column}>
         FDV
       </THeadBtn>
     ),
@@ -242,8 +249,8 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="circulating supply" column={column}>
-        Circ. Supply
+      <THeadBtn tooltip="Circulating supply" column={column}>
+        Circ. supply
       </THeadBtn>
     ),
   },
@@ -252,8 +259,8 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="maximum supply" column={column}>
-        Max. Supply
+      <THeadBtn tooltip="Maximum supply" column={column}>
+        Max. supply
       </THeadBtn>
     ),
   },

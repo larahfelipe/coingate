@@ -63,12 +63,12 @@ const CoinInfo: FC<{ name: string; symbol: string; rank: number }> = ({
       <h2 className="text-xl font-semibold text-white">{name}</h2>
       <Badge
         variant="outline"
-        className="h-5 text-xs border-slate-600/30 bg-slate-800/20 text-slate-200"
+        className="h-5 text-xs border-slate-600/50 bg-slate-800/20 text-slate-200"
       >
         {symbol.toUpperCase()}
       </Badge>
     </div>
-    <p className="text-slate-300 text-sm">rank #{rank}</p>
+    <p className="text-slate-300 text-sm">Rank #{rank}</p>
   </div>
 );
 
