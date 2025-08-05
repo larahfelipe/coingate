@@ -1,5 +1,21 @@
 'use client';
 
+import { useMemo, useState } from 'react';
+
+import Image from 'next/image';
+
+import { List, ListStar, Star } from '@phosphor-icons/react';
+import {
+  type ColumnDef,
+  type ColumnFiltersState,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  type SortingState,
+  useReactTable,
+} from '@tanstack/react-table';
+import { ChevronDown } from 'lucide-react';
+
 import { PercentChangeIcon } from '@/components/percent-change-icon';
 import { THeadBtn } from '@/components/table-header-btn';
 import {
@@ -10,21 +26,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui';
-import { Coin, useCoingecko } from '@/hooks/use-coingecko';
+import { type Coin, useCoingecko } from '@/hooks/use-coingecko';
 import { useWatchlist } from '@/hooks/use-watchlist';
-import { List, ListStar, Star } from '@phosphor-icons/react';
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from '@tanstack/react-table';
-import { ChevronDown } from 'lucide-react';
-import Image from 'next/image';
-import { useMemo, useState } from 'react';
 
 type WatchlistTableMeta = Record<'watchlist', ReturnType<typeof useWatchlist>>;
 
@@ -105,6 +108,7 @@ const getCoinsTableColumns = (
               <ChevronDown size={18} />
             </Button>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent className="bg-white/10 backdrop-blur-md">
             <DropdownMenuItem
               className="focus:bg-white/5"
@@ -113,6 +117,7 @@ const getCoinsTableColumns = (
               <List size={18} className="text-white" />
               All
             </DropdownMenuItem>
+
             <DropdownMenuItem
               className="focus:bg-white/5"
               onClick={() => onSelect?.('starred')}
@@ -160,8 +165,10 @@ const getCoinsTableColumns = (
       return (
         <div className="flex items-center gap-4">
           <Image src={coin.icon} alt={coin.name} width={20} height={20} />
+
           <p className="space-x-2">
             <span>{coin.name}</span>
+
             <Badge
               variant="outline"
               className="border-slate-600/30 bg-slate-800/25 text-xs text-gray-400"

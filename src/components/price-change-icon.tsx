@@ -1,6 +1,8 @@
-import { cn } from '@/lib/utils';
+import { type ComponentProps, type FC } from 'react';
+
 import { ArrowDownRight, ArrowUpRight } from '@phosphor-icons/react';
-import { ComponentProps, FC } from 'react';
+
+import { cn } from '@/lib/utils';
 
 type PriceChangeIconProps = {
   value: number;

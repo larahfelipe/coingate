@@ -1,3 +1,5 @@
+import { type FC } from 'react';
+
 import { CoinSheetAboutTab } from '@/components/coin-sheet/coin-sheet-about-tab';
 import { CoinSheetHeader } from '@/components/coin-sheet/coin-sheet-header';
 import { CoinSheetOverviewTab } from '@/components/coin-sheet/coin-sheet-overview-tab';
@@ -13,7 +15,6 @@ import {
   TabsTrigger,
 } from '@/components/ui';
 import { useCoingecko } from '@/hooks/use-coingecko';
-import { FC } from 'react';
 
 type CoinSheetProps = {
   opened: boolean;

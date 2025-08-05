@@ -1,7 +1,9 @@
+import { type ComponentProps, type FC } from 'react';
+
+import { Wallet } from '@phosphor-icons/react';
+
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
-import { Wallet } from '@phosphor-icons/react';
-import { ComponentProps, FC } from 'react';
 
 type ConnectWalletBtnProps = ComponentProps<'button'> & {
   rootClassname?: ComponentProps<'div'>['className'];
@@ -33,6 +35,7 @@ export const ConnectWalletBtn: FC<ConnectWalletBtnProps> = ({
         )}
       >
         <Wallet size={18} />
+
         <span className="max-sm:hidden">connect wallet</span>
       </Button>
     </div>

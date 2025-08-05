@@ -1,6 +1,7 @@
-import { LineChart } from 'lucide-react';
-import { FC } from 'react';
+import { type FC } from 'react';
 import { Sparklines, SparklinesLine } from 'react-sparklines';
+
+import { LineChart } from 'lucide-react';
 
 type CoinSheetPriceChartProps = {
   priceData: number[];
@@ -17,6 +18,7 @@ export const CoinSheetPriceChart: FC<CoinSheetPriceChartProps> = ({
           Price chart (7d)
         </h3>
       </div>
+
       <div className="h-32 rounded-lg flex items-center justify-center">
         <Sparklines data={priceData} height={100}>
           <SparklinesLine color="blue" />

@@ -1,10 +1,13 @@
+import { type FC, type ReactNode } from 'react';
+
+import { Activity, MoneyWavy } from '@phosphor-icons/react';
+import { Layers, Percent, PieChart } from 'lucide-react';
+
 import { PriceChangeIcon } from '@/components/price-change-icon';
 import { Badge } from '@/components/ui';
 import { cn } from '@/lib/utils';
-import { CoingeckoV3CoinResponseData } from '@/types';
-import { Activity, MoneyWavy } from '@phosphor-icons/react';
-import { Layers, Percent, PieChart } from 'lucide-react';
-import { FC, ReactNode } from 'react';
+import { type CoingeckoV3CoinResponseData } from '@/types';
+import { formatNumber } from '@/utils/formatters';
 
 type CoinSheetOverviewTabProps = {
   coinData: CoingeckoV3CoinResponseData;
@@ -15,7 +18,9 @@ export const CoinSheetOverviewTab: FC<CoinSheetOverviewTabProps> = ({
 }) => (
   <>
     <MarketInfoGridCard marketData={coinData.market_data} />
+
     <PriceChangeGridCard marketData={coinData.market_data} />
+
     <CategoriesSection categories={coinData.categories} />
   </>
 );
@@ -26,24 +31,27 @@ const MarketInfoGridCard: FC<
   <div className="grid grid-cols-2 gap-3">
     <MarketInfoCard
       title="Market cap."
-      value={`$${(marketData.market_cap.usd / 1e9).toFixed(2)}B`}
+      value={`$${formatNumber(marketData.market_cap.usd)}`}
       icon={<MoneyWavy className="size-4 text-cyan-400" />}
     />
+
     <MarketInfoCard
       title="Volume (24h)"
-      value={`$${(marketData.total_volume.usd / 1e9).toFixed(2)}B`}
+      value={`$${formatNumber(marketData.total_volume.usd)}`}
       icon={<Activity className="size-4 text-purple-400" />}
     />
+
     <MarketInfoCard
       title="Circ. supply"
-      value={`${(marketData.circulating_supply / 1e6).toFixed(2)}M`}
+      value={formatNumber(marketData.circulating_supply)}
       icon={<PieChart className="size-4 text-emerald-400" />}
     />
+
     <MarketInfoCard
       title="Max. supply"
       value={
         marketData.max_supply
-          ? `${(marketData.max_supply / 1e6).toFixed(2)}M`
+          ? formatNumber(marketData.max_supply)
           : 'Unlimited'
       }
       icon={<Layers className="size-4 text-amber-400" />}
@@ -59,27 +67,33 @@ const PriceChangeGridCard: FC<
       <Percent className="size-4 text-blue-400" />
       Price Change
     </h3>
+
     <div className="grid grid-cols-3 gap-3">
       <PriceChangeCard
         title="24h"
         value={marketData.price_change_percentage_24h}
       />
+
       <PriceChangeCard
         title="7d"
         value={marketData.price_change_percentage_7d}
       />
+
       <PriceChangeCard
         title="30d"
         value={marketData.price_change_percentage_30d}
       />
+
       <PriceChangeCard
         title="1y"
         value={marketData.price_change_percentage_1y}
       />
+
       <PriceChangeCard
         title="ATH"
         value={(marketData.current_price.usd / marketData.ath.usd - 1) * 100}
       />
+
       <PriceChangeCard
         title="ATL"
         value={(marketData.current_price.usd / marketData.atl.usd - 1) * 100}
@@ -94,6 +108,7 @@ const CategoriesSection: FC<{ categories?: string[] }> = ({ categories }) => {
   return (
     <section>
       <h3 className="text-sm text-slate-200 mb-3">Categories</h3>
+
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <Badge
@@ -117,8 +132,10 @@ const MarketInfoCard: FC<{
   <div className="bg-gradient-to-br from-slate-800/20 via-slate-700/20 to-slate-800/20 rounded-lg p-4 border border-slate-600/30 backdrop-blur-sm flex flex-col gap-2 hover:border-slate-500/40 transition-all">
     <div className="flex items-center gap-2">
       {icon}
+
       <span className="text-slate-300 text-xs">{title}</span>
     </div>
+
     <span className="font-semibold text-white text-lg">{value}</span>
   </div>
 );
@@ -141,8 +158,10 @@ const PriceChangeCard: FC<{ title: string; value: number }> = ({
     >
       <div className="flex justify-between items-center text-slate-300 text-xs mb-2">
         {title}
+
         <PriceChangeIcon value={value} />
       </div>
+
       <span className="font-medium text-sm">
         {value.toLocaleString('en-US', {
           maximumSignificantDigits: 2,

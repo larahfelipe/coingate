@@ -1,13 +1,15 @@
+import { type FC, forwardRef } from 'react';
+
+import { ArrowDown, ArrowUp } from '@phosphor-icons/react';
+import { type Column } from '@tanstack/react-table';
+
 import {
   Button,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui';
-import { Children } from '@/types';
-import { ArrowDown, ArrowUp } from '@phosphor-icons/react';
-import { Column } from '@tanstack/react-table';
-import { FC, forwardRef } from 'react';
+import { type Children } from '@/types';
 
 type THeadBtnProps = Children & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,9 +26,11 @@ const Btn = forwardRef<HTMLButtonElement, Omit<THeadBtnProps, 'tooltip'>>(
       {...rest}
     >
       {children}
+
       {column.getCanSort() && (
         <>
           {column.getIsSorted() === 'asc' && <ArrowUp size={18} />}
+
           {column.getIsSorted() === 'desc' && <ArrowDown size={18} />}
         </>
       )}
@@ -43,6 +47,7 @@ export const THeadBtn: FC<THeadBtnProps> = ({ tooltip, column, children }) => {
       <TooltipTrigger asChild>
         <Btn column={column}>{children}</Btn>
       </TooltipTrigger>
+
       <TooltipContent>{tooltip}</TooltipContent>
     </Tooltip>
   );

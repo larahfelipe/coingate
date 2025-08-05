@@ -14,9 +14,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prettier": "prettier \"src/**/*.{ts,tsx}\"",
-    "prettier:fix": "prettier \"src/**/*.{ts,tsx}\" --write"
+    "lint": "next lint . —-ext .ts,.tsx",
+    "lint:fix": "next lint . —-ext .ts,.tsx --fix",
+    "prettier": "prettier \"src/**/*.{ts,tsx}\" --check",
+    "prettier:fix": "prettier \"src/**/*.{ts,tsx}\" --write",
+    "typecheck": "tsc --diagnostics --noEmit --project tsconfig.json"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.7",
@@ -49,6 +51,11 @@
     "@types/react-sparklines": "^1.7.5",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-helpers": "^2.0.1",
+    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "prettier": "^3.5.3",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.2.9",

@@ -188,7 +188,7 @@ export type CoingeckoV3CoinResponseData = {
   };
 };
 
-export interface CurrencyToValue {
+export type CurrencyToValue = {
   aed: number;
   ars: number;
   aud: number;
@@ -252,4 +252,4 @@ export interface CurrencyToValue {
   bits: number;
   link: number;
   sats: number;
-}
+};

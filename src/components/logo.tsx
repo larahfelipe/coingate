@@ -1,8 +1,10 @@
-import { cn } from '@/lib/utils';
+import { type HTMLAttributes } from 'react';
+
 import { Chakra_Petch } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HTMLAttributes } from 'react';
+
+import { cn } from '@/lib/utils';
 
 const chakraPetch = Chakra_Petch({
   subsets: ['latin'],
@@ -30,6 +32,7 @@ export const Logo: React.FC<LogoProps> = ({ className }) => {
           height={24}
           className="group-hover-logo"
         />
+
         <h1
           className={cn(
             chakraPetch.className,

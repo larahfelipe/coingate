@@ -1,13 +1,16 @@
+import { type FC } from 'react';
+
+import Image from 'next/image';
+
+import { X } from 'lucide-react';
+
 import { ExternalLinkBtn } from '@/components/external-link-btn';
 import {
   getPriceChangeColor,
   PriceChangeIcon,
 } from '@/components/price-change-icon';
 import { Badge, SheetClose, SheetHeader, SheetTitle } from '@/components/ui';
-import { CoingeckoV3CoinResponseData } from '@/types';
-import { X } from 'lucide-react';
-import Image from 'next/image';
-import { FC } from 'react';
+import { type CoingeckoV3CoinResponseData } from '@/types';
 
 type CoinSheetHeaderProps = {
   coinData: CoingeckoV3CoinResponseData;
@@ -19,14 +22,17 @@ export const CoinSheetHeader: FC<CoinSheetHeaderProps> = ({ coinData }) => (
       <div className="flex items-center justify-between">
         <SheetTitle className="flex items-center gap-4">
           <CoinImage src={coinData.image.large} alt={coinData.name} />
+
           <CoinInfo
             name={coinData.name}
             symbol={coinData.symbol}
             rank={coinData.market_cap_rank}
           />
         </SheetTitle>
+
         <div className="flex items-center gap-2">
           <ExternalLinkBtn href={coinData.links?.homepage[0]} />
+
           <SheetClose
             className="cursor-pointer transition-colors text-slate-400 hover:text-slate-200"
             aria-label="Close coin details"
@@ -36,6 +42,7 @@ export const CoinSheetHeader: FC<CoinSheetHeaderProps> = ({ coinData }) => (
         </div>
       </div>
     </SheetHeader>
+
     <PriceInfo marketData={coinData.market_data} />
   </header>
 );
@@ -43,6 +50,7 @@ export const CoinSheetHeader: FC<CoinSheetHeaderProps> = ({ coinData }) => (
 const CoinImage: FC<{ src: string; alt: string }> = ({ src, alt }) => (
   <div className="relative">
     <div className="absolute inset-0 bg-white/35 rounded-full blur-md" />
+
     <Image
       src={src}
       alt={alt}
@@ -61,6 +69,7 @@ const CoinInfo: FC<{ name: string; symbol: string; rank: number }> = ({
   <div>
     <div className="flex items-center gap-2">
       <h2 className="text-xl font-semibold text-white">{name}</h2>
+
       <Badge
         variant="outline"
         className="h-5 text-xs border-slate-600/50 bg-slate-800/20 text-slate-200"
@@ -68,6 +77,7 @@ const CoinInfo: FC<{ name: string; symbol: string; rank: number }> = ({
         {symbol.toUpperCase()}
       </Badge>
     </div>
+
     <p className="text-slate-300 text-sm">Rank #{rank}</p>
   </div>
 );
@@ -83,6 +93,7 @@ const PriceInfo: FC<
           currency: 'USD',
         })}
       </h2>
+
       <Badge
         className={
           marketData.price_change_percentage_24h > 0
@@ -91,6 +102,7 @@ const PriceInfo: FC<
         }
       >
         <PriceChangeIcon value={marketData.price_change_percentage_24h} />
+
         <span
           className={getPriceChangeColor(
             marketData.price_change_percentage_24h,

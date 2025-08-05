@@ -1,8 +1,9 @@
-import { AppHeader } from '@/components/app-header';
-import { AppProvider } from '@/providers/app-provider';
-import { Children } from '@/types';
 import type { Metadata, Viewport } from 'next';
 import { Poppins } from 'next/font/google';
+
+import { AppHeader } from '@/components/app-header';
+import { AppProvider } from '@/providers/app-provider';
+import { type Children } from '@/types';
 import './globals.css';
 
 const poppins = Poppins({
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: Children) {
       >
         <AppProvider>
           <AppHeader />
+
           {children}
         </AppProvider>
       </body>

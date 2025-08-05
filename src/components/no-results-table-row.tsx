@@ -1,9 +1,11 @@
 'use client';
 
+import { type ComponentProps, type FC } from 'react';
+
+import { List } from '@phosphor-icons/react';
+
 import { TableCell, TableRow } from '@/components/ui';
 import { cn } from '@/lib/utils';
-import { List } from '@phosphor-icons/react';
-import { ComponentProps, FC } from 'react';
 
 type NoResultsTableRowProps = {
   className?: ComponentProps<'tr'>['className'];
@@ -21,6 +23,7 @@ export const NoResultsTableRow: FC<NoResultsTableRowProps> = ({
           className={cn('flex items-center justify-center gap-2', className)}
         >
           <List size={18} />
+
           <span>{message}</span>
         </div>
       </TableCell>

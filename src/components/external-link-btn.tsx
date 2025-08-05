@@ -1,6 +1,8 @@
-import { cn } from '@/lib/utils';
+import { type ComponentProps, type FC } from 'react';
+
 import { ExternalLink } from 'lucide-react';
-import { ComponentProps, FC } from 'react';
+
+import { cn } from '@/lib/utils';
 
 type ExternalLinkBtnProps = {
   href?: string;

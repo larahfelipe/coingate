@@ -1,6 +1,8 @@
-import { cn } from '@/lib/utils';
+import { type ComponentProps, type FC, type JSX } from 'react';
+
 import Link from 'next/link';
-import { ComponentProps, FC, JSX } from 'react';
+
+import { cn } from '@/lib/utils';
 
 type AppHeaderNavLinkProps = {
   activePath: boolean;
@@ -27,7 +29,9 @@ export const AppHeaderNavLink: FC<AppHeaderNavLinkProps> = ({
       className={cn('flex items-center gap-2 relative', className)}
     >
       {icon}
+
       <span className="group-hover-text-glow max-sm:hidden">{name}</span>
+
       {activePath && (
         <div className="w-full h-[1px] absolute bottom-[-1rem] bg-white" />
       )}

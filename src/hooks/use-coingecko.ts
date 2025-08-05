@@ -1,8 +1,10 @@
-import {
-  CoingeckoV3CoinResponseData,
-  CoingeckoV3CoinsListResponseData,
-} from '@/types';
 import { useQuery } from '@tanstack/react-query';
+
+import {
+  type CoingeckoV3CoinResponseData,
+  type CoingeckoV3CoinsListResponseData,
+} from '@/types';
+import { formatNumber } from '@/utils/formatters';
 
 export type Coin = {
   id: string;
@@ -22,14 +24,6 @@ export type Coin = {
 };
 
 const COINGECKO_BASE_URL = 'https://api.coingecko.com/api/v3';
-
-const formatNumber = (num: number, options: Intl.NumberFormatOptions = {}) => {
-  return new Intl.NumberFormat('en-US', {
-    notation: 'compact',
-    maximumFractionDigits: 2,
-    ...options,
-  }).format(num);
-};
 
 export const useCoingecko = () => {
   const coinsQuery = useQuery({

@@ -1,12 +1,15 @@
 'use client';
 
+import { type ComponentProps, type FC } from 'react';
+
+import { usePathname } from 'next/navigation';
+
+import { Bank, Coins } from '@phosphor-icons/react';
+
 import { AppHeaderNavLink } from '@/components/app-header/app-header-nav-link';
 import { ConnectWalletBtn } from '@/components/app-header/connect-wallet-btn';
 import { Logo } from '@/components/logo';
 import { cn } from '@/lib/utils';
-import { Bank, Coins } from '@phosphor-icons/react';
-import { usePathname } from 'next/navigation';
-import { ComponentProps, FC } from 'react';
 
 type AppHeaderProps = {
   className?: ComponentProps<'header'>['className'];
@@ -24,6 +27,7 @@ export const AppHeader: FC<AppHeaderProps> = ({ className }) => {
       )}
     >
       <Logo className="h-8 w-auto ml-2.5" />
+
       <nav className="mx-auto">
         <ul className="flex gap-8 md:gap-6">
           <li>
@@ -34,6 +38,7 @@ export const AppHeader: FC<AppHeaderProps> = ({ className }) => {
               icon={<Coins size={18} />}
             />
           </li>
+
           <li>
             <AppHeaderNavLink
               href="/exchanges"
@@ -44,6 +49,7 @@ export const AppHeader: FC<AppHeaderProps> = ({ className }) => {
           </li>
         </ul>
       </nav>
+
       <ConnectWalletBtn />
     </header>
   );

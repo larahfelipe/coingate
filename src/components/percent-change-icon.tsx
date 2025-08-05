@@ -1,6 +1,8 @@
-import { cn } from '@/lib/utils';
+import { type FC, type HTMLAttributes } from 'react';
+
 import { CaretDown, CaretUp, Minus } from '@phosphor-icons/react';
-import { FC, HTMLAttributes } from 'react';
+
+import { cn } from '@/lib/utils';
 
 type PercentChangeIconProps = {
   value: number;
@@ -26,6 +28,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
         )}
       >
         <Minus size={iconSize} />
+
         <span style={{ fontSize: textSize }}>
           {valuePercent.replace('-', '')}
         </span>
@@ -40,6 +43,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
       )}
     >
       <CaretUp size={iconSize} />
+
       <span style={{ fontSize: textSize }}>{valuePercent}</span>
     </div>
   ) : (
@@ -47,6 +51,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
       className={cn('flex items-center gap-1.5 [&>*]:text-red-400', className)}
     >
       <CaretDown size={iconSize} />
+
       <span style={{ fontSize: textSize }}>{valuePercent}</span>
     </div>
   );

@@ -1,9 +1,11 @@
 'use client';
 
+import { type ComponentProps, type FC } from 'react';
+
+import { X } from '@phosphor-icons/react';
+
 import { TableCell, TableRow } from '@/components/ui';
 import { cn } from '@/lib/utils';
-import { X } from '@phosphor-icons/react';
-import { ComponentProps, FC } from 'react';
 
 type ErrorTableRowProps = {
   className?: ComponentProps<'tr'>['className'];
@@ -21,6 +23,7 @@ export const ErrorTableRow: FC<ErrorTableRowProps> = ({
           className={cn('flex items-center justify-center gap-2', className)}
         >
           <X size={18} className="text-red-400" />
+
           <span>{message}</span>
         </div>
       </TableCell>
