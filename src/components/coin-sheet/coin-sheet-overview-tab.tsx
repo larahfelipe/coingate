@@ -1,6 +1,6 @@
 import { type FC, type ReactNode } from 'react';
 
-import { Activity, MoneyWavy } from '@phosphor-icons/react';
+import { ActivityIcon, MoneyWavy } from '@phosphor-icons/react';
 import { Layers, Percent, PieChart } from 'lucide-react';
 
 import { PriceChangeIcon } from '@/components/price-change-icon';
@@ -38,7 +38,7 @@ const MarketInfoGridCard: FC<
     <MarketInfoCard
       title="Volume (24h)"
       value={`$${formatNumber(marketData.total_volume.usd)}`}
-      icon={<Activity className="size-4 text-purple-400" />}
+      icon={<ActivityIcon className="size-4 text-purple-400" />}
     />
 
     <MarketInfoCard
