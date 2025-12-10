@@ -1,35 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { formatNumber } from '@/utils/formatters';
 import {
+  Coin,
   type CoingeckoV3CoinResponseData,
   type CoingeckoV3CoinsListResponseData,
-} from '@/types';
-import { formatNumber } from '@/utils/formatters';
-
-export type Coin = {
-  id: string;
-  rank: number;
-  name: string;
-  symbol: string;
-  icon: string;
-  price: string;
-  priceChange1h: number;
-  priceChange24h: number;
-  priceChange7d: number;
-  marketCap: string;
-  volume24h: string;
-  fullyDilutedValue: string;
-  circulatingSupply: string;
-  maxSupply: string;
-};
+} from './use-coingecko.types';
 
 const COINGECKO_BASE_URL = 'https://api.coingecko.com/api/v3';
 
 export const useCoingecko = () => {
   const coinsQuery = useQuery({
-    queryKey: ['coingecko/coins/markets'],
+    staleTime: 60 * 1_000,
+    refetchInterval: 60 * 1_000,
+    queryKey: ['coingecko:coins/markets'],
     queryFn: async () => {
-      const params = new URLSearchParams({
+      const requestParams = new URLSearchParams({
         vs_currency: 'usd',
         order: 'market_cap_desc',
         per_page: '50',
@@ -37,14 +23,15 @@ export const useCoingecko = () => {
         price_change_percentage: '1h,24h,7d',
       });
 
-      const res = await fetch(
-        `${COINGECKO_BASE_URL}/coins/markets?${params.toString()}`,
+      const response = await fetch(
+        `${COINGECKO_BASE_URL}/coins/markets?${requestParams.toString()}`,
       );
-      if (!res.ok) throw new Error('Failed to fetch market data');
+      if (!response.ok) throw new Error('Failed to fetch market data');
 
-      const data: CoingeckoV3CoinsListResponseData[] = await res.json();
+      const responseData: CoingeckoV3CoinsListResponseData[] =
+        await response.json();
 
-      return data.map<Coin>((coin) => ({
+      return responseData.map<Coin>((coin) => ({
         id: coin.id,
         rank: coin.market_cap_rank,
         name: coin.name,
@@ -64,32 +51,28 @@ export const useCoingecko = () => {
         maxSupply: formatNumber(coin.max_supply),
       }));
     },
-    refetchInterval: 60_000,
-    staleTime: 60_000,
   });
 
-  const useQueryCoinById = (coinId: string | undefined) =>
+  const coinByIdQuery = (coinId: string) =>
     useQuery({
-      queryKey: ['coingecko/coin', coinId],
+      enabled: !!coinId.length,
+      staleTime: Infinity,
+      queryKey: [`coingecko:coins/${coinId}`],
       queryFn: async () => {
-        if (!coinId) throw new Error('Missing required param: coinId');
-
-        const params = new URLSearchParams({
+        const requestParams = new URLSearchParams({
           sparkline: 'true',
         });
 
-        const res = await fetch(
-          `${COINGECKO_BASE_URL}/coins/${coinId}?${params.toString()}`,
+        const response = await fetch(
+          `${COINGECKO_BASE_URL}/coins/${coinId}?${requestParams.toString()}`,
         );
-        if (!res.ok) throw new Error('Failed to fetch coin');
+        if (!response.ok) throw new Error('Failed to fetch coin');
 
-        const data: CoingeckoV3CoinResponseData = await res.json();
+        const responseData: CoingeckoV3CoinResponseData = await response.json();
 
-        return data;
+        return responseData;
       },
-      staleTime: Infinity,
-      enabled: !!coinId,
     });
 
-  return { coinsQuery, useQueryCoinById };
+  return { coinsQuery, coinByIdQuery };
 };

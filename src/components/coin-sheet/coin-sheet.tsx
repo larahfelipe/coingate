@@ -1,11 +1,5 @@
 import { type FC } from 'react';
 
-import { CoinSheetAboutTab } from '@/components/coin-sheet/coin-sheet-about-tab';
-import { CoinSheetHeader } from '@/components/coin-sheet/coin-sheet-header';
-import { CoinSheetOverviewTab } from '@/components/coin-sheet/coin-sheet-overview-tab';
-import { CoinSheetPriceChart } from '@/components/coin-sheet/coin-sheet-price-chart';
-import { CoinSheetSentimentCard } from '@/components/coin-sheet/coin-sheet-sentiment-card';
-import { CoinSheetStatsTab } from '@/components/coin-sheet/coin-sheet-stats-tab';
 import {
   Sheet,
   SheetContent,
@@ -15,6 +9,12 @@ import {
   TabsTrigger,
 } from '@/components/ui';
 import { useCoingecko } from '@/hooks/use-coingecko';
+import { CoinSheetAboutTab } from './coin-sheet-about-tab';
+import { CoinSheetHeader } from './coin-sheet-header';
+import { CoinSheetOverviewTab } from './coin-sheet-overview-tab';
+import { CoinSheetPriceChart } from './coin-sheet-price-chart';
+import { CoinSheetSentimentCard } from './coin-sheet-sentiment-card';
+import { CoinSheetStatsTab } from './coin-sheet-stats-tab';
 
 type CoinSheetProps = {
   opened: boolean;
@@ -29,8 +29,8 @@ const CoinSheetTabs = {
 } as const;
 
 export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
-  const { useQueryCoinById } = useCoingecko();
-  const { isLoading, data: coinData } = useQueryCoinById(coinId);
+  const { coinByIdQuery } = useCoingecko();
+  const { isLoading, data: coinData } = coinByIdQuery(coinId ?? '');
 
   if (isLoading || !coinId || !coinData) return null;
 

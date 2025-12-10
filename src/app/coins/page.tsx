@@ -7,18 +7,22 @@ import { CoinsTable } from '@/components/coins-table';
 import { useDisclosure } from '@/hooks/use-disclosure';
 
 export default function CoinsPage() {
-  const [coinId, setCoinId] = useState<string>();
+  const [selectedCoinId, setSelectedCoinId] = useState<string>();
 
-  const [opened, { toggle }] = useDisclosure(false);
+  const [isCoinSheetOpened, { toggle: toggleCoinSheet }] = useDisclosure(false);
 
-  const handleToggleCoinSheet = (cId: string) => {
-    setCoinId(cId);
-    toggle();
+  const handleToggleCoinSheet = (coinId: string) => {
+    setSelectedCoinId(coinId);
+    toggleCoinSheet();
   };
 
   return (
     <main>
-      <CoinSheet opened={opened} coinId={coinId} onClose={toggle} />
+      <CoinSheet
+        opened={isCoinSheetOpened}
+        coinId={selectedCoinId}
+        onClose={toggleCoinSheet}
+      />
 
       <CoinsTable onRowClick={handleToggleCoinSheet} />
     </main>
