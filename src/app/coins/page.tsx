@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { CoinSheet } from '@/components/coin-sheet/coin-sheet';
-import { CoinsTable } from '@/components/shared/coins-table';
+import { CoinsTable } from '@/components/coins-table';
 import { useDisclosure } from '@/hooks/use-disclosure';
 
 export default function CoinsPage() {

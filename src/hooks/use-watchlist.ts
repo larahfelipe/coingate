@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 
 const COINS_WATCHLIST_STORAGE_KEY = 'cryptogate:watchlist:coins';

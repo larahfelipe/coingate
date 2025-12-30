@@ -50,7 +50,7 @@ export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className="text-xs w-full data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm dark:data-[state=active]:bg-card"
+                  className="text-xs w-full data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm dark:data-[state=active]:bg-background"
                 >
                   {tab.label}
                 </TabsTrigger>
