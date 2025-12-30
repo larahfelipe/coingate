@@ -159,8 +159,12 @@ export const getCoinsTableColumns = (
   {
     accessorKey: 'rank',
     enableSorting: true,
-    meta: { hideBelow: 768 },
-    header: ({ column }) => <THeadBtn column={column}>#</THeadBtn>,
+    meta: { hideBelow: 768, className: 'w-12 !px-0 text-center' },
+    header: ({ column }) => (
+      <THeadBtn column={column} className="w-12 px-0 mx-auto">
+        #
+      </THeadBtn>
+    ),
   },
   {
     accessorKey: 'name',
@@ -192,9 +196,9 @@ export const getCoinsTableColumns = (
     accessorKey: 'price',
     enableSorting: true,
     header: ({ column }) => (
-      <THeadBtn column={column} className="w-full justify-end">
-        Price
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn column={column}>Price</THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <div className="text-right">{getValue<React.ReactNode>()}</div>
@@ -205,13 +209,11 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn
-        tooltip="Price change over the last hour"
-        column={column}
-        className="w-full justify-end"
-      >
-        1h
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn tooltip="Price change over the last hour" column={column}>
+          1h
+        </THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <PercentChangeIcon className="justify-end" value={getValue<number>()} />
@@ -222,13 +224,11 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn
-        tooltip="Price change over the last 24 hours"
-        column={column}
-        className="w-full justify-end"
-      >
-        24h
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn tooltip="Price change over the last 24 hours" column={column}>
+          24h
+        </THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <PercentChangeIcon className="justify-end" value={getValue<number>()} />
@@ -239,13 +239,11 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn
-        tooltip="Price change over the last 7 days"
-        column={column}
-        className="w-full justify-end"
-      >
-        7d
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn tooltip="Price change over the last 7 days" column={column}>
+          7d
+        </THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <PercentChangeIcon className="justify-end" value={getValue<number>()} />
@@ -256,13 +254,11 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn
-        tooltip="Market capitalization"
-        column={column}
-        className="w-full justify-end"
-      >
-        Mkt. cap.
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn tooltip="Market capitalization" column={column}>
+          Mkt. cap.
+        </THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <div className="text-right">{getValue<React.ReactNode>()}</div>
@@ -273,13 +269,14 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn
-        tooltip="Volume transacted over the last 24 hours"
-        column={column}
-        className="w-full justify-end"
-      >
-        Volume (24h)
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn
+          tooltip="Volume transacted over the last 24 hours"
+          column={column}
+        >
+          Volume (24h)
+        </THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <div className="text-right">{getValue<React.ReactNode>()}</div>
@@ -290,13 +287,11 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn
-        tooltip="Fully diluted value"
-        column={column}
-        className="w-full justify-end"
-      >
-        FDV
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn tooltip="Fully diluted value" column={column}>
+          FDV
+        </THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <div className="text-right">{getValue<React.ReactNode>()}</div>
@@ -307,13 +302,11 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn
-        tooltip="Circulating supply"
-        column={column}
-        className="w-full justify-end"
-      >
-        Circ. supply
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn tooltip="Circulating supply" column={column}>
+          Circ. supply
+        </THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <div className="text-right">{getValue<React.ReactNode>()}</div>
@@ -324,13 +317,11 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn
-        tooltip="Maximum supply"
-        column={column}
-        className="w-full justify-end"
-      >
-        Max. supply
-      </THeadBtn>
+      <div className="flex justify-end">
+        <THeadBtn tooltip="Maximum supply" column={column}>
+          Max. supply
+        </THeadBtn>
+      </div>
     ),
     cell: ({ getValue }) => (
       <div className="text-right">{getValue<React.ReactNode>()}</div>

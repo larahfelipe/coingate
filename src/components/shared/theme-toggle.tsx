@@ -1,6 +1,6 @@
 'use client';
 
-import { Moon, Sun } from 'lucide-react';
+import { Computer, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import { Button } from '@/components/ui/button';
@@ -18,26 +18,29 @@ export const ThemeToggle: FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Button variant="ghost" size="icon" className="size-9 rounded-xl">
+          <Sun className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
 
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <Moon className="absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
 
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent className="min-w-fit" align="end">
         <DropdownMenuItem onClick={() => setTheme('light')}>
-          Light
+          <Sun className="size-4 text-foreground/70" />
+          light
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={() => setTheme('dark')}>
-          Dark
+          <Moon className="size-4 text-foreground/70" />
+          dark
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={() => setTheme('system')}>
-          System
+          <Computer className="size-4 text-foreground/70" />
+          system
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

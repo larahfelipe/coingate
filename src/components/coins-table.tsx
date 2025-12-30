@@ -4,6 +4,8 @@ import { ChangeEvent, type FC } from 'react';
 
 import { flexRender } from '@tanstack/react-table';
 
+import { cn } from '@/lib/utils';
+
 import { ErrorTableRow } from '@/components/shared/error-table-row';
 import { NoResultsTableRow } from '@/components/shared/no-results-table-row';
 import { SearchInput } from '@/components/shared/search-input';
@@ -53,6 +55,9 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
+                  className={cn(
+                    (header.column.columnDef.meta as any)?.className,
+                  )}
                   onClick={
                     header.column.getCanSort()
                       ? header.column.getToggleSortingHandler()
@@ -93,7 +98,17 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
                 className="h-15 [&>td]:py-4 [&>td]:px-6"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className={cn(
+                      (
+                        cell.column.columnDef.meta as Record<
+                          'className',
+                          string
+                        >
+                      )?.className,
+                    )}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -120,27 +135,27 @@ const CoinsTableSkeletonLoadingRow: FC = () =>
         <Skeleton className="h-7 w-96" />
       </TableCell>
 
-      <TableCell>
+      <TableCell align="right">
         <Skeleton className="h-7 w-24" />
       </TableCell>
 
-      <TableCell>
+      <TableCell align="right">
         <Skeleton className="h-7 w-20" />
       </TableCell>
 
-      <TableCell>
+      <TableCell align="right">
         <Skeleton className="h-7 w-20" />
       </TableCell>
 
-      <TableCell>
+      <TableCell align="right">
         <Skeleton className="h-7 w-20" />
       </TableCell>
 
-      <TableCell>
+      <TableCell align="right">
         <Skeleton className="h-7 w-20" />
       </TableCell>
 
-      <TableCell>
+      <TableCell align="right">
         <Skeleton className="h-7 w-20" />
       </TableCell>
     </TableRow>
