@@ -23,9 +23,9 @@ export const CoinSheetStatsTab: FC<CoinSheetStatsTabProps> = ({ coinData }) => (
 const PriceStatsSection: FC<
   Record<'marketData', CoinSheetStatsTabProps['coinData']['market_data']>
 > = ({ marketData }) => (
-  <section className="bg-slate-800/20 rounded-xl p-5 border backdrop-blur-sm mb-4">
-    <h3 className="text-sm text-slate-200 flex items-center gap-2 mb-4">
-      <LineChart className="size-4 text-blue-400" />
+  <section className="bg-card rounded-xl p-5 border mb-4 text-card-foreground">
+    <h3 className="text-sm font-medium flex items-center gap-2 mb-4">
+      <LineChart className="size-4 text-primary" />
       Price Statistics
     </h3>
 
@@ -55,9 +55,9 @@ const CommunityStatsSection: FC<{
   communityData: CoinSheetStatsTabProps['coinData']['community_data'];
   developerData: CoinSheetStatsTabProps['coinData']['developer_data'];
 }> = ({ communityData, developerData }) => (
-  <section className="bg-slate-800/20 rounded-xl p-5 border backdrop-blur-sm">
-    <h3 className="text-sm text-slate-200 flex items-center gap-2 mb-4">
-      <Activity className="size-4 text-purple-400" />
+  <section className="bg-card rounded-xl p-5 border text-card-foreground">
+    <h3 className="text-sm font-medium flex items-center gap-2 mb-4">
+      <Activity className="size-4 text-primary" />
       Community & Development
     </h3>
 
@@ -84,9 +84,9 @@ const CommunityStatsSection: FC<{
 );
 
 const StatItem: FC<{ title: string; value: string }> = ({ title, value }) => (
-  <div className="flex items-center justify-between py-3 border-b border-slate-600/20 last:border-0 hover:bg-slate-800/10 px-2 rounded transition-colors">
-    <span className="text-slate-300 text-sm">{title}</span>
+  <div className="flex items-center justify-between py-3 border-b last:border-0 hover:bg-accent/50 px-2 rounded transition-colors">
+    <span className="text-muted-foreground text-sm">{title}</span>
 
-    <span className="text-sm font-medium text-white">{value}</span>
+    <span className="text-sm font-medium">{value}</span>
   </div>
 );

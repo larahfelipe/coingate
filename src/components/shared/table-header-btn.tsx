@@ -1,4 +1,4 @@
-import { type FC, forwardRef } from 'react';
+import { ComponentProps, type FC, forwardRef } from 'react';
 
 import { ArrowDown, ArrowUp } from '@phosphor-icons/react';
 import { type Column } from '@tanstack/react-table';
@@ -12,17 +12,44 @@ import {
 import { type Children } from '@/types';
 
 type THeadBtnProps = Children & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   column: Column<any>;
   tooltip?: string;
+  className?: ComponentProps<'button'>['className'];
+};
+
+export const THeadBtn: FC<THeadBtnProps> = ({
+  tooltip,
+  column,
+  children,
+  className,
+}) => {
+  if (!tooltip?.length)
+    return (
+      <Btn column={column} className={className}>
+        {children}
+      </Btn>
+    );
+
+  return (
+    <Tooltip delayDuration={400}>
+      <TooltipTrigger asChild>
+        <Btn column={column} className={className}>
+          {children}
+        </Btn>
+      </TooltipTrigger>
+
+      <TooltipContent>{tooltip}</TooltipContent>
+    </Tooltip>
+  );
 };
 
 const Btn = forwardRef<HTMLButtonElement, Omit<THeadBtnProps, 'tooltip'>>(
-  ({ column, children, ...rest }, ref) => (
+  ({ column, children, className, ...rest }, ref) => (
     <Button
-      ref={ref}
       variant="ghost"
+      ref={ref}
       onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      className={className}
       {...rest}
     >
       {children}
@@ -38,17 +65,3 @@ const Btn = forwardRef<HTMLButtonElement, Omit<THeadBtnProps, 'tooltip'>>(
   ),
 );
 Btn.displayName = 'Btn';
-
-export const THeadBtn: FC<THeadBtnProps> = ({ tooltip, column, children }) => {
-  if (!tooltip?.length) return <Btn column={column}>{children}</Btn>;
-
-  return (
-    <Tooltip delayDuration={400}>
-      <TooltipTrigger asChild>
-        <Btn column={column}>{children}</Btn>
-      </TooltipTrigger>
-
-      <TooltipContent>{tooltip}</TooltipContent>
-    </Tooltip>
-  );
-};

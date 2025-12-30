@@ -12,35 +12,35 @@ type CoinSheetSentimentCardProps = {
 export const CoinSheetSentimentCard: FC<CoinSheetSentimentCardProps> = ({
   coinData,
 }) => (
-  <div className="bg-slate-800/20 rounded-xl p-5 border backdrop-blur-sm">
-    <div className="flex items-center gap-2 mb-4">
-      <Star className="size-4 text-amber-400" />
+  <div className="bg-card rounded-xl p-5 border text-card-foreground">
+    <section className="flex items-center gap-2 mb-4">
+      <Star className="size-4 text-primary" />
 
-      <h3 className="text-sm font-medium text-slate-200">
+      <h3 className="text-sm text-muted-foreground font-medium">
         Community sentiment
       </h3>
-    </div>
+    </section>
 
-    <div className="flex items-center gap-4 mb-3">
-      <div className="flex-1 bg-gradient-to-r from-rose-900/40 to-emerald-900/40 rounded-full h-3 overflow-hidden border border-slate-600/20">
+    <div className="flex items-center gap-4">
+      <div className="flex-1 bg-muted rounded-full h-3 overflow-hidden">
         <div
-          className="bg-emerald-500 h-full rounded-full shadow-lg"
+          role="progressbar"
+          className="h-full bg-emerald-500 dark:bg-green-500"
           style={{
             width: `${coinData.sentiment_votes_up_percentage.toFixed(1)}%`,
           }}
-          role="progressbar"
-          aria-valuenow={coinData.sentiment_votes_up_percentage}
-          aria-valuemin={0}
-          aria-valuemax={100}
         />
       </div>
 
-      <Badge className="text-emerald-400 text-sm font-medium bg-emerald-900/20">
-        {coinData.sentiment_votes_up_percentage.toFixed(1)}%
+      <Badge
+        variant="secondary"
+        className="text-sm text-emerald-500 dark:text-green-400 bg-emerald-50 dark:bg-green-900/20"
+      >
+        {coinData.sentiment_votes_up_percentage?.toFixed(1) ?? 0}%
       </Badge>
     </div>
 
-    <div className="flex justify-between text-xs text-slate-400">
+    <div className="flex justify-between mt-3 text-xs text-muted-foreground">
       <span>Bearish</span>
 
       <span>Bullish</span>

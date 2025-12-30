@@ -2,55 +2,53 @@
 
 import { type ComponentProps, type FC } from 'react';
 
+import { Coins, Landmark } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-
-import { Bank, Coins } from '@phosphor-icons/react';
 
 import { AppHeaderNavLink } from '@/components/app-header/app-header-nav-link';
 import { ConnectWalletBtn } from '@/components/app-header/connect-wallet-btn';
-import { Logo } from '@/components/logo';
+import { Logo } from '@/components/shared/logo';
+import { ThemeToggle } from '@/components/shared/theme-toggle';
 import { cn } from '@/lib/utils';
 
-type AppHeaderProps = {
-  className?: ComponentProps<'header'>['className'];
-};
+type AppHeaderProps = ComponentProps<'header'>;
 
-export const AppHeader: FC<AppHeaderProps> = ({ className }) => {
+const routes = [
+  { name: 'coins', path: '/coins', icon: <Coins size={18} /> },
+  { name: 'exchanges', path: '/exchanges', icon: <Landmark size={18} /> },
+];
+
+export const AppHeader: FC<AppHeaderProps> = ({ className, ...props }) => {
   const pathname = usePathname();
   const isActive = (path: string) => pathname.startsWith(path);
 
   return (
     <header
       className={cn(
-        'flex items-center rounded-2xl sticky top-4 z-50 mx-2 sm:mx-6 mb-14 py-2 px-2 bg-white/5 backdrop-blur-md border shadow-md',
+        'sticky h-14 w-[calc(100%-2rem)] flex top-4 z-50 mx-auto px-4 rounded-xl border dark:border-gray-700/60 bg-background/80 backdrop-blur-xs supports-backdrop-filter:bg-background/40 shadow-xs transition-all',
         className,
       )}
+      {...props}
     >
-      <Logo className="h-8 w-auto ml-2.5" />
+      <Logo className="mr-6 sm:mr-12" />
 
-      <nav className="mx-auto">
-        <ul className="flex gap-8 md:gap-6">
-          <li>
-            <AppHeaderNavLink
-              href="/coins"
-              name="coins"
-              activePath={isActive('/coins')}
-              icon={<Coins size={18} />}
-            />
-          </li>
-
-          <li>
-            <AppHeaderNavLink
-              href="/exchanges"
-              name="exchanges"
-              activePath={isActive('/exchanges')}
-              icon={<Bank size={18} />}
-            />
-          </li>
-        </ul>
+      <nav className="flex items-center space-x-6 sm:space-x-8 text-sm">
+        {routes.map((route) => (
+          <AppHeaderNavLink
+            key={route.path}
+            href={route.path}
+            name={route.name}
+            icon={route.icon}
+            activePath={isActive(route.path)}
+          />
+        ))}
       </nav>
 
-      <ConnectWalletBtn />
+      <div className="flex items-center gap-4 ml-auto">
+        <ThemeToggle />
+
+        <ConnectWalletBtn />
+      </div>
     </header>
   );
 };

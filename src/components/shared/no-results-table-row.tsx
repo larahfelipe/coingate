@@ -15,18 +15,14 @@ type NoResultsTableRowProps = {
 export const NoResultsTableRow: FC<NoResultsTableRowProps> = ({
   className,
   message = 'No results found.',
-}) => {
-  return (
-    <TableRow>
-      <TableCell colSpan={9} className="py-7 px-5">
-        <div
-          className={cn('flex items-center justify-center gap-2', className)}
-        >
-          <List size={18} />
+}) => (
+  <TableRow>
+    <TableCell colSpan={9} className="py-7 px-5">
+      <div className={cn('flex items-center justify-center gap-3', className)}>
+        <List size={18} />
 
-          <span>{message}</span>
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-};
+        <span>{message}</span>
+      </div>
+    </TableCell>
+  </TableRow>
+);

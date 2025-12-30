@@ -15,18 +15,14 @@ type ErrorTableRowProps = {
 export const ErrorTableRow: FC<ErrorTableRowProps> = ({
   className,
   message = 'Oops, something went wrong! Please, try again later.',
-}) => {
-  return (
-    <TableRow>
-      <TableCell colSpan={9} className="py-7 px-5">
-        <div
-          className={cn('flex items-center justify-center gap-2', className)}
-        >
-          <X size={18} className="text-red-400" />
+}) => (
+  <TableRow>
+    <TableCell colSpan={9} className="py-7 px-5">
+      <div className={cn('flex items-center justify-center gap-3', className)}>
+        <X size={18} className="text-red-400" />
 
-          <span>{message}</span>
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-};
+        <span>{message}</span>
+      </div>
+    </TableCell>
+  </TableRow>
+);

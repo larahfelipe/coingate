@@ -3,7 +3,10 @@ import { type FC, type ReactNode } from 'react';
 import { ActivityIcon, MoneyWavy } from '@phosphor-icons/react';
 import { Layers, Percent, PieChart } from 'lucide-react';
 
-import { PriceChangeIcon } from '@/components/price-change-icon';
+import {
+  getPriceChangeColor,
+  PriceChangeIcon,
+} from '@/components/shared/price-change-icon';
 import { Badge } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { type CoingeckoV3CoinResponseData } from '@/types';
@@ -63,7 +66,7 @@ const PriceChangeGridCard: FC<
   Record<'marketData', CoinSheetOverviewTabProps['coinData']['market_data']>
 > = ({ marketData }) => (
   <section>
-    <h3 className="text-sm text-slate-200 flex items-center gap-2 mb-3">
+    <h3 className="text-sm font-medium flex items-center gap-2 mb-3">
       <Percent className="size-4 text-blue-400" />
       Price Change
     </h3>
@@ -107,14 +110,14 @@ const CategoriesSection: FC<{ categories?: string[] }> = ({ categories }) => {
 
   return (
     <section>
-      <h3 className="text-sm text-slate-200 mb-3">Categories</h3>
+      <h3 className="text-sm font-medium mb-3">Categories</h3>
 
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <Badge
             key={category}
-            variant="outline"
-            className="bg-slate-800/20 text-slate-200 hover:border-slate-400/50 transition-colors"
+            variant="secondary"
+            className="hover:bg-secondary/80 transition-colors font-normal"
           >
             {category}
           </Badge>
@@ -129,46 +132,34 @@ const MarketInfoCard: FC<{
   value: string;
   icon: ReactNode;
 }> = ({ title, value, icon }) => (
-  <div className="bg-gradient-to-br from-slate-800/20 via-slate-700/20 to-slate-800/20 rounded-lg p-4 border border-slate-600/30 backdrop-blur-sm flex flex-col gap-2 hover:border-slate-500/40 transition-all">
+  <div className="bg-card rounded-lg p-3 border flex flex-col gap-2 hover:bg-accent/50 transition-colors">
     <div className="flex items-center gap-2">
       {icon}
 
-      <span className="text-slate-300 text-xs">{title}</span>
+      <span className="text-xs text-muted-foreground font-medium">{title}</span>
     </div>
 
-    <span className="font-semibold text-white text-lg">{value}</span>
+    <span className="font-semibold text-lg">{value}</span>
   </div>
 );
 
 const PriceChangeCard: FC<{ title: string; value: number }> = ({
   title,
   value,
-}) => {
-  const colorClass =
-    value > 0
-      ? 'text-emerald-400 border-emerald-700/30 bg-emerald-900/20'
-      : 'text-rose-400 border-rose-700/30 bg-rose-900/20';
+}) => (
+  <div className="rounded-lg p-3 border bg-card flex flex-col hover:bg-accent/50 transition-colors">
+    <div className="flex justify-between items-center text-muted-foreground text-xs font-medium mb-2">
+      {title}
 
-  return (
-    <div
-      className={cn(
-        'rounded-lg p-3 border backdrop-blur-sm flex flex-col hover:border-opacity-60 transition-all',
-        colorClass,
-      )}
-    >
-      <div className="flex justify-between items-center text-slate-300 text-xs mb-2">
-        {title}
-
-        <PriceChangeIcon value={value} />
-      </div>
-
-      <span className="font-medium text-sm">
-        {value.toLocaleString('en-US', {
-          maximumSignificantDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-        %
-      </span>
+      <PriceChangeIcon value={value} />
     </div>
-  );
-};
+
+    <span className={cn('font-medium text-sm', getPriceChangeColor(value))}>
+      {value.toLocaleString('en-US', {
+        maximumSignificantDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+      %
+    </span>
+  </div>
+);

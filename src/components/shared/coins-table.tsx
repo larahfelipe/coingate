@@ -1,12 +1,12 @@
 'use client';
 
-import { type FC } from 'react';
+import { ChangeEvent, type FC } from 'react';
 
 import { flexRender } from '@tanstack/react-table';
 
-import { ErrorTableRow } from '@/components/error-table-row';
-import { NoResultsTableRow } from '@/components/no-results-table-row';
-import { SearchInput } from '@/components/search-input';
+import { ErrorTableRow } from '@/components/shared/error-table-row';
+import { NoResultsTableRow } from '@/components/shared/no-results-table-row';
+import { SearchInput } from '@/components/shared/search-input';
 import {
   Skeleton,
   Table,
@@ -25,18 +25,25 @@ type CoinsTableProps = {
 export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
   const { isLoading, isError, isSuccess, table, searchCoin } = useCoinsTable();
 
+  const searchedCoinName =
+    (table.getColumn('name')?.getFilterValue() as string) ?? '';
+
+  const handleChangeSearchedCoin = (e: ChangeEvent<HTMLInputElement>) => {
+    searchCoin(e.target.value);
+  };
+
   return (
-    <div className="w-full lg:max-w-[85%] flex flex-col gap-6 sm:gap-3 mx-auto">
+    <div className="w-full xl:max-w-[80%] flex flex-col gap-6 sm:gap-3 mx-auto p-4 md:p-6 sm:pt-10 mt-10">
       <SearchInput
         containerClassName="md:self-end max-lg:mx-2"
-        inputClassName="md:w-[300px]"
-        placeholder="search coin by name..."
+        inputClassName="md:w-[300px] border-0 border-b border-transparent shadow-none rounded-none transition-colors placeholder:transition-colors focus-visible:ring-0 focus-visible:border-primary focus-visible:placeholder:text-primary"
+        placeholder="Search coin by name..."
         disabled={isLoading}
-        value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-        onChange={(e) => searchCoin(e.target.value)}
+        value={searchedCoinName}
+        onChange={handleChangeSearchedCoin}
       />
 
-      <Table className="bg-white/5 backdrop-blur-md">
+      <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -52,16 +59,10 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
                       : undefined
                   }
                 >
-                  <div
-                    className={
-                      header.column.getCanSort() ? 'flex items-center' : ''
-                    }
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
-                  </div>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
                 </TableHead>
               ))}
             </TableRow>

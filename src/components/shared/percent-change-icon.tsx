@@ -1,4 +1,4 @@
-import { type FC, type HTMLAttributes } from 'react';
+import { ComponentProps, type FC } from 'react';
 
 import { CaretDown, CaretUp, Minus } from '@phosphor-icons/react';
 
@@ -8,7 +8,7 @@ type PercentChangeIconProps = {
   value: number;
   textSize?: number;
   iconSize?: number;
-  className?: HTMLAttributes<HTMLDivElement>['className'];
+  className?: ComponentProps<'div'>['className'];
 };
 
 export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
@@ -23,7 +23,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
     return (
       <div
         className={cn(
-          'flex items-center gap-1.5 [&>*]:text-gray-400',
+          'flex items-center gap-1.5 *:text-muted-foreground *:dark:text-muted-foreground',
           className,
         )}
       >
@@ -38,7 +38,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
   return value > 0 ? (
     <div
       className={cn(
-        'flex items-center gap-1.5 [&>*]:text-emerald-400',
+        'flex items-center gap-1.5 *:text-emerald-500 *:dark:text-emerald-400',
         className,
       )}
     >
@@ -48,7 +48,10 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
     </div>
   ) : (
     <div
-      className={cn('flex items-center gap-1.5 [&>*]:text-red-400', className)}
+      className={cn(
+        'flex items-center gap-1.5 *:text-red-500 *:dark:text-red-400',
+        className,
+      )}
     >
       <CaretDown size={iconSize} />
 

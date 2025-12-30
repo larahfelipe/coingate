@@ -1700,6 +1700,7 @@ export interface MarketCapChangePercentage24hInCurrency {
 
 export interface CommunityData {
   facebook_likes: any;
+  twitter_followers?: number;
   reddit_average_posts_48h: number;
   reddit_average_comments_48h: number;
   reddit_subscribers: number;

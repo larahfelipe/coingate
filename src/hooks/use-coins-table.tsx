@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -16,8 +16,8 @@ import {
 } from '@tanstack/react-table';
 import { ChevronDown } from 'lucide-react';
 
-import { PercentChangeIcon } from '@/components/percent-change-icon';
-import { THeadBtn } from '@/components/table-header-btn';
+import { PercentChangeIcon } from '@/components/shared/percent-change-icon';
+import { THeadBtn } from '@/components/shared/table-header-btn';
 import {
   Badge,
   Button,
@@ -27,7 +27,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui';
 import { type Coin, useCoingecko } from '@/hooks/use-coingecko';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { useWatchlist } from '@/hooks/use-watchlist';
+import { cn } from '@/lib/utils';
 
 type WatchlistTableMeta = Record<'watchlist', ReturnType<typeof useWatchlist>>;
 
@@ -46,12 +48,22 @@ export const useCoinsTable = () => {
       maxSupply: false,
     });
 
+  const isSmallViewport = useMediaQuery('(min-width: 768px)');
+
+  useEffect(() => {
+    setColumnVisibility((prev) => ({
+      ...prev,
+      star: isSmallViewport,
+      rank: isSmallViewport,
+    }));
+  }, [isSmallViewport]);
+
   const { coinsQuery } = useCoingecko();
   const watchlist = useWatchlist();
 
   const columns = useMemo(
-    () => getCoinsTableColumns(setStarFilter),
-    [setStarFilter],
+    () => getCoinsTableColumns(setStarFilter, isSmallViewport),
+    [setStarFilter, isSmallViewport],
   );
 
   const data = useMemo(() => {
@@ -86,21 +98,17 @@ export const useCoinsTable = () => {
   };
 };
 
-const getCoinsTableColumns = (
+export const getCoinsTableColumns = (
   setStarFilter: (filter: StarFilterState) => void,
+  isSmallViewport: boolean,
 ): ColumnDef<Coin>[] => [
   {
     id: 'star',
-    meta: {
-      onSelect: setStarFilter,
-    },
+    meta: { onSelect: setStarFilter },
     header: ({ column }) => {
-      const onSelect = (
-        column.columnDef.meta as unknown as Record<
-          'onSelect',
-          (filter: StarFilterState) => void
-        >
-      )?.onSelect;
+      const { onSelect } = column.columnDef.meta as unknown as {
+        onSelect: (filter: StarFilterState) => void;
+      };
       return (
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
@@ -137,7 +145,10 @@ const getCoinsTableColumns = (
       return (
         <Star
           weight={isStarred ? 'fill' : 'regular'}
-          className={`cursor-pointer ${isStarred ? 'text-yellow-400' : ''}`}
+          className={cn(
+            'cursor-pointer transition-colors hover:text-yellow-400',
+            isStarred ? 'text-yellow-400' : '',
+          )}
           size={20}
           onClick={(e) => {
             e.stopPropagation();
@@ -150,11 +161,8 @@ const getCoinsTableColumns = (
   {
     accessorKey: 'rank',
     enableSorting: true,
-    header: ({ column }) => (
-      <THeadBtn tooltip="market capitalization rank" column={column}>
-        #
-      </THeadBtn>
-    ),
+    meta: { hideBelow: 768 },
+    header: ({ column }) => <THeadBtn column={column}>#</THeadBtn>,
   },
   {
     accessorKey: 'name',
@@ -163,18 +171,20 @@ const getCoinsTableColumns = (
     cell: ({ row }) => {
       const coin = row.original;
       return (
-        <div className="flex items-center gap-4">
+        <div
+          className={cn(
+            'flex items-center gap-4',
+            !isSmallViewport && 'w-[200px] truncate',
+          )}
+        >
           <Image src={coin.icon} alt={coin.name} width={20} height={20} />
 
-          <p className="space-x-2">
-            <span>{coin.name}</span>
+          <p className="flex items-center gap-2 overflow-hidden">
+            <span className="font-medium text-gray-800 dark:text-primary-foreground truncate">
+              {coin.name}
+            </span>
 
-            <Badge
-              variant="outline"
-              className="border-slate-600/30 bg-slate-800/25 text-xs text-gray-400"
-            >
-              {coin.symbol}
-            </Badge>
+            <Badge variant="secondary">{coin.symbol}</Badge>
           </p>
         </div>
       );
@@ -183,49 +193,81 @@ const getCoinsTableColumns = (
   {
     accessorKey: 'price',
     enableSorting: true,
-    header: ({ column }) => <THeadBtn column={column}>Price</THeadBtn>,
+    header: ({ column }) => (
+      <THeadBtn column={column} className="w-full justify-end">
+        Price
+      </THeadBtn>
+    ),
+    cell: ({ getValue }) => (
+      <div className="text-right">{getValue<React.ReactNode>()}</div>
+    ),
   },
   {
     accessorKey: 'priceChange1h',
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="Price change over the last hour" column={column}>
+      <THeadBtn
+        tooltip="Price change over the last hour"
+        column={column}
+        className="w-full justify-end"
+      >
         1h
       </THeadBtn>
     ),
-    cell: ({ getValue }) => <PercentChangeIcon value={getValue<number>()} />,
+    cell: ({ getValue }) => (
+      <PercentChangeIcon className="justify-end" value={getValue<number>()} />
+    ),
   },
   {
     accessorKey: 'priceChange24h',
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="Price change over the last 24 hours" column={column}>
+      <THeadBtn
+        tooltip="Price change over the last 24 hours"
+        column={column}
+        className="w-full justify-end"
+      >
         24h
       </THeadBtn>
     ),
-    cell: ({ getValue }) => <PercentChangeIcon value={getValue<number>()} />,
+    cell: ({ getValue }) => (
+      <PercentChangeIcon className="justify-end" value={getValue<number>()} />
+    ),
   },
   {
     accessorKey: 'priceChange7d',
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="Price change over the last 7 days" column={column}>
+      <THeadBtn
+        tooltip="Price change over the last 7 days"
+        column={column}
+        className="w-full justify-end"
+      >
         7d
       </THeadBtn>
     ),
-    cell: ({ getValue }) => <PercentChangeIcon value={getValue<number>()} />,
+    cell: ({ getValue }) => (
+      <PercentChangeIcon className="justify-end" value={getValue<number>()} />
+    ),
   },
   {
     accessorKey: 'marketCap',
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="Market capitalization" column={column}>
+      <THeadBtn
+        tooltip="Market capitalization"
+        column={column}
+        className="w-full justify-end"
+      >
         Mkt. cap.
       </THeadBtn>
+    ),
+    cell: ({ getValue }) => (
+      <div className="text-right">{getValue<React.ReactNode>()}</div>
     ),
   },
   {
@@ -236,9 +278,13 @@ const getCoinsTableColumns = (
       <THeadBtn
         tooltip="Volume transacted over the last 24 hours"
         column={column}
+        className="w-full justify-end"
       >
         Volume (24h)
       </THeadBtn>
+    ),
+    cell: ({ getValue }) => (
+      <div className="text-right">{getValue<React.ReactNode>()}</div>
     ),
   },
   {
@@ -246,9 +292,16 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="Fully diluted value" column={column}>
+      <THeadBtn
+        tooltip="Fully diluted value"
+        column={column}
+        className="w-full justify-end"
+      >
         FDV
       </THeadBtn>
+    ),
+    cell: ({ getValue }) => (
+      <div className="text-right">{getValue<React.ReactNode>()}</div>
     ),
   },
   {
@@ -256,9 +309,16 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="Circulating supply" column={column}>
+      <THeadBtn
+        tooltip="Circulating supply"
+        column={column}
+        className="w-full justify-end"
+      >
         Circ. supply
       </THeadBtn>
+    ),
+    cell: ({ getValue }) => (
+      <div className="text-right">{getValue<React.ReactNode>()}</div>
     ),
   },
   {
@@ -266,9 +326,16 @@ const getCoinsTableColumns = (
     enableSorting: true,
     enableHiding: true,
     header: ({ column }) => (
-      <THeadBtn tooltip="Maximum supply" column={column}>
+      <THeadBtn
+        tooltip="Maximum supply"
+        column={column}
+        className="w-full justify-end"
+      >
         Max. supply
       </THeadBtn>
+    ),
+    cell: ({ getValue }) => (
+      <div className="text-right">{getValue<React.ReactNode>()}</div>
     ),
   },
 ];

@@ -10,9 +10,9 @@ type PriceChangeIconProps = {
 };
 
 export const getPriceChangeColor = (value: number) => {
-  if (value > 0) return 'text-emerald-400';
-  if (value < 0) return 'text-rose-400';
-  return 'text-slate-400';
+  if (value > 0) return 'text-emerald-500 dark:text-green-400';
+  if (value < 0) return 'text-red-500 dark:text-red-400';
+  return 'text-muted-foreground';
 };
 
 export const PriceChangeIcon: FC<PriceChangeIconProps> = ({

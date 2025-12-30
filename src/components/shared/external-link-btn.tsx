@@ -21,11 +21,11 @@ export const ExternalLinkBtn: FC<ExternalLinkBtnProps> = ({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'transition-colors text-slate-400 hover:text-slate-200',
+        'transition-colors text-muted-foreground hover:text-foreground',
         className,
       )}
     >
-      <ExternalLink className="size-5" />
+      <ExternalLink className="size-4" />
     </a>
   );
 };

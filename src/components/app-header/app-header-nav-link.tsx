@@ -26,14 +26,18 @@ export const AppHeaderNavLink: FC<AppHeaderNavLinkProps> = ({
   return (
     <Link
       href={href}
-      className={cn('flex items-center gap-2 relative', className)}
+      className={cn(
+        'flex h-full items-center gap-2 relative text-sm font-medium transition-colors hover:text-primary',
+        activePath ? 'text-primary' : 'text-muted-foreground',
+        className,
+      )}
     >
       {icon}
 
-      <span className="group-hover-text-glow max-sm:hidden">{name}</span>
+      <span className="max-sm:hidden">{name}</span>
 
       {activePath && (
-        <div className="w-full h-[1px] absolute bottom-[-1rem] bg-white" />
+        <div className="w-full h-[2px] absolute bottom-0 bg-primary" />
       )}
     </Link>
   );

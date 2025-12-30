@@ -36,7 +36,7 @@ export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
 
   return (
     <Sheet open={opened} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:w-[600px] overflow-y-auto border-l border-slate-700/40 bg-slate-950 p-0">
+      <SheetContent className="w-full sm:w-[500px] overflow-y-auto p-0 sm:max-w-[500px]">
         <CoinSheetHeader coinData={coinData} />
 
         <div className="p-4 space-y-4">
@@ -45,12 +45,12 @@ export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
           />
 
           <Tabs defaultValue={CoinSheetTabs.Overview.value}>
-            <TabsList className="w-full p-1 bg-slate-800/20">
+            <TabsList className="w-full p-1 bg-muted dark:bg-muted">
               {Object.values(CoinSheetTabs).map((tab) => (
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className="text-xs data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg"
+                  className="text-xs w-full data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm dark:data-[state=active]:bg-card"
                 >
                   {tab.label}
                 </TabsTrigger>

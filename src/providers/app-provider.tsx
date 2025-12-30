@@ -7,12 +7,20 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { TooltipProvider } from '@/components/ui';
 import { queryClient } from '@/lib/react-query';
+import { ThemeProvider } from '@/providers/theme-provider';
 import { type Children } from '@/types';
 
 export const AppProvider: FC<Children> = ({ children }) => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>{children}</TooltipProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <TooltipProvider>{children}</TooltipProvider>
 
-    <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </ThemeProvider>
   </QueryClientProvider>
 );

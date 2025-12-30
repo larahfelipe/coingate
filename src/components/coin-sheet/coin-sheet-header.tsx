@@ -4,11 +4,8 @@ import Image from 'next/image';
 
 import { X } from 'lucide-react';
 
-import { ExternalLinkBtn } from '@/components/external-link-btn';
-import {
-  getPriceChangeColor,
-  PriceChangeIcon,
-} from '@/components/price-change-icon';
+import { ExternalLinkBtn } from '@/components/shared/external-link-btn';
+import { PriceChangeIcon } from '@/components/shared/price-change-icon';
 import { Badge, SheetClose, SheetHeader, SheetTitle } from '@/components/ui';
 import { type CoingeckoV3CoinResponseData } from '@/types';
 
@@ -17,10 +14,10 @@ type CoinSheetHeaderProps = {
 };
 
 export const CoinSheetHeader: FC<CoinSheetHeaderProps> = ({ coinData }) => (
-  <header className="sticky top-0 z-10 bg-slate-950/95 backdrop-blur-sm border-b border-slate-700/40 p-4">
-    <SheetHeader className="space-y-3">
+  <header className="sticky top-0 z-10 space-y-1 bg-background/95 backdrop-blur-sm border-b p-4">
+    <SheetHeader>
       <div className="flex items-center justify-between">
-        <SheetTitle className="flex items-center gap-4">
+        <SheetTitle className="flex items-center gap-5">
           <CoinImage src={coinData.image.large} alt={coinData.name} />
 
           <CoinInfo
@@ -30,11 +27,11 @@ export const CoinSheetHeader: FC<CoinSheetHeaderProps> = ({ coinData }) => (
           />
         </SheetTitle>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-5">
           <ExternalLinkBtn href={coinData.links?.homepage[0]} />
 
           <SheetClose
-            className="cursor-pointer transition-colors text-slate-400 hover:text-slate-200"
+            className="cursor-pointer transition-colors text-muted-foreground hover:text-foreground"
             aria-label="Close coin details"
           >
             <X className="size-5" />
@@ -47,16 +44,14 @@ export const CoinSheetHeader: FC<CoinSheetHeaderProps> = ({ coinData }) => (
   </header>
 );
 
-const CoinImage: FC<{ src: string; alt: string }> = ({ src, alt }) => (
+const CoinImage: FC<Record<'src' | 'alt', string>> = ({ src, alt }) => (
   <div className="relative">
-    <div className="absolute inset-0 bg-white/35 rounded-full blur-md" />
-
     <Image
       src={src}
       alt={alt}
       width={48}
       height={48}
-      className="rounded-full relative z-10 ring-white/20"
+      className="rounded-full relative z-10"
     />
   </div>
 );
@@ -67,50 +62,44 @@ const CoinInfo: FC<{ name: string; symbol: string; rank: number }> = ({
   rank,
 }) => (
   <div>
-    <div className="flex items-center gap-2">
-      <h2 className="text-xl font-semibold text-white">{name}</h2>
+    <section className="flex items-center gap-2">
+      <h2 className="text-2xl font-semibold">{name}</h2>
 
-      <Badge
-        variant="outline"
-        className="h-5 text-xs border-slate-600/50 bg-slate-800/20 text-slate-200"
-      >
+      <Badge variant="secondary" className="h-5 text-xs">
         {symbol.toUpperCase()}
       </Badge>
-    </div>
+    </section>
 
-    <p className="text-slate-300 text-sm">Rank #{rank}</p>
+    <p className="text-muted-foreground text-sm">Rank #{rank}</p>
   </div>
 );
 
 const PriceInfo: FC<
   Record<'marketData', CoinSheetHeaderProps['coinData']['market_data']>
 > = ({ marketData }) => (
-  <section className="mt-4 mb-2 p-4 rounded-xl bg-slate-800/20 border">
-    <div className="flex items-center gap-3">
-      <h2 className="text-3xl font-bold text-white">
-        {marketData.current_price.usd.toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        })}
-      </h2>
+  <section className="flex items-center gap-4 p-4 rounded-xl bg-card border text-card-foreground">
+    <h2 className="text-3xl font-semibold">
+      {marketData.current_price.usd.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      })}
+    </h2>
 
-      <Badge
-        className={
-          marketData.price_change_percentage_24h > 0
-            ? 'bg-emerald-900/40'
-            : 'bg-rose-900/40'
-        }
-      >
-        <PriceChangeIcon value={marketData.price_change_percentage_24h} />
+    <Badge
+      variant={
+        marketData.price_change_percentage_24h > 0 ? 'default' : 'destructive'
+      }
+      className={
+        marketData.price_change_percentage_24h > 0
+          ? 'bg-green-50 dark:bg-green-900/10 text-green-500 dark:text-green-400 border-green-300 dark:border-green-900'
+          : 'bg-red-50 dark:bg-red-900/10 text-red-500 dark:text-red-400 border-red-300 dark:border-red-900'
+      }
+    >
+      <PriceChangeIcon value={marketData.price_change_percentage_24h} />
 
-        <span
-          className={getPriceChangeColor(
-            marketData.price_change_percentage_24h,
-          )}
-        >
-          {Math.abs(marketData.price_change_percentage_24h).toFixed(2)}%
-        </span>
-      </Badge>
-    </div>
+      <span className="ml-1">
+        {Math.abs(marketData.price_change_percentage_24h).toFixed(2)}%
+      </span>
+    </Badge>
   </section>
 );

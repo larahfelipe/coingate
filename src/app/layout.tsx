@@ -21,15 +21,13 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#000000',
-  colorScheme: 'dark',
 };
 
 export default function RootLayout({ children }: Children) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-black via-[#03003b] to-[#08086b]`}
+        className={`${poppins.variable} font-sans antialiased min-h-screen bg-background text-foreground`}
       >
         <AppProvider>
           <AppHeader />

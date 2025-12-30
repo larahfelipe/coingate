@@ -20,10 +20,10 @@ export const SearchInput: FC<SearchInputProps> = ({
   ...props
 }) => {
   return (
-    <div className={cn('flex items-center relative', containerClassName)}>
+    <div className={cn('flex items-center relative group', containerClassName)}>
       <MagnifyingGlass
         size={iconSize}
-        className="absolute left-3 text-gray-500"
+        className="absolute left-3 text-muted-foreground transition-colors group-focus-within:text-primary"
       />
 
       <Input {...props} className={cn('pl-10', inputClassName)} />
