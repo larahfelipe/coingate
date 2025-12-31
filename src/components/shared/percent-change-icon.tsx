@@ -5,7 +5,7 @@ import { CaretDown, CaretUp, Minus } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 type PercentChangeIconProps = {
-  value: number;
+  value?: number;
   textSize?: number;
   iconSize?: number;
   className?: ComponentProps<'div'>['className'];
@@ -13,13 +13,13 @@ type PercentChangeIconProps = {
 
 export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
   className,
-  value,
   textSize,
+  value,
   iconSize = 18,
 }) => {
-  const valuePercent = value.toFixed(2) + '%';
+  const valuePercent = (value ?? 0).toFixed(2) + '%';
 
-  if (value === 0 || valuePercent.includes('0.00'))
+  if (!value || value === 0 || valuePercent.includes('0.00'))
     return (
       <div
         className={cn(
