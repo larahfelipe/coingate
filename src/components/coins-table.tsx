@@ -35,87 +35,92 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
   };
 
   return (
-    <div className="w-full xl:max-w-[80%] flex flex-col gap-6 sm:gap-3 mx-auto p-4 md:p-6 sm:pt-10 mt-10">
-      <SearchInput
-        containerClassName="md:self-end max-lg:mx-2"
-        inputClassName="md:w-[300px] border-0 border-b border-transparent shadow-none rounded-none transition-colors placeholder:transition-colors focus-visible:ring-0 focus-visible:border-primary focus-visible:placeholder:text-primary"
-        placeholder="Search coin by name..."
-        disabled={isLoading}
-        value={searchedCoinName}
-        onChange={handleChangeSearchedCoin}
-      />
+    <div className="w-full mt-10 space-y-6 sm:space-y-3 p-4 md:p-6 sm:pt-10">
+      <div className="w-335 mx-auto space-y-4 flex flex-col">
+        <SearchInput
+          containerClassName="2xl:ml-auto"
+          inputClassName="md:w-60 border-0 border-b border-transparent shadow-none rounded-none transition-colors placeholder:transition-colors focus-visible:ring-0 focus-visible:border-primary focus-visible:placeholder:text-primary"
+          placeholder="Search coin by name..."
+          disabled={isLoading}
+          value={searchedCoinName}
+          onChange={handleChangeSearchedCoin}
+        />
 
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="[&>th]:font-semibold [&>th]:py-1"
-            >
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  className={cn(
-                    (header.column.columnDef.meta as any)?.className,
-                  )}
-                  onClick={
-                    header.column.getCanSort()
-                      ? header.column.getToggleSortingHandler()
-                      : undefined
-                  }
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-
-        <TableBody>
-          {isError && <ErrorTableRow />}
-
-          {isLoading && <CoinsTableSkeletonLoadingRow />}
-
-          {isSuccess && !table.getRowModel().rows?.length && (
-            <NoResultsTableRow
-              message={
-                table.getColumn('name')?.getFilterValue()
-                  ? `No results found for "${table.getColumn('name')?.getFilterValue()}".`
-                  : undefined
-              }
-            />
-          )}
-
-          {isSuccess &&
-            !!table.getRowModel().rows?.length &&
-            table.getRowModel().rows.map((row) => (
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
-                key={row.id}
-                onClick={() => onRowClick(row.original.id)}
-                className="h-15 [&>td]:py-4 [&>td]:px-6"
+                key={headerGroup.id}
+                className="[&>th]:font-semibold [&>th]:py-1"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
                     className={cn(
-                      (
-                        cell.column.columnDef.meta as Record<
-                          'className',
-                          string
-                        >
-                      )?.className,
+                      (header.column.columnDef.meta as any)?.className,
                     )}
+                    onClick={
+                      header.column.getCanSort()
+                        ? header.column.getToggleSortingHandler()
+                        : undefined
+                    }
                   >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                  </TableHead>
                 ))}
               </TableRow>
             ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+
+          <TableBody>
+            {isError && <ErrorTableRow />}
+
+            {isLoading && <CoinsTableSkeletonLoadingRow />}
+
+            {isSuccess && !table.getRowModel().rows?.length && (
+              <NoResultsTableRow
+                message={
+                  table.getColumn('name')?.getFilterValue()
+                    ? `No results found for "${table.getColumn('name')?.getFilterValue()}".`
+                    : undefined
+                }
+              />
+            )}
+
+            {isSuccess &&
+              !!table.getRowModel().rows?.length &&
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  onClick={() => onRowClick(row.original.id)}
+                  className="h-15 [&>td]:py-4 [&>td]:px-6"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        (
+                          cell.column.columnDef.meta as Record<
+                            'className',
+                            string
+                          >
+                        )?.className,
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

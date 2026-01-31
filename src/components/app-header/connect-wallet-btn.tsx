@@ -13,11 +13,10 @@ export const ConnectWalletBtn: FC<ConnectWalletBtnProps> = ({
   return (
     <Button
       {...props}
-      className={cn('gap-2 rounded-xl shadow-none', className)}
+      className={cn('rounded-xl shadow-none max-sm:hidden', className)}
     >
       <WalletIcon size={18} />
-
-      <span className="max-sm:hidden">connect wallet</span>
+      connect wallet
     </Button>
   );
 };

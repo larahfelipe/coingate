@@ -11,7 +11,7 @@ type CoinSheetAboutTabProps = {
 };
 
 export const CoinSheetAboutTab: FC<CoinSheetAboutTabProps> = ({ coinData }) => (
-  <div className="rounded-xl p-5 border bg-card text-card-foreground">
+  <div className="rounded-xl border bg-card text-card-foreground">
     <AboutSection name={coinData.name} description={coinData.description} />
 
     <LinksSection links={coinData.links} />
@@ -22,13 +22,13 @@ const AboutSection: FC<
   Pick<CoinSheetAboutTabProps['coinData'], 'name' | 'description'>
 > = ({ name, description }) => (
   <section className="mb-6">
-    <div className="flex items-center gap-2 mb-4">
+    <div className="flex items-center gap-2 mb-4 p-5">
       <Info className="size-4 text-primary" />
 
       <h3 className="text-sm font-medium">About {name}</h3>
     </div>
 
-    <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+    <div className="max-h-100 p-5 text-sm text-muted-foreground leading-relaxed whitespace-pre-line overflow-y-auto">
       {description.en || 'No description available.'}
     </div>
   </section>
@@ -40,10 +40,10 @@ const LinksSection: FC<Pick<CoinSheetAboutTabProps['coinData'], 'links'>> = ({
   if (!links) return null;
 
   return (
-    <section className="pt-4 border-t">
+    <section className="p-5 border-t">
       <h4 className="text-sm font-medium mb-3">Links</h4>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-1">
         <ExternalLink
           href={links.homepage?.[0]}
           icon={<ExternalLinkIcon className="size-3" />}
