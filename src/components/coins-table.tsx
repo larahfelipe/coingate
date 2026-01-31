@@ -36,7 +36,7 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
 
   return (
     <div className="w-full mt-10 space-y-6 sm:space-y-3 p-4 md:p-6 sm:pt-10">
-      <div className="w-335 mx-auto space-y-4 flex flex-col">
+      <div className="max-w-335 mx-auto flex flex-col gap-4">
         <SearchInput
           containerClassName="2xl:ml-auto"
           inputClassName="md:w-60 border-0 border-b border-transparent shadow-none rounded-none transition-colors placeholder:transition-colors focus-visible:ring-0 focus-visible:border-primary focus-visible:placeholder:text-primary"
