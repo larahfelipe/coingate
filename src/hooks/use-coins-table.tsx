@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -23,11 +23,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from '@/components/ui';
-import { type Coin, useCoingecko } from '@/hooks/use-coingecko';
+import { type Coin, useCoinsList } from '@/hooks/use-coingecko';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useWatchlist } from '@/hooks/use-watchlist';
 import { cn } from '@/lib/utils';
+import { formatNumber } from '@/utils/formatters';
+import { useSearchParams } from 'next/navigation';
+import { useUrlParams } from './use-url-params';
 
 type WatchlistTableMeta = Record<'watchlist', ReturnType<typeof useWatchlist>>;
 
@@ -46,6 +52,17 @@ export const useCoinsTable = () => {
       maxSupply: false,
     });
 
+  const { updateUrlParams } = useUrlParams<'sort' | 'order' | 'search'>();
+
+  const searchParams = useSearchParams();
+  const sortParam = searchParams.get('sort');
+  const sortOrderParam = searchParams.get('order');
+
+  useEffect(() => {
+    if (sortParam && sortOrderParam)
+      setSorting([{ id: sortParam, desc: sortOrderParam === 'desc' }]);
+  }, [sortParam, sortOrderParam]);
+
   const isSmallViewport = useMediaQuery('(min-width: 768px)');
 
   useEffect(() => {
@@ -56,24 +73,27 @@ export const useCoinsTable = () => {
     }));
   }, [isSmallViewport]);
 
-  const { coinsQuery } = useCoingecko();
+  const { coinsQuery } = useCoinsList();
   const watchlist = useWatchlist();
+
+  const coinsData = useMemo(
+    () =>
+      coinsQuery.data
+        ? coinsQuery.data.filter((coin) =>
+            starFilter === 'starred' ? watchlist.coins.includes(coin.id) : true,
+          )
+        : [],
+    [coinsQuery.data, starFilter, watchlist.coins],
+  );
 
   const columns = useMemo(
     () => getCoinsTableColumns(setStarFilter, isSmallViewport),
     [setStarFilter, isSmallViewport],
   );
 
-  const data = useMemo(() => {
-    if (!coinsQuery.data) return [];
-    return coinsQuery.data.filter((coin) =>
-      starFilter === 'starred' ? watchlist.coins.includes(coin.id) : true,
-    );
-  }, [coinsQuery.data, starFilter, watchlist.coins]);
-
   const table = useReactTable({
     columns,
-    data,
+    data: coinsData,
     meta: { watchlist },
     state: { sorting, columnFilters, columnVisibility },
     onSortingChange: setSorting,
@@ -84,15 +104,28 @@ export const useCoinsTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const searchCoin = (name: string) =>
-    table.getColumn('name')?.setFilterValue(name.trim());
+  useEffect(() => {
+    if (!sorting.length) {
+      updateUrlParams({ sort: null, order: null });
+      return;
+    }
+    const columnId = sorting[0].id;
+    const order = sorting[0].desc ? 'desc' : 'asc';
+    updateUrlParams({ sort: columnId, order });
+  }, [sorting, updateUrlParams]);
+
+  const searchCoin = useCallback(
+    (coinName: string) => {
+      updateUrlParams({ search: coinName });
+      table.getColumn('name')?.setFilterValue(coinName.trim());
+    },
+    [table, updateUrlParams],
+  );
 
   return {
     table,
     searchCoin,
-    isLoading: coinsQuery.isLoading,
-    isError: coinsQuery.isError,
-    isSuccess: coinsQuery.isSuccess,
+    status: coinsQuery.status,
   };
 };
 
@@ -261,7 +294,22 @@ export const getCoinsTableColumns = (
       </div>
     ),
     cell: ({ getValue }) => (
-      <div className="text-right">{getValue<React.ReactNode>()}</div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="cursor-default text-right">
+            {formatNumber(getValue<number>())}
+          </div>
+        </TooltipTrigger>
+
+        <TooltipContent>
+          <p>
+            {getValue<number>().toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            })}
+          </p>
+        </TooltipContent>
+      </Tooltip>
     ),
   },
   {
@@ -279,7 +327,22 @@ export const getCoinsTableColumns = (
       </div>
     ),
     cell: ({ getValue }) => (
-      <div className="text-right">{getValue<React.ReactNode>()}</div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="cursor-default text-right">
+            {formatNumber(getValue<number>())}
+          </div>
+        </TooltipTrigger>
+
+        <TooltipContent>
+          <p>
+            {getValue<number>().toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            })}
+          </p>
+        </TooltipContent>
+      </Tooltip>
     ),
   },
   {
@@ -294,7 +357,17 @@ export const getCoinsTableColumns = (
       </div>
     ),
     cell: ({ getValue }) => (
-      <div className="text-right">{getValue<React.ReactNode>()}</div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="cursor-default text-right">
+            {formatNumber(getValue<number>())}
+          </div>
+        </TooltipTrigger>
+
+        <TooltipContent>
+          <p>{getValue<number>().toLocaleString('en-US')}</p>
+        </TooltipContent>
+      </Tooltip>
     ),
   },
   {
@@ -309,7 +382,17 @@ export const getCoinsTableColumns = (
       </div>
     ),
     cell: ({ getValue }) => (
-      <div className="text-right">{getValue<React.ReactNode>()}</div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="cursor-default text-right">
+            {formatNumber(getValue<number>())}
+          </div>
+        </TooltipTrigger>
+
+        <TooltipContent>
+          <p>{getValue<number>().toLocaleString('en-US')}</p>
+        </TooltipContent>
+      </Tooltip>
     ),
   },
   {
@@ -324,7 +407,17 @@ export const getCoinsTableColumns = (
       </div>
     ),
     cell: ({ getValue }) => (
-      <div className="text-right">{getValue<React.ReactNode>()}</div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="cursor-default text-right">
+            {formatNumber(getValue<number>())}
+          </div>
+        </TooltipTrigger>
+
+        <TooltipContent>
+          <p>{getValue<number>().toLocaleString('en-US')}</p>
+        </TooltipContent>
+      </Tooltip>
     ),
   },
 ];

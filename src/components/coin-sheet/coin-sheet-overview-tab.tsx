@@ -1,6 +1,6 @@
 import { type FC, type ReactNode } from 'react';
 
-import { ActivityIcon, MoneyWavy } from '@phosphor-icons/react';
+import { ActivityIcon, Bank, MoneyWavy } from '@phosphor-icons/react';
 import { Layers, Percent, PieChart } from 'lucide-react';
 
 import {
@@ -20,7 +20,7 @@ export const CoinSheetOverviewTab: FC<CoinSheetOverviewTabProps> = ({
   coinData,
 }) => (
   <>
-    <MarketInfoGridCard marketData={coinData.market_data} />
+    <MarketInfoGridCard marketData={coinData.market_data} coinData={coinData} />
 
     <PriceChangeGridCard marketData={coinData.market_data} />
 
@@ -28,36 +28,61 @@ export const CoinSheetOverviewTab: FC<CoinSheetOverviewTabProps> = ({
   </>
 );
 
-const MarketInfoGridCard: FC<
-  Record<'marketData', CoinSheetOverviewTabProps['coinData']['market_data']>
-> = ({ marketData }) => (
+const MarketInfoGridCard: FC<{
+  marketData: CoinSheetOverviewTabProps['coinData']['market_data'];
+  coinData: CoinSheetOverviewTabProps['coinData'];
+}> = ({ marketData, coinData }) => (
   <div className="grid grid-cols-2 gap-3">
     <MarketInfoCard
-      title="Market cap."
-      value={`$${formatNumber(marketData.market_cap.usd)}`}
       icon={<MoneyWavy className="size-4 text-cyan-400" />}
+      title="Market cap."
+      value={formatNumber(marketData.market_cap.usd)}
     />
 
     <MarketInfoCard
-      title="Volume (24h)"
-      value={`$${formatNumber(marketData.total_volume.usd)}`}
       icon={<ActivityIcon className="size-4 text-purple-400" />}
+      title="Volume (24h)"
+      value={formatNumber(marketData.total_volume.usd)}
     />
 
     <MarketInfoCard
-      title="Circ. supply"
-      value={formatNumber(marketData.circulating_supply)}
+      icon={<Bank className="size-4 text-orange-400" />}
+      title="Fully-diluted value"
+      value={formatNumber(marketData.current_price.usd * marketData.max_supply)}
+    />
+
+    <MarketInfoCard
+      icon={<Percent className="size-4 text-red-400" />}
+      title="Volume/Market cap."
+      value={(
+        marketData.total_volume.usd / marketData.market_cap.usd
+      ).toLocaleString('en-US', {
+        style: 'percent',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    />
+
+    <MarketInfoCard
       icon={<PieChart className="size-4 text-emerald-400" />}
+      title="Circ. supply"
+      value={
+        formatNumber(marketData.circulating_supply) +
+        ' ' +
+        coinData.symbol.toUpperCase()
+      }
     />
 
     <MarketInfoCard
+      icon={<Layers className="size-4 text-amber-400" />}
       title="Max. supply"
       value={
         marketData.max_supply
-          ? formatNumber(marketData.max_supply)
+          ? formatNumber(marketData.max_supply) +
+            ' ' +
+            coinData.symbol.toUpperCase()
           : 'Unlimited'
       }
-      icon={<Layers className="size-4 text-amber-400" />}
     />
   </div>
 );
@@ -129,7 +154,7 @@ const CategoriesSection: FC<{ categories?: string[] }> = ({ categories }) => {
 
 const MarketInfoCard: FC<{
   title: string;
-  value: string;
+  value: string | number;
   icon: ReactNode;
 }> = ({ title, value, icon }) => (
   <div className="bg-card rounded-lg p-3 border flex flex-col gap-2 hover:bg-accent/50 transition-colors">
@@ -156,8 +181,8 @@ const PriceChangeCard: FC<{ title: string; value: number }> = ({
 
     <span className={cn('font-medium text-sm', getPriceChangeColor(value))}>
       {value.toLocaleString('en-US', {
-        maximumSignificantDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
       })}
       %
     </span>

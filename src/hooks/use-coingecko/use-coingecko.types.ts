@@ -8,11 +8,11 @@ export type Coin = {
   priceChange1h: number;
   priceChange24h: number;
   priceChange7d: number;
-  marketCap: string;
-  volume24h: string;
-  fullyDilutedValue: string;
-  circulatingSupply: string;
-  maxSupply: string;
+  marketCap: number;
+  volume24h: number;
+  fullyDilutedValue: number;
+  circulatingSupply: number;
+  maxSupply: number;
 };
 
 export type CoingeckoV3CoinsListResponseData = {

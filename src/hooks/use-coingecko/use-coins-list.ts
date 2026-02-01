@@ -1,15 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { formatNumber } from '@/utils/formatters';
+import { COINGECKO_BASE_URL } from './constants';
 import {
   Coin,
-  type CoingeckoV3CoinResponseData,
   type CoingeckoV3CoinsListResponseData,
 } from './use-coingecko.types';
 
-const COINGECKO_BASE_URL = 'https://api.coingecko.com/api/v3';
-
-export const useCoingecko = () => {
+export const useCoinsList = () => {
   const coinsQuery = useQuery({
     staleTime: 60 * 1_000,
     refetchInterval: 60 * 1_000,
@@ -44,35 +41,14 @@ export const useCoingecko = () => {
         priceChange1h: coin.price_change_percentage_1h_in_currency,
         priceChange24h: coin.price_change_percentage_24h_in_currency,
         priceChange7d: coin.price_change_percentage_7d_in_currency,
-        marketCap: formatNumber(coin.market_cap),
-        volume24h: formatNumber(coin.total_volume),
-        fullyDilutedValue: formatNumber(coin.fully_diluted_valuation),
-        circulatingSupply: formatNumber(coin.circulating_supply),
-        maxSupply: formatNumber(coin.max_supply),
+        marketCap: coin.market_cap,
+        volume24h: coin.total_volume,
+        fullyDilutedValue: coin.fully_diluted_valuation,
+        circulatingSupply: coin.circulating_supply,
+        maxSupply: coin.max_supply,
       }));
     },
   });
 
-  const coinByIdQuery = (coinId: string) =>
-    useQuery({
-      enabled: !!coinId.length,
-      staleTime: Infinity,
-      queryKey: [`coingecko:coins/${coinId}`],
-      queryFn: async () => {
-        const requestParams = new URLSearchParams({
-          sparkline: 'true',
-        });
-
-        const response = await fetch(
-          `${COINGECKO_BASE_URL}/coins/${coinId}?${requestParams.toString()}`,
-        );
-        if (!response.ok) throw new Error('Failed to fetch coin');
-
-        const responseData: CoingeckoV3CoinResponseData = await response.json();
-
-        return responseData;
-      },
-    });
-
-  return { coinsQuery, coinByIdQuery };
+  return { coinsQuery };
 };

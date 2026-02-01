@@ -52,8 +52,6 @@ const Btn = forwardRef<HTMLButtonElement, Omit<THeadBtnProps, 'tooltip'>>(
       className={className}
       {...rest}
     >
-      {children}
-
       {column.getCanSort() && (
         <>
           {column.getIsSorted() === 'asc' && <ArrowUp size={18} />}
@@ -61,6 +59,8 @@ const Btn = forwardRef<HTMLButtonElement, Omit<THeadBtnProps, 'tooltip'>>(
           {column.getIsSorted() === 'desc' && <ArrowDown size={18} />}
         </>
       )}
+
+      {children}
     </Button>
   ),
 );

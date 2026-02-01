@@ -22,13 +22,13 @@ const AboutSection: FC<
   Pick<CoinSheetAboutTabProps['coinData'], 'name' | 'description'>
 > = ({ name, description }) => (
   <section className="mb-6">
-    <div className="flex items-center gap-2 mb-4 p-5">
+    <div className="flex items-center gap-2 p-5">
       <Info className="size-4 text-primary" />
 
       <h3 className="text-sm font-medium">About {name}</h3>
     </div>
 
-    <div className="max-h-100 p-5 text-sm text-muted-foreground leading-relaxed whitespace-pre-line overflow-y-auto">
+    <div className="max-h-100 p-5 text-sm text-muted-foreground leading-relaxed whitespace-pre-line overflow-y-auto [scrollbar-width:thin]">
       {description.en || 'No description available.'}
     </div>
   </section>

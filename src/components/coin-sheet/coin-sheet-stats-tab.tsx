@@ -3,7 +3,6 @@ import { type FC } from 'react';
 import { Activity, LineChart } from 'lucide-react';
 
 import { type CoingeckoV3CoinResponseData } from '@/types';
-import { formatNumber } from '@/utils/formatters';
 
 type CoinSheetStatsTabProps = {
   coinData: CoingeckoV3CoinResponseData;
@@ -29,25 +28,13 @@ const PriceStatsSection: FC<
       Price Statistics
     </h3>
 
-    <StatItem
-      title="All Time High"
-      value={`$${formatNumber(marketData.ath.usd)}`}
-    />
+    <StatItem title="All Time High" value={marketData.ath.usd} />
 
-    <StatItem
-      title="All Time Low"
-      value={`$${formatNumber(marketData.atl.usd)}`}
-    />
+    <StatItem title="All Time Low" value={marketData.atl.usd} />
 
-    <StatItem
-      title="24h High"
-      value={`$${formatNumber(marketData.high_24h.usd)}`}
-    />
+    <StatItem title="24h High" value={marketData.high_24h.usd} />
 
-    <StatItem
-      title="24h Low"
-      value={`$${formatNumber(marketData.low_24h.usd)}`}
-    />
+    <StatItem title="24h Low" value={marketData.low_24h.usd} />
   </section>
 );
 
@@ -83,10 +70,17 @@ const CommunityStatsSection: FC<{
   </section>
 );
 
-const StatItem: FC<{ title: string; value: string }> = ({ title, value }) => (
+const StatItem: FC<{ title: string; value: string | number }> = ({
+  title,
+  value,
+}) => (
   <div className="flex items-center justify-between py-3 border-b last:border-0 hover:bg-accent/50 px-2 rounded transition-colors">
     <span className="text-muted-foreground text-sm">{title}</span>
 
-    <span className="text-sm font-medium">{value}</span>
+    <span className="text-sm font-medium">
+      {typeof value === 'number'
+        ? value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+        : value}
+    </span>
   </div>
 );

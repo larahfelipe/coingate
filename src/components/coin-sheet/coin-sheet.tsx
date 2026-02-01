@@ -3,12 +3,13 @@ import { type FC } from 'react';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from '@/components/ui';
-import { useCoingecko } from '@/hooks/use-coingecko';
+import { useCoinDetails } from '@/hooks/use-coingecko';
 import { CoinSheetAboutTab } from './coin-sheet-about-tab';
 import { CoinSheetHeader } from './coin-sheet-header';
 import { CoinSheetOverviewTab } from './coin-sheet-overview-tab';
@@ -29,13 +30,17 @@ const CoinSheetTabs = {
 } as const;
 
 export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
-  const { coinByIdQuery } = useCoingecko();
-  const { isLoading, data: coinData } = coinByIdQuery(coinId ?? '');
+  const { coinByIdQuery } = useCoinDetails();
+  const { isLoading, data: coinData } = coinByIdQuery(coinId);
 
-  if (isLoading || !coinId || !coinData) return null;
+  if (isLoading || !coinData) return null;
 
   return (
     <Sheet open={opened} onOpenChange={onClose}>
+      <SheetDescription className="sr-only">
+        {coinData.name} coin sheet
+      </SheetDescription>
+
       <SheetContent className="w-full sm:w-[500px] overflow-y-auto p-0 sm:max-w-[500px]">
         <CoinSheetHeader coinData={coinData} />
 

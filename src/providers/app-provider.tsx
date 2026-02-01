@@ -1,6 +1,6 @@
 'use client';
 
-import { type FC } from 'react';
+import { Suspense, type FC } from 'react';
 
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -18,7 +18,9 @@ export const AppProvider: FC<Children> = ({ children }) => (
       enableSystem
       disableTransitionOnChange
     >
-      <TooltipProvider>{children}</TooltipProvider>
+      <TooltipProvider>
+        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+      </TooltipProvider>
 
       <ReactQueryDevtools initialIsOpen={false} />
     </ThemeProvider>

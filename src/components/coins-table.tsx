@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, type FC } from 'react';
+import { memo, type FC } from 'react';
 
 import { flexRender } from '@tanstack/react-table';
 
@@ -24,26 +24,19 @@ type CoinsTableProps = {
   onRowClick: (coinId: string) => void;
 };
 
-export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
-  const { isLoading, isError, isSuccess, table, searchCoin } = useCoinsTable();
-
-  const searchedCoinName =
-    (table.getColumn('name')?.getFilterValue() as string) ?? '';
-
-  const handleChangeSearchedCoin = (e: ChangeEvent<HTMLInputElement>) => {
-    searchCoin(e.target.value);
-  };
+const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
+  const { status, table, searchCoin } = useCoinsTable();
 
   return (
     <div className="w-full mt-10 space-y-6 sm:space-y-3 p-4 md:p-6 sm:pt-10">
       <div className="max-w-335 mx-auto flex flex-col gap-4">
         <SearchInput
+          debounced
+          onChange={searchCoin}
+          disabled={status === 'pending'}
+          placeholder="Search coin by name..."
           containerClassName="2xl:ml-auto"
           inputClassName="md:w-60 border-0 border-b border-transparent shadow-none rounded-none transition-colors placeholder:transition-colors focus-visible:ring-0 focus-visible:border-primary focus-visible:placeholder:text-primary"
-          placeholder="Search coin by name..."
-          disabled={isLoading}
-          value={searchedCoinName}
-          onChange={handleChangeSearchedCoin}
         />
 
         <Table>
@@ -76,11 +69,11 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
           </TableHeader>
 
           <TableBody>
-            {isError && <ErrorTableRow />}
+            {status === 'error' && <ErrorTableRow />}
 
-            {isLoading && <CoinsTableSkeletonLoadingRow />}
+            {status === 'pending' && <CoinsTableSkeletonLoadingRow />}
 
-            {isSuccess && !table.getRowModel().rows?.length && (
+            {status === 'success' && !table.getRowModel().rows?.length && (
               <NoResultsTableRow
                 message={
                   table.getColumn('name')?.getFilterValue()
@@ -90,7 +83,7 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
               />
             )}
 
-            {isSuccess &&
+            {status === 'success' &&
               !!table.getRowModel().rows?.length &&
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -124,6 +117,9 @@ export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
     </div>
   );
 };
+
+export const CoinsTable = memo(CoinsTableComponent);
+CoinsTable.displayName = 'CoinsTable';
 
 const CoinsTableSkeletonLoadingRow: FC = () =>
   Array.from({ length: 20 }).map((_, i) => (

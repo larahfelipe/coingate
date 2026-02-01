@@ -15,15 +15,15 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
   className,
   textSize,
   value,
-  iconSize = 18,
+  iconSize = 16,
 }) => {
-  const valuePercent = (value ?? 0).toFixed(2) + '%';
+  const valuePercent = (value ?? 0).toFixed(1) + '%';
 
-  if (!value || value === 0 || valuePercent.includes('0.00'))
+  if (!value || value === 0 || valuePercent.includes('0.0'))
     return (
       <div
         className={cn(
-          'flex items-center gap-1.5 *:text-muted-foreground *:dark:text-muted-foreground',
+          'flex items-center gap-1 *:text-muted-foreground *:dark:text-muted-foreground',
           className,
         )}
       >
@@ -38,7 +38,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
   return value > 0 ? (
     <div
       className={cn(
-        'flex items-center gap-1.5 *:text-emerald-500 *:dark:text-emerald-400',
+        'flex items-center gap-1 *:text-emerald-500 *:dark:text-emerald-400',
         className,
       )}
     >
@@ -49,7 +49,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
   ) : (
     <div
       className={cn(
-        'flex items-center gap-1.5 *:text-red-500 *:dark:text-red-400',
+        'flex items-center gap-1 *:text-red-500 *:dark:text-red-400',
         className,
       )}
     >

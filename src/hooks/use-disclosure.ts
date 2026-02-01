@@ -1,5 +1,14 @@
 import { useCallback, useState } from 'react';
 
+/**
+ *
+ * @param initialState
+ * @param cb
+ * @returns [opened, { open, close, toggle }]
+ *
+ * @example
+ * const [opened, { open, close, toggle }] = useDisclosure();
+ */
 export const useDisclosure = (
   initialState = false,
   cb?: { onOpen?: VoidFunction; onClose?: VoidFunction },
