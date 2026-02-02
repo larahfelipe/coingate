@@ -1,10 +1,10 @@
 'use client';
 
-import { memo, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
+
+import { useSearchParams } from 'next/navigation';
 
 import { flexRender } from '@tanstack/react-table';
-
-import { cn } from '@/lib/utils';
 
 import { ErrorTableRow } from '@/components/shared/error-table-row';
 import { NoResultsTableRow } from '@/components/shared/no-results-table-row';
@@ -19,6 +19,8 @@ import {
   TableRow,
 } from '@/components/ui';
 import { useCoinsTable } from '@/hooks/use-coins-table';
+import { useUrlParams } from '@/hooks/use-url-params';
+import { cn } from '@/lib/utils';
 
 type CoinsTableProps = {
   onRowClick: (coinId: string) => void;
@@ -27,12 +29,29 @@ type CoinsTableProps = {
 const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
   const { status, table, searchCoin } = useCoinsTable();
 
+  const { updateUrlParams } = useUrlParams<'search'>();
+  const searchParams = useSearchParams();
+  const searchedCoinParam = searchParams.get('search');
+
+  const [searchedCoin, setSearchedCoin] = useState(searchedCoinParam ?? '');
+
+  useEffect(() => {
+    if (searchedCoinParam) searchCoin(searchedCoinParam);
+  }, [searchedCoinParam, searchCoin]);
+
+  const handleChangeSearchedCoin = (value: string) => {
+    updateUrlParams({ search: value });
+    setSearchedCoin(value);
+    searchCoin(value);
+  };
+
   return (
     <div className="w-full mt-10 space-y-6 sm:space-y-3 p-4 md:p-6 sm:pt-10">
       <div className="max-w-335 mx-auto flex flex-col gap-4">
         <SearchInput
           debounced
-          onChange={searchCoin}
+          value={searchedCoin}
+          onChange={handleChangeSearchedCoin}
           disabled={status === 'pending'}
           placeholder="Search coin by name..."
           containerClassName="2xl:ml-auto"
@@ -50,6 +69,7 @@ const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
                   <TableHead
                     key={header.id}
                     className={cn(
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       (header.column.columnDef.meta as any)?.className,
                     )}
                     onClick={

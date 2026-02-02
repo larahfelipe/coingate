@@ -1,8 +1,9 @@
 import { type FC } from 'react';
 import { Sparklines, SparklinesLine } from 'react-sparklines';
 
-import { LineChart } from 'lucide-react';
 import { useTheme } from 'next-themes';
+
+import { LineChart } from 'lucide-react';
 
 type CoinSheetPriceChartProps = {
   priceData: number[];

@@ -1,8 +1,9 @@
 import { type ComponentProps, type FC } from 'react';
 
+import { WalletIcon } from 'lucide-react';
+
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
-import { WalletIcon } from 'lucide-react';
 
 type ConnectWalletBtnProps = ComponentProps<'button'>;
 

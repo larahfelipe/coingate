@@ -10,6 +10,7 @@ import {
   TabsTrigger,
 } from '@/components/ui';
 import { useCoinDetails } from '@/hooks/use-coingecko';
+
 import { CoinSheetAboutTab } from './coin-sheet-about-tab';
 import { CoinSheetHeader } from './coin-sheet-header';
 import { CoinSheetOverviewTab } from './coin-sheet-overview-tab';
@@ -30,23 +31,22 @@ const CoinSheetTabs = {
 } as const;
 
 export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
-  const { coinByIdQuery } = useCoinDetails();
-  const { isLoading, data: coinData } = coinByIdQuery(coinId);
+  const coinDetailsQuery = useCoinDetails(coinId);
 
-  if (isLoading || !coinData) return null;
+  if (coinDetailsQuery.isLoading || !coinDetailsQuery.data) return null;
 
   return (
     <Sheet open={opened} onOpenChange={onClose}>
       <SheetDescription className="sr-only">
-        {coinData.name} coin sheet
+        {coinDetailsQuery.data.name} coin sheet
       </SheetDescription>
 
       <SheetContent className="w-full sm:w-[500px] overflow-y-auto p-0 sm:max-w-[500px]">
-        <CoinSheetHeader coinData={coinData} />
+        <CoinSheetHeader coinData={coinDetailsQuery.data} />
 
         <div className="p-4 space-y-4">
           <CoinSheetPriceChart
-            priceData={coinData.market_data.sparkline_7d.price}
+            priceData={coinDetailsQuery.data.market_data.sparkline_7d.price}
           />
 
           <Tabs defaultValue={CoinSheetTabs.Overview.value}>
@@ -67,23 +67,23 @@ export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
                 value={CoinSheetTabs.Overview.value}
                 className="space-y-4"
               >
-                <CoinSheetOverviewTab coinData={coinData} />
+                <CoinSheetOverviewTab coinData={coinDetailsQuery.data} />
               </TabsContent>
 
               <TabsContent
                 value={CoinSheetTabs.Stats.value}
                 className="space-y-4"
               >
-                <CoinSheetStatsTab coinData={coinData} />
+                <CoinSheetStatsTab coinData={coinDetailsQuery.data} />
               </TabsContent>
 
               <TabsContent value={CoinSheetTabs.About.value}>
-                <CoinSheetAboutTab coinData={coinData} />
+                <CoinSheetAboutTab coinData={coinDetailsQuery.data} />
               </TabsContent>
             </div>
           </Tabs>
 
-          <CoinSheetSentimentCard coinData={coinData} />
+          <CoinSheetSentimentCard coinData={coinDetailsQuery.data} />
         </div>
       </SheetContent>
     </Sheet>

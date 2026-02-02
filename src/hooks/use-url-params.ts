@@ -1,5 +1,6 @@
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useRef } from 'react';
+
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export type UrlParamValue = string | number | boolean | null | undefined;
 
@@ -9,6 +10,7 @@ export const useUrlParams = <T extends string>() => {
   const searchParams = useSearchParams();
 
   const searchParamsRef = useRef(searchParams);
+  // eslint-disable-next-line react-hooks/refs
   searchParamsRef.current = searchParams;
 
   const updateUrlParams = useCallback(
@@ -40,8 +42,6 @@ export const useUrlParams = <T extends string>() => {
       if (!hasChanges) return;
 
       const queryString = nextParams.toString();
-      const currentQueryString = currentParams.toString();
-      if (queryString === currentQueryString) return;
 
       const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
 

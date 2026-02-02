@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
 import { List, ListStar, Star } from '@phosphor-icons/react';
 import {
@@ -10,6 +11,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   type SortingState,
+  type Updater,
   useReactTable,
 } from '@tanstack/react-table';
 import { ChevronDown } from 'lucide-react';
@@ -32,7 +34,7 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useWatchlist } from '@/hooks/use-watchlist';
 import { cn } from '@/lib/utils';
 import { formatNumber } from '@/utils/formatters';
-import { useSearchParams } from 'next/navigation';
+
 import { useUrlParams } from './use-url-params';
 
 type WatchlistTableMeta = Record<'watchlist', ReturnType<typeof useWatchlist>>;
@@ -42,8 +44,6 @@ type StarFilterState = 'all' | 'starred';
 type CoinColumnVisibilityState = Partial<Record<keyof Coin, boolean>>;
 
 export const useCoinsTable = () => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [starFilter, setStarFilter] = useState<StarFilterState>('all');
   const [columnVisibility, setColumnVisibility] =
     useState<CoinColumnVisibilityState>({
@@ -57,11 +57,20 @@ export const useCoinsTable = () => {
   const searchParams = useSearchParams();
   const sortParam = searchParams.get('sort');
   const sortOrderParam = searchParams.get('order');
+  const searchParam = searchParams.get('search');
 
-  useEffect(() => {
-    if (sortParam && sortOrderParam)
-      setSorting([{ id: sortParam, desc: sortOrderParam === 'desc' }]);
-  }, [sortParam, sortOrderParam]);
+  const sorting = useMemo<SortingState>(
+    () =>
+      sortParam && sortOrderParam
+        ? [{ id: sortParam, desc: sortOrderParam === 'desc' }]
+        : [],
+    [sortParam, sortOrderParam],
+  );
+
+  const columnFilters = useMemo<ColumnFiltersState>(
+    () => (searchParam ? [{ id: 'name', value: searchParam }] : []),
+    [searchParam],
+  );
 
   const isSmallViewport = useMediaQuery('(min-width: 768px)');
 
@@ -91,35 +100,47 @@ export const useCoinsTable = () => {
     [setStarFilter, isSmallViewport],
   );
 
+  const handleSortingChange = (updater: Updater<SortingState>) => {
+    const nextSorting =
+      typeof updater === 'function' ? updater(sorting) : updater;
+
+    if (!nextSorting.length) {
+      updateUrlParams({ sort: null, order: null });
+      return;
+    }
+
+    const { id, desc } = nextSorting[0];
+    updateUrlParams({ sort: id, order: desc ? 'desc' : 'asc' });
+  };
+
+  const handleColumnFiltersChange = (updater: Updater<ColumnFiltersState>) => {
+    const nextFilters =
+      typeof updater === 'function' ? updater(columnFilters) : updater;
+
+    const nameFilter = nextFilters.find((filter) => filter.id === 'name');
+
+    updateUrlParams({ search: (nameFilter?.value as string) ?? null });
+  };
+
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     columns,
     data: coinsData,
     meta: { watchlist },
     state: { sorting, columnFilters, columnVisibility },
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: handleSortingChange,
+    onColumnFiltersChange: handleColumnFiltersChange,
+    onColumnVisibilityChange: setColumnVisibility,
   });
-
-  useEffect(() => {
-    if (!sorting.length) {
-      updateUrlParams({ sort: null, order: null });
-      return;
-    }
-    const columnId = sorting[0].id;
-    const order = sorting[0].desc ? 'desc' : 'asc';
-    updateUrlParams({ sort: columnId, order });
-  }, [sorting, updateUrlParams]);
 
   const searchCoin = useCallback(
     (coinName: string) => {
-      updateUrlParams({ search: coinName });
-      table.getColumn('name')?.setFilterValue(coinName.trim());
+      updateUrlParams({ search: coinName.length ? coinName : null });
     },
-    [table, updateUrlParams],
+    [updateUrlParams],
   );
 
   return {

@@ -1,9 +1,10 @@
-import { ComponentProps, FC } from 'react';
+import { type ComponentProps, type FC } from 'react';
 
 import Link from 'next/link';
 
-import { cn } from '@/lib/utils';
 import { CoinIcon } from '@phosphor-icons/react';
+
+import { cn } from '@/lib/utils';
 
 type LogoProps = {
   className?: ComponentProps<'div'>['className'];

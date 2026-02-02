@@ -1,4 +1,4 @@
-import { ComponentProps, type FC } from 'react';
+import { type ComponentProps, type FC } from 'react';
 
 import { CaretDown, CaretUp, Minus } from '@phosphor-icons/react';
 

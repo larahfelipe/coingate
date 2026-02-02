@@ -1,4 +1,4 @@
-import { ComponentProps, type FC, forwardRef } from 'react';
+import { type ComponentProps, type FC, forwardRef } from 'react';
 
 import { ArrowDown, ArrowUp } from '@phosphor-icons/react';
 import { type Column } from '@tanstack/react-table';
@@ -12,6 +12,7 @@ import {
 import { type Children } from '@/types';
 
 type THeadBtnProps = Children & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   column: Column<any>;
   tooltip?: string;
   className?: ComponentProps<'button'>['className'];

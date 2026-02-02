@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  ChangeEvent,
+  type ChangeEvent,
   useEffect,
   useRef,
   type ComponentProps,

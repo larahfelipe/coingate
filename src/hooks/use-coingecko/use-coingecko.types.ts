@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export type Coin = {
   id: string;
   rank: number;
@@ -79,30 +81,30 @@ export type CoingeckoV3CoinResponseData = {
   tickers: Ticker[];
 };
 
-export interface Platforms {
+export type Platforms = {
   '': string;
-}
+};
 
-export interface DetailPlatforms {
+export type DetailPlatforms = {
   '': GeneratedType;
-}
+};
 
-export interface GeneratedType {
+export type GeneratedType = {
   decimal_place: any;
   contract_address: string;
-}
+};
 
-export interface Localization {
+export type Localization = {
   en: string;
   de: string;
-}
+};
 
-export interface Description {
+export type Description = {
   en: string;
   de: string;
-}
+};
 
-export interface Links {
+export type Links = {
   homepage: string[];
   whitepaper: string;
   blockchain_site: string[];
@@ -116,20 +118,20 @@ export interface Links {
   telegram_channel_identifier: string;
   subreddit_url: string;
   repos_url: ReposUrl;
-}
+};
 
-export interface ReposUrl {
+export type ReposUrl = {
   github: string[];
   bitbucket: any[];
-}
+};
 
-export interface Image {
+export type Image = {
   thumb: string;
   small: string;
   large: string;
-}
+};
 
-export interface MarketData {
+export type MarketData = {
   current_price: CurrentPrice;
   total_value_locked: any;
   mcap_to_tvl_ratio: any;
@@ -174,13 +176,13 @@ export interface MarketData {
   circulating_supply: number;
   last_updated: string;
   sparkline_7d: Sparkline7d;
-}
+};
 
-export interface Sparkline7d {
+export type Sparkline7d = {
   price: number[];
-}
+};
 
-export interface CurrentPrice {
+export type CurrentPrice = {
   aed: number;
   ars: number;
   aud: number;
@@ -244,9 +246,9 @@ export interface CurrentPrice {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface Ath {
+export type Ath = {
   aed: number;
   ars: number;
   aud: number;
@@ -310,9 +312,9 @@ export interface Ath {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface AthChangePercentage {
+export type AthChangePercentage = {
   aed: number;
   ars: number;
   aud: number;
@@ -376,9 +378,9 @@ export interface AthChangePercentage {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface AthDate {
+export type AthDate = {
   aed: string;
   ars: string;
   aud: string;
@@ -442,9 +444,9 @@ export interface AthDate {
   bits: string;
   link: string;
   sats: string;
-}
+};
 
-export interface Atl {
+export type Atl = {
   aed: number;
   ars: number;
   aud: number;
@@ -508,9 +510,9 @@ export interface Atl {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface AtlChangePercentage {
+export type AtlChangePercentage = {
   aed: number;
   ars: number;
   aud: number;
@@ -574,9 +576,9 @@ export interface AtlChangePercentage {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface AtlDate {
+export type AtlDate = {
   aed: string;
   ars: string;
   aud: string;
@@ -640,9 +642,9 @@ export interface AtlDate {
   bits: string;
   link: string;
   sats: string;
-}
+};
 
-export interface MarketCap {
+export type MarketCap = {
   aed: number;
   ars: number;
   aud: number;
@@ -706,9 +708,9 @@ export interface MarketCap {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface FullyDilutedValuation {
+export type FullyDilutedValuation = {
   aed: number;
   ars: number;
   aud: number;
@@ -772,9 +774,9 @@ export interface FullyDilutedValuation {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface TotalVolume {
+export type TotalVolume = {
   aed: number;
   ars: number;
   aud: number;
@@ -838,9 +840,9 @@ export interface TotalVolume {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface High24h {
+export type High24h = {
   aed: number;
   ars: number;
   aud: number;
@@ -904,9 +906,9 @@ export interface High24h {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface Low24h {
+export type Low24h = {
   aed: number;
   ars: number;
   aud: number;
@@ -970,9 +972,9 @@ export interface Low24h {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChange24hInCurrency {
+export type PriceChange24hInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1036,9 +1038,9 @@ export interface PriceChange24hInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChangePercentage1hInCurrency {
+export type PriceChangePercentage1hInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1102,9 +1104,9 @@ export interface PriceChangePercentage1hInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChangePercentage24hInCurrency {
+export type PriceChangePercentage24hInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1168,9 +1170,9 @@ export interface PriceChangePercentage24hInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChangePercentage7dInCurrency {
+export type PriceChangePercentage7dInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1234,9 +1236,9 @@ export interface PriceChangePercentage7dInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChangePercentage14dInCurrency {
+export type PriceChangePercentage14dInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1300,9 +1302,9 @@ export interface PriceChangePercentage14dInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChangePercentage30dInCurrency {
+export type PriceChangePercentage30dInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1366,9 +1368,9 @@ export interface PriceChangePercentage30dInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChangePercentage60dInCurrency {
+export type PriceChangePercentage60dInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1432,9 +1434,9 @@ export interface PriceChangePercentage60dInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChangePercentage200dInCurrency {
+export type PriceChangePercentage200dInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1498,9 +1500,9 @@ export interface PriceChangePercentage200dInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface PriceChangePercentage1yInCurrency {
+export type PriceChangePercentage1yInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1564,9 +1566,9 @@ export interface PriceChangePercentage1yInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface MarketCapChange24hInCurrency {
+export type MarketCapChange24hInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1630,9 +1632,9 @@ export interface MarketCapChange24hInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface MarketCapChangePercentage24hInCurrency {
+export type MarketCapChangePercentage24hInCurrency = {
   aed: number;
   ars: number;
   aud: number;
@@ -1696,9 +1698,9 @@ export interface MarketCapChangePercentage24hInCurrency {
   bits: number;
   link: number;
   sats: number;
-}
+};
 
-export interface CommunityData {
+export type CommunityData = {
   facebook_likes: any;
   twitter_followers?: number;
   reddit_average_posts_48h: number;
@@ -1706,9 +1708,9 @@ export interface CommunityData {
   reddit_subscribers: number;
   reddit_accounts_active_48h: number;
   telegram_channel_user_count: any;
-}
+};
 
-export interface DeveloperData {
+export type DeveloperData = {
   forks: number;
   stars: number;
   subscribers: number;
@@ -1719,14 +1721,14 @@ export interface DeveloperData {
   code_additions_deletions_4_weeks: CodeAdditionsDeletions4Weeks;
   commit_count_4_weeks: number;
   last_4_weeks_commit_activity_series: any[];
-}
+};
 
-export interface CodeAdditionsDeletions4Weeks {
+export type CodeAdditionsDeletions4Weeks = {
   additions: number;
   deletions: number;
-}
+};
 
-export interface Ticker {
+export type Ticker = {
   base: string;
   target: string;
   market: Market;
@@ -1745,22 +1747,22 @@ export interface Ticker {
   token_info_url: any;
   coin_id: string;
   target_coin_id: string;
-}
+};
 
-export interface Market {
+export type Market = {
   name: string;
   identifier: string;
   has_trading_incentive: boolean;
-}
+};
 
-export interface ConvertedLast {
+export type ConvertedLast = {
   btc: number;
   eth: number;
   usd: number;
-}
+};
 
-export interface ConvertedVolume {
+export type ConvertedVolume = {
   btc: number;
   eth: number;
   usd: number;
-}
+};

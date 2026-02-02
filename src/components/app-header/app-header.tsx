@@ -2,8 +2,9 @@
 
 import { type ComponentProps, type FC } from 'react';
 
-import { Coins, Landmark } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+
+import { Coins, Landmark } from 'lucide-react';
 
 import { AppHeaderNavLink } from '@/components/app-header/app-header-nav-link';
 import { ConnectWalletBtn } from '@/components/app-header/connect-wallet-btn';

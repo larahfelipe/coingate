@@ -1,7 +1,10 @@
 'use client';
 
-import { Computer, Moon, Sun } from 'lucide-react';
+import { type FC } from 'react';
+
 import { useTheme } from 'next-themes';
+
+import { Computer, Moon, Sun } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -10,7 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { FC } from 'react';
 
 export const ThemeToggle: FC = () => {
   const { setTheme } = useTheme();

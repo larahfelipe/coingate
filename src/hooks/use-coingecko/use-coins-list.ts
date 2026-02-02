@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { COINGECKO_BASE_URL } from './constants';
 import {
-  Coin,
+  type Coin,
   type CoingeckoV3CoinsListResponseData,
 } from './use-coingecko.types';
 
