@@ -26,6 +26,7 @@ export const AppHeaderNavLink: FC<AppHeaderNavLinkProps> = ({
   return (
     <Link
       href={href}
+      aria-label={`Go to ${name} page`}
       className={cn(
         'flex h-full items-center gap-2 relative text-sm font-medium transition-colors hover:text-primary',
         activePath ? 'text-primary' : 'text-muted-foreground',

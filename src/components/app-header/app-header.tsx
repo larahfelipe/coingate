@@ -15,8 +15,12 @@ import { cn } from '@/lib/utils';
 type AppHeaderProps = ComponentProps<'header'>;
 
 const routes = [
-  { name: 'coins', path: '/coins', icon: <Coins size={18} /> },
-  { name: 'exchanges', path: '/exchanges', icon: <Landmark size={18} /> },
+  { name: 'coins', path: '/coins', icon: <Coins className="size-5" /> },
+  {
+    name: 'exchanges',
+    path: '/exchanges',
+    icon: <Landmark className="size-5" />,
+  },
 ];
 
 export const AppHeader: FC<AppHeaderProps> = ({ className, ...props }) => {

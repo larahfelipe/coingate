@@ -1,7 +1,4 @@
-import { type ComponentProps, type FC, forwardRef } from 'react';
-
-import { ArrowDown, ArrowUp } from '@phosphor-icons/react';
-import { type Column } from '@tanstack/react-table';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 
 import {
   Button,
@@ -9,21 +6,22 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui';
+import { Column } from '@/lib/react-table';
 import { type Children } from '@/types';
+import { ComponentProps } from 'react';
 
-type THeadBtnProps = Children & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  column: Column<any>;
-  tooltip?: string;
-  className?: ComponentProps<'button'>['className'];
-};
+type THeadBtnProps<T> = ComponentProps<'button'> &
+  Children & {
+    column: Column<T>;
+    tooltip?: string;
+  };
 
-export const THeadBtn: FC<THeadBtnProps> = ({
+export function THeadBtn<T>({
   tooltip,
   column,
   children,
   className,
-}) => {
+}: THeadBtnProps<T>) {
   if (!tooltip?.length)
     return (
       <Btn column={column} className={className}>
@@ -42,27 +40,30 @@ export const THeadBtn: FC<THeadBtnProps> = ({
       <TooltipContent>{tooltip}</TooltipContent>
     </Tooltip>
   );
-};
+}
 
-const Btn = forwardRef<HTMLButtonElement, Omit<THeadBtnProps, 'tooltip'>>(
-  ({ column, children, className, ...rest }, ref) => (
+function Btn<T>({
+  column,
+  children,
+  className,
+  ...rest
+}: Readonly<Omit<THeadBtnProps<T>, 'tooltip'>>) {
+  return (
     <Button
       variant="ghost"
-      ref={ref}
       onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       className={className}
       {...rest}
     >
       {column.getCanSort() && (
         <>
-          {column.getIsSorted() === 'asc' && <ArrowUp size={18} />}
+          {column.getIsSorted() === 'asc' && <ArrowUp className="size-4" />}
 
-          {column.getIsSorted() === 'desc' && <ArrowDown size={18} />}
+          {column.getIsSorted() === 'desc' && <ArrowDown className="size-4" />}
         </>
       )}
 
       {children}
     </Button>
-  ),
-);
-Btn.displayName = 'Btn';
+  );
+}

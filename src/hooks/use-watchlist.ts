@@ -1,6 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+'use client';
 
-const COINS_WATCHLIST_STORAGE_KEY = 'cryptogate:watchlist:coins';
+import { useCallback, useState } from 'react';
+
+const COINS_WATCHLIST_STORAGE_KEY = 'coingate:watchlist:coins';
 
 /**
  *
@@ -11,6 +13,8 @@ const COINS_WATCHLIST_STORAGE_KEY = 'cryptogate:watchlist:coins';
  */
 export const useWatchlist = () => {
   const [coins, setCoins] = useState<string[]>(() => {
+    if (!globalThis.window) return [];
+
     const coinsWatchlistStr = localStorage.getItem(COINS_WATCHLIST_STORAGE_KEY);
     return coinsWatchlistStr ? JSON.parse(coinsWatchlistStr) : [];
   });
@@ -25,5 +29,5 @@ export const useWatchlist = () => {
     });
   }, []);
 
-  return useMemo(() => ({ coins, addCoin }), [coins, addCoin]);
+  return { coins, addCoin };
 };

@@ -1,6 +1,6 @@
 import { type ComponentProps, type FC } from 'react';
 
-import { ArrowDownRight, ArrowUpRight } from '@phosphor-icons/react';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -21,14 +21,14 @@ export const PriceChangeIcon: FC<PriceChangeIconProps> = ({
 }) => {
   if (value > 0)
     return (
-      <ArrowUpRight
+      <TrendingUp
         className={cn('size-4', className, getPriceChangeColor(value))}
       />
     );
 
   if (value < 0)
     return (
-      <ArrowDownRight
+      <TrendingDown
         className={cn('size-4', className, getPriceChangeColor(value))}
       />
     );

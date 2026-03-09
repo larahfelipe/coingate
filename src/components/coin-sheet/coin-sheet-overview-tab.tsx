@@ -1,7 +1,13 @@
 import { type FC, type ReactNode } from 'react';
 
-import { ActivityIcon, Bank, MoneyWavy } from '@phosphor-icons/react';
-import { Layers, Percent, PieChart } from 'lucide-react';
+import {
+  Activity,
+  Banknote,
+  ChartPie,
+  Landmark,
+  Layers,
+  Percent,
+} from 'lucide-react';
 
 import {
   getPriceChangeColor,
@@ -34,19 +40,19 @@ const MarketInfoGridCard: FC<{
 }> = ({ marketData, coinData }) => (
   <div className="grid grid-cols-2 gap-3">
     <MarketInfoCard
-      icon={<MoneyWavy className="size-4 text-cyan-400" />}
+      icon={<Banknote className="size-4 text-cyan-400" />}
       title="Market cap."
       value={formatNumber(marketData.market_cap.usd)}
     />
 
     <MarketInfoCard
-      icon={<ActivityIcon className="size-4 text-purple-400" />}
+      icon={<Activity className="size-4 text-purple-400" />}
       title="Volume (24h)"
       value={formatNumber(marketData.total_volume.usd)}
     />
 
     <MarketInfoCard
-      icon={<Bank className="size-4 text-orange-400" />}
+      icon={<Landmark className="size-4 text-orange-400" />}
       title="Fully-diluted value"
       value={formatNumber(marketData.current_price.usd * marketData.max_supply)}
     />
@@ -64,7 +70,7 @@ const MarketInfoGridCard: FC<{
     />
 
     <MarketInfoCard
-      icon={<PieChart className="size-4 text-emerald-400" />}
+      icon={<ChartPie className="size-4 text-emerald-400" />}
       title="Circ. supply"
       value={
         formatNumber(marketData.circulating_supply) +

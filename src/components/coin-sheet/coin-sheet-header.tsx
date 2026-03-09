@@ -14,8 +14,8 @@ type CoinSheetHeaderProps = {
 };
 
 export const CoinSheetHeader: FC<CoinSheetHeaderProps> = ({ coinData }) => (
-  <header className="sticky top-0 z-10 space-y-1 bg-background/95 backdrop-blur-sm border-b p-4">
-    <SheetHeader>
+  <header className="sticky top-0 z-10 space-y-5 bg-background/95 backdrop-blur-sm border-b p-4">
+    <SheetHeader className="p-0 mt-2">
       <div className="flex items-center justify-between">
         <SheetTitle className="flex items-center gap-5">
           <CoinImage src={coinData.image.large} alt={coinData.name} />

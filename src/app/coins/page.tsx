@@ -1,45 +1,36 @@
 'use client';
 
-import { useCallback, useState } from 'react';
-
-import { useSearchParams } from 'next/navigation';
+import { useCallback } from 'react';
 
 import { CoinSheet } from '@/components/coin-sheet/coin-sheet';
 import { CoinsTable } from '@/components/coins-table';
 import { useDisclosure } from '@/hooks/use-disclosure';
-import { useUrlParams } from '@/hooks/use-url-params';
+import { useParamsState } from '@/hooks/use-params-state';
 
 export default function CoinsPage() {
-  const { updateUrlParams } = useUrlParams<'id'>();
+  const [{ id: coinIdParam }, setParams] = useParamsState<'id'>();
 
-  const searchParams = useSearchParams();
-  const coinIdParam = searchParams.get('id');
-
-  const [selectedCoinId, setSelectedCoinId] = useState<string>(
-    coinIdParam ?? '',
-  );
   const [isCoinSheetOpened, { open: openCoinSheet, close: closeCoinSheet }] =
     useDisclosure(!!coinIdParam);
 
   const handleOpenCoinSheet = useCallback(
     (coinId: string) => {
-      if (!coinIdParam) updateUrlParams({ id: coinId });
-      setSelectedCoinId(coinId);
+      if (!coinIdParam || coinIdParam !== coinId) setParams({ id: coinId });
       openCoinSheet();
     },
-    [coinIdParam, updateUrlParams, openCoinSheet],
+    [coinIdParam, setParams, openCoinSheet],
   );
 
   const handleCloseCoinSheet = useCallback(() => {
-    if (coinIdParam) updateUrlParams({ id: null });
+    if (coinIdParam) setParams({ id: null });
     closeCoinSheet();
-  }, [coinIdParam, updateUrlParams, closeCoinSheet]);
+  }, [coinIdParam, setParams, closeCoinSheet]);
 
   return (
     <main>
       <CoinSheet
+        coinId={coinIdParam}
         opened={isCoinSheetOpened}
-        coinId={selectedCoinId}
         onClose={handleCloseCoinSheet}
       />
 

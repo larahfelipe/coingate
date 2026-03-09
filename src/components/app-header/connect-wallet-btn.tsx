@@ -14,9 +14,10 @@ export const ConnectWalletBtn: FC<ConnectWalletBtnProps> = ({
   return (
     <Button
       {...props}
+      variant="outline"
       className={cn('rounded-xl shadow-none max-sm:hidden', className)}
     >
-      <WalletIcon size={18} />
+      <WalletIcon className="size-4" />
       connect wallet
     </Button>
   );

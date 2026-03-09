@@ -1,20 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
 
-import { List, ListStar, Star } from '@phosphor-icons/react';
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  type SortingState,
-  type Updater,
-  useReactTable,
-} from '@tanstack/react-table';
-import { ChevronDown } from 'lucide-react';
+import { EllipsisVertical, Infinity, List, Star } from 'lucide-react';
 
 import { PercentChangeIcon } from '@/components/shared/percent-change-icon';
 import { THeadBtn } from '@/components/shared/table-header-btn';
@@ -31,40 +19,114 @@ import {
 } from '@/components/ui';
 import { type Coin, useCoinsList } from '@/hooks/use-coingecko';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { useParamsState } from '@/hooks/use-params-state';
 import { useWatchlist } from '@/hooks/use-watchlist';
+import {
+  type ColumnDef,
+  type ColumnFiltersState,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  type SortingState,
+  type Updater,
+  useReactTable,
+  type VisibilityState,
+} from '@/lib/react-table';
 import { cn } from '@/lib/utils';
 import { formatNumber } from '@/utils/formatters';
 
-import { useUrlParams } from './use-url-params';
+type StarFilterValue = 'all' | 'starred';
+type CoinColumns = Exclude<keyof Coin, 'id' | 'icon' | 'symbol'> | 'star';
 
-type WatchlistTableMeta = Record<'watchlist', ReturnType<typeof useWatchlist>>;
+export const COLUMNS_NAMES = {
+  star: 'Starred',
+  rank: 'Rank',
+  name: 'Name',
+  price: 'Price',
+  priceChange1h: '1h',
+  priceChange24h: '24h',
+  priceChange7d: '7d',
+  marketCap: 'Mkt. cap.',
+  volume24h: 'Volume (24h)',
+  fullyDilutedValue: 'FDV',
+  circulatingSupply: 'Circ. supply',
+  maxSupply: 'Max. supply',
+} as const satisfies Record<CoinColumns, string>;
 
-type StarFilterState = 'all' | 'starred';
+const DEFAULT_VISIBLE_COLUMNS: Record<CoinColumns, boolean> = {
+  star: true,
+  rank: true,
+  name: true,
+  price: true,
+  priceChange1h: true,
+  priceChange24h: true,
+  priceChange7d: true,
+  marketCap: true,
+  volume24h: true,
+  fullyDilutedValue: false,
+  circulatingSupply: false,
+  maxSupply: false,
+};
 
-type CoinColumnVisibilityState = Partial<Record<keyof Coin, boolean>>;
+const COLUMN_PARAM_SEP = '&';
 
 export const useCoinsTable = () => {
-  const [starFilter, setStarFilter] = useState<StarFilterState>('all');
-  const [columnVisibility, setColumnVisibility] =
-    useState<CoinColumnVisibilityState>({
-      fullyDilutedValue: false,
-      circulatingSupply: false,
-      maxSupply: false,
-    });
+  const [
+    {
+      column: columnParam,
+      sort: sortParam,
+      order: orderParam,
+      search: searchParam,
+    },
+    setParams,
+  ] = useParamsState<'column' | 'sort' | 'order' | 'search'>();
 
-  const { updateUrlParams } = useUrlParams<'sort' | 'order' | 'search'>();
+  const { coinsQuery } = useCoinsList();
+  const watchlist = useWatchlist();
+  const isWideViewport = useMediaQuery('(min-width: 768px)');
 
-  const searchParams = useSearchParams();
-  const sortParam = searchParams.get('sort');
-  const sortOrderParam = searchParams.get('order');
-  const searchParam = searchParams.get('search');
+  const [starFilter, setStarFilter] = useState<StarFilterValue>('all');
+  const [columnVisibility, setColumnVisibility] = useState(() => {
+    const allFalseColumns = Object.fromEntries(
+      Object.keys(DEFAULT_VISIBLE_COLUMNS).map((k) => [k, false]),
+    ) as Record<CoinColumns, boolean>;
+
+    return columnParam
+      ? columnParam.split(COLUMN_PARAM_SEP).reduce((acc, columnId) => {
+          acc[columnId as CoinColumns] = true;
+          return acc;
+        }, allFalseColumns)
+      : DEFAULT_VISIBLE_COLUMNS;
+  });
+
+  useEffect(() => {
+    if (!columnParam) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setColumnVisibility((prev) =>
+        prev.star === isWideViewport && prev.rank === isWideViewport
+          ? prev
+          : { ...prev, star: isWideViewport, rank: isWideViewport },
+      );
+    }
+  }, [columnParam, isWideViewport]);
+
+  const columns = useMemo(
+    () => getCoinsTableColumns(setStarFilter),
+    [setStarFilter],
+  );
+
+  const coinsData = useMemo(() => {
+    if (!coinsQuery.data) return [];
+    if (starFilter === 'all') return coinsQuery.data;
+    return coinsQuery.data.filter((coin) => watchlist.coins.includes(coin.id));
+  }, [coinsQuery.data, watchlist.coins, starFilter]);
 
   const sorting = useMemo<SortingState>(
     () =>
-      sortParam && sortOrderParam
-        ? [{ id: sortParam, desc: sortOrderParam === 'desc' }]
+      sortParam && orderParam
+        ? [{ id: sortParam, desc: orderParam === 'desc' }]
         : [],
-    [sortParam, sortOrderParam],
+    [sortParam, orderParam],
   );
 
   const columnFilters = useMemo<ColumnFiltersState>(
@@ -72,118 +134,99 @@ export const useCoinsTable = () => {
     [searchParam],
   );
 
-  const isSmallViewport = useMediaQuery('(min-width: 768px)');
+  const handleSortingChange = useCallback(
+    (updater: Updater<SortingState>) => {
+      const nextSorting =
+        typeof updater === 'function' ? updater(sorting) : updater;
 
-  useEffect(() => {
-    setColumnVisibility((prev) => ({
-      ...prev,
-      star: isSmallViewport,
-      rank: isSmallViewport,
-    }));
-  }, [isSmallViewport]);
+      if (!nextSorting.length) {
+        setParams({ sort: null, order: null });
+        return;
+      }
 
-  const { coinsQuery } = useCoinsList();
-  const watchlist = useWatchlist();
-
-  const coinsData = useMemo(
-    () =>
-      coinsQuery.data
-        ? coinsQuery.data.filter((coin) =>
-            starFilter === 'starred' ? watchlist.coins.includes(coin.id) : true,
-          )
-        : [],
-    [coinsQuery.data, starFilter, watchlist.coins],
+      const { id, desc } = nextSorting[0];
+      setParams({ sort: id, order: desc ? 'desc' : 'asc' });
+    },
+    [sorting, setParams],
   );
 
-  const columns = useMemo(
-    () => getCoinsTableColumns(setStarFilter, isSmallViewport),
-    [setStarFilter, isSmallViewport],
+  const handleColumnVisibilityChange = useCallback(
+    (updater: Updater<VisibilityState>) => {
+      const nextVisibility =
+        typeof updater === 'function' ? updater(columnVisibility) : updater;
+
+      const updatedColumns = { ...DEFAULT_VISIBLE_COLUMNS };
+      let activeColumns = '';
+
+      for (const key in nextVisibility) {
+        updatedColumns[key as CoinColumns] = nextVisibility[key as CoinColumns];
+        if (nextVisibility[key as CoinColumns]) {
+          activeColumns = activeColumns
+            ? `${activeColumns}${COLUMN_PARAM_SEP}${key}`
+            : key;
+        }
+      }
+
+      setParams({ column: activeColumns });
+      setColumnVisibility(updatedColumns);
+    },
+    [columnVisibility, setParams],
   );
 
-  const handleSortingChange = (updater: Updater<SortingState>) => {
-    const nextSorting =
-      typeof updater === 'function' ? updater(sorting) : updater;
+  const handleSearchCoin = useCallback(
+    (coin: string) => setParams({ search: coin }),
+    [setParams],
+  );
 
-    if (!nextSorting.length) {
-      updateUrlParams({ sort: null, order: null });
-      return;
-    }
-
-    const { id, desc } = nextSorting[0];
-    updateUrlParams({ sort: id, order: desc ? 'desc' : 'asc' });
-  };
-
-  const handleColumnFiltersChange = (updater: Updater<ColumnFiltersState>) => {
-    const nextFilters =
-      typeof updater === 'function' ? updater(columnFilters) : updater;
-
-    const nameFilter = nextFilters.find((filter) => filter.id === 'name');
-
-    updateUrlParams({ search: (nameFilter?.value as string) ?? null });
-  };
-
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     columns,
     data: coinsData,
-    meta: { watchlist },
+    meta: { watchlist, isWideViewport },
     state: { sorting, columnFilters, columnVisibility },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: handleSortingChange,
-    onColumnFiltersChange: handleColumnFiltersChange,
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: handleColumnVisibilityChange,
   });
-
-  const searchCoin = useCallback(
-    (coinName: string) => {
-      updateUrlParams({ search: coinName.length ? coinName : null });
-    },
-    [updateUrlParams],
-  );
 
   return {
     table,
-    searchCoin,
     status: coinsQuery.status,
+    coin: searchParam,
+    searchCoin: handleSearchCoin,
   };
 };
 
 export const getCoinsTableColumns = (
-  setStarFilter: (filter: StarFilterState) => void,
-  isSmallViewport: boolean,
+  setStarFilter: (filter: StarFilterValue) => void,
 ): ColumnDef<Coin>[] => [
   {
     id: 'star',
     meta: { onSelect: setStarFilter },
     header: ({ column }) => {
-      const { onSelect } = column.columnDef.meta as unknown as {
-        onSelect: (filter: StarFilterState) => void;
+      const { onSelect } = column.columnDef.meta as {
+        onSelect: (value: StarFilterValue) => VoidFunction;
       };
       return (
-        <DropdownMenu modal={false}>
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="ml-1.5">
-              <ChevronDown size={18} />
+            <Button
+              variant="ghost"
+              aria-label="Filter options"
+              className="ml-1.5"
+            >
+              <EllipsisVertical className="size-5" />
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent className="bg-white/10 backdrop-blur-md">
-            <DropdownMenuItem
-              className="focus:bg-white/5"
-              onClick={() => onSelect?.('all')}
-            >
-              <List size={18} className="text-white" />
-              All
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => onSelect?.('all')}>
+              <List className="size-4" /> All
             </DropdownMenuItem>
 
-            <DropdownMenuItem
-              className="focus:bg-white/5"
-              onClick={() => onSelect?.('starred')}
-            >
-              <ListStar size={18} className="text-white" />
-              Starred
+            <DropdownMenuItem onClick={() => onSelect?.('starred')}>
+              <Star className="size-4" /> Starred
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -192,16 +235,18 @@ export const getCoinsTableColumns = (
     cell: ({ row, table }) => {
       const coin = row.original;
       const { coins, addCoin } =
-        (table.options.meta as unknown as WatchlistTableMeta)?.watchlist ?? {};
+        (
+          table.options.meta as unknown as {
+            watchlist: ReturnType<typeof useWatchlist>;
+          }
+        )?.watchlist ?? {};
       const isStarred = coins.includes(coin.id);
       return (
         <Star
-          weight={isStarred ? 'fill' : 'regular'}
           className={cn(
-            'cursor-pointer transition-colors hover:text-yellow-400',
-            isStarred ? 'text-yellow-400' : '',
+            'size-5 cursor-pointer transition-colors hover:text-yellow-400',
+            isStarred && 'text-yellow-400',
           )}
-          size={20}
           onClick={(e) => {
             e.stopPropagation();
             addCoin(coin.id);
@@ -213,9 +258,13 @@ export const getCoinsTableColumns = (
   {
     accessorKey: 'rank',
     enableSorting: true,
-    meta: { hideBelow: 768, className: 'w-12 !px-0 text-center' },
+    meta: { className: 'w-12 !px-0 text-center' },
     header: ({ column }) => (
-      <THeadBtn column={column} className="w-12 px-0 mx-auto">
+      <THeadBtn
+        column={column}
+        aria-label="Coin rank"
+        className="w-12 px-0 mx-auto"
+      >
         #
       </THeadBtn>
     ),
@@ -223,14 +272,23 @@ export const getCoinsTableColumns = (
   {
     accessorKey: 'name',
     enableSorting: true,
-    header: ({ column }) => <THeadBtn column={column}>Name</THeadBtn>,
-    cell: ({ row }) => {
+    enableHiding: false,
+    header: ({ column }) => (
+      <THeadBtn column={column} aria-label="Coin name">
+        {COLUMNS_NAMES[column.id as keyof typeof COLUMNS_NAMES]}
+      </THeadBtn>
+    ),
+    cell: ({ row, table }) => {
       const coin = row.original;
+      const { isWideViewport } = table.options.meta! as Record<
+        'isWideViewport',
+        boolean
+      >;
       return (
         <div
           className={cn(
             'flex items-center gap-4',
-            !isSmallViewport && 'w-[200px] truncate',
+            !isWideViewport && 'w-[200px] truncate',
           )}
         >
           <Image src={coin.icon} alt={coin.name} width={20} height={20} />
@@ -251,11 +309,13 @@ export const getCoinsTableColumns = (
     enableSorting: true,
     header: ({ column }) => (
       <div className="flex justify-end">
-        <THeadBtn column={column}>Price</THeadBtn>
+        <THeadBtn column={column} aria-label="Current price">
+          {COLUMNS_NAMES[column.id as keyof typeof COLUMNS_NAMES]}
+        </THeadBtn>
       </div>
     ),
     cell: ({ getValue }) => (
-      <div className="text-right">{getValue<React.ReactNode>()}</div>
+      <div className="text-right">{getValue<string>()}</div>
     ),
   },
   {
@@ -264,8 +324,12 @@ export const getCoinsTableColumns = (
     enableHiding: true,
     header: ({ column }) => (
       <div className="flex justify-end">
-        <THeadBtn tooltip="Price change over the last hour" column={column}>
-          1h
+        <THeadBtn
+          column={column}
+          tooltip="Price change over the last hour"
+          aria-label="Price change over the last hour"
+        >
+          {COLUMNS_NAMES.priceChange1h}
         </THeadBtn>
       </div>
     ),
@@ -279,8 +343,12 @@ export const getCoinsTableColumns = (
     enableHiding: true,
     header: ({ column }) => (
       <div className="flex justify-end">
-        <THeadBtn tooltip="Price change over the last 24 hours" column={column}>
-          24h
+        <THeadBtn
+          column={column}
+          tooltip="Price change over the last 24 hours"
+          aria-label="Price change over the last 24 hours"
+        >
+          {COLUMNS_NAMES.priceChange24h}
         </THeadBtn>
       </div>
     ),
@@ -294,8 +362,12 @@ export const getCoinsTableColumns = (
     enableHiding: true,
     header: ({ column }) => (
       <div className="flex justify-end">
-        <THeadBtn tooltip="Price change over the last 7 days" column={column}>
-          7d
+        <THeadBtn
+          column={column}
+          tooltip="Price change over the last 7 days"
+          aria-label="Price change over the last 7 days"
+        >
+          {COLUMNS_NAMES.priceChange7d}
         </THeadBtn>
       </div>
     ),
@@ -309,29 +381,36 @@ export const getCoinsTableColumns = (
     enableHiding: true,
     header: ({ column }) => (
       <div className="flex justify-end">
-        <THeadBtn tooltip="Market capitalization" column={column}>
-          Mkt. cap.
+        <THeadBtn
+          column={column}
+          tooltip="Market capitalization"
+          aria-label="Coin market capitalization"
+        >
+          {COLUMNS_NAMES.marketCap}
         </THeadBtn>
       </div>
     ),
-    cell: ({ getValue }) => (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="cursor-default text-right">
-            {formatNumber(getValue<number>())}
-          </div>
-        </TooltipTrigger>
+    cell: ({ getValue }) => {
+      const value = getValue<number>();
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="cursor-default text-right">
+              {formatNumber(value)}
+            </div>
+          </TooltipTrigger>
 
-        <TooltipContent>
-          <p>
-            {getValue<number>().toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            })}
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    ),
+          <TooltipContent>
+            <p>
+              {value.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
   },
   {
     accessorKey: 'volume24h',
@@ -340,31 +419,35 @@ export const getCoinsTableColumns = (
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn
-          tooltip="Volume transacted over the last 24 hours"
           column={column}
+          tooltip="Volume transacted over the last 24 hours"
+          aria-label="Volume transacted over the last 24 hours"
         >
-          Volume (24h)
+          {COLUMNS_NAMES.volume24h}
         </THeadBtn>
       </div>
     ),
-    cell: ({ getValue }) => (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="cursor-default text-right">
-            {formatNumber(getValue<number>())}
-          </div>
-        </TooltipTrigger>
+    cell: ({ getValue }) => {
+      const value = getValue<number>();
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="cursor-default text-right">
+              {formatNumber(value)}
+            </div>
+          </TooltipTrigger>
 
-        <TooltipContent>
-          <p>
-            {getValue<number>().toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            })}
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    ),
+          <TooltipContent>
+            <p>
+              {value.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
   },
   {
     accessorKey: 'fullyDilutedValue',
@@ -372,24 +455,31 @@ export const getCoinsTableColumns = (
     enableHiding: true,
     header: ({ column }) => (
       <div className="flex justify-end">
-        <THeadBtn tooltip="Fully diluted value" column={column}>
-          FDV
+        <THeadBtn
+          column={column}
+          tooltip="Fully diluted value"
+          aria-label="Coin fully-diluted value"
+        >
+          {COLUMNS_NAMES.fullyDilutedValue}
         </THeadBtn>
       </div>
     ),
-    cell: ({ getValue }) => (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="cursor-default text-right">
-            {formatNumber(getValue<number>())}
-          </div>
-        </TooltipTrigger>
+    cell: ({ getValue }) => {
+      const value = getValue<number>();
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="cursor-default text-right">
+              {formatNumber(value)}
+            </div>
+          </TooltipTrigger>
 
-        <TooltipContent>
-          <p>{getValue<number>().toLocaleString('en-US')}</p>
-        </TooltipContent>
-      </Tooltip>
-    ),
+          <TooltipContent>
+            <p>{value.toLocaleString('en-US')}</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
   },
   {
     accessorKey: 'circulatingSupply',
@@ -397,24 +487,31 @@ export const getCoinsTableColumns = (
     enableHiding: true,
     header: ({ column }) => (
       <div className="flex justify-end">
-        <THeadBtn tooltip="Circulating supply" column={column}>
-          Circ. supply
+        <THeadBtn
+          column={column}
+          tooltip="Circulating supply"
+          aria-label="Coin circulating supply"
+        >
+          {COLUMNS_NAMES.circulatingSupply}
         </THeadBtn>
       </div>
     ),
-    cell: ({ getValue }) => (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="cursor-default text-right">
-            {formatNumber(getValue<number>())}
-          </div>
-        </TooltipTrigger>
+    cell: ({ getValue }) => {
+      const value = getValue<number>();
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="cursor-default text-right">
+              {formatNumber(value)}
+            </div>
+          </TooltipTrigger>
 
-        <TooltipContent>
-          <p>{getValue<number>().toLocaleString('en-US')}</p>
-        </TooltipContent>
-      </Tooltip>
-    ),
+          <TooltipContent>
+            <p>{value.toLocaleString('en-US')}</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
   },
   {
     accessorKey: 'maxSupply',
@@ -422,23 +519,34 @@ export const getCoinsTableColumns = (
     enableHiding: true,
     header: ({ column }) => (
       <div className="flex justify-end">
-        <THeadBtn tooltip="Maximum supply" column={column}>
-          Max. supply
+        <THeadBtn
+          column={column}
+          tooltip="Maximum supply"
+          aria-label="Coin maximum supply"
+        >
+          {COLUMNS_NAMES.maxSupply}
         </THeadBtn>
       </div>
     ),
-    cell: ({ getValue }) => (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="cursor-default text-right">
-            {formatNumber(getValue<number>())}
-          </div>
-        </TooltipTrigger>
+    cell: ({ getValue }) => {
+      const value = getValue<number>();
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="cursor-default text-right">
+              {value > 0 ? (
+                formatNumber(value)
+              ) : (
+                <Infinity className="size-4 ml-auto" />
+              )}
+            </div>
+          </TooltipTrigger>
 
-        <TooltipContent>
-          <p>{getValue<number>().toLocaleString('en-US')}</p>
-        </TooltipContent>
-      </Tooltip>
-    ),
+          <TooltipContent>
+            <p>{value > 0 ? value.toLocaleString('en-US') : 'Unlimited'}</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
   },
 ];

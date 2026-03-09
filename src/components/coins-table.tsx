@@ -1,15 +1,18 @@
 'use client';
 
-import { memo, useEffect, useState, type FC } from 'react';
+import { memo, type FC } from 'react';
 
-import { useSearchParams } from 'next/navigation';
-
-import { flexRender } from '@tanstack/react-table';
+import { Settings2 } from 'lucide-react';
 
 import { ErrorTableRow } from '@/components/shared/error-table-row';
 import { NoResultsTableRow } from '@/components/shared/no-results-table-row';
 import { SearchInput } from '@/components/shared/search-input';
 import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   Skeleton,
   Table,
   TableBody,
@@ -18,8 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui';
-import { useCoinsTable } from '@/hooks/use-coins-table';
-import { useUrlParams } from '@/hooks/use-url-params';
+import { Switch } from '@/components/ui/switch';
+import { COLUMNS_NAMES, useCoinsTable } from '@/hooks/use-coins-table';
+import { flexRender } from '@/lib/react-table';
 import { cn } from '@/lib/utils';
 
 type CoinsTableProps = {
@@ -27,36 +31,53 @@ type CoinsTableProps = {
 };
 
 const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
-  const { status, table, searchCoin } = useCoinsTable();
-
-  const { updateUrlParams } = useUrlParams<'search'>();
-  const searchParams = useSearchParams();
-  const searchedCoinParam = searchParams.get('search');
-
-  const [searchedCoin, setSearchedCoin] = useState(searchedCoinParam ?? '');
-
-  useEffect(() => {
-    if (searchedCoinParam) searchCoin(searchedCoinParam);
-  }, [searchedCoinParam, searchCoin]);
-
-  const handleChangeSearchedCoin = (value: string) => {
-    updateUrlParams({ search: value });
-    setSearchedCoin(value);
-    searchCoin(value);
-  };
+  const { table, status, coin, searchCoin } = useCoinsTable();
 
   return (
     <div className="w-full mt-10 space-y-6 sm:space-y-3 p-4 md:p-6 sm:pt-10">
       <div className="max-w-335 mx-auto flex flex-col gap-4">
-        <SearchInput
-          debounced
-          value={searchedCoin}
-          onChange={handleChangeSearchedCoin}
-          disabled={status === 'pending'}
-          placeholder="Search coin by name..."
-          containerClassName="2xl:ml-auto"
-          inputClassName="md:w-60 border-0 border-b border-transparent shadow-none rounded-none transition-colors placeholder:transition-colors focus-visible:ring-0 focus-visible:border-primary focus-visible:placeholder:text-primary"
-        />
+        <div className="flex items-center gap-2 2xl:ml-auto">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Customize table columns"
+              >
+                <Settings2 className="size-5" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent>
+              {table.getAllColumns().map((column) => (
+                <DropdownMenuItem
+                  key={column.id}
+                  onSelect={(e) => e.preventDefault()}
+                  className="flex items-center justify-between gap-6"
+                >
+                  {COLUMNS_NAMES[column.id as keyof typeof COLUMNS_NAMES]}
+
+                  <Switch
+                    disabled={!column.getCanHide()}
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => {
+                      if (column.getCanHide()) column.toggleVisibility(value);
+                    }}
+                  />
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <SearchInput
+            debounced
+            value={coin}
+            onChange={searchCoin}
+            disabled={status === 'pending'}
+            placeholder="Search coin by name..."
+            inputClassName="md:w-60 border-0 border-b border-transparent shadow-none rounded-none transition-colors placeholder:transition-colors focus-visible:ring-0 focus-visible:border-primary focus-visible:placeholder:text-primary"
+          />
+        </div>
 
         <Table>
           <TableHeader>

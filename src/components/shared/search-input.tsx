@@ -1,14 +1,14 @@
 'use client';
 
 import {
-  type ChangeEvent,
   useEffect,
   useRef,
+  type ChangeEvent,
   type ComponentProps,
   type FC,
 } from 'react';
 
-import { MagnifyingGlass } from '@phosphor-icons/react';
+import { Search } from 'lucide-react';
 
 import { Input } from '@/components/ui';
 import { useDebouncedState } from '@/hooks/use-debounced-state';
@@ -29,7 +29,7 @@ export const SearchInput: FC<SearchInputProps> = ({
   value,
   containerClassName,
   inputClassName,
-  iconSize = 16,
+  iconSize = 18,
   debounced = false,
   debounceDelay = 500,
   ...props
@@ -56,7 +56,7 @@ export const SearchInput: FC<SearchInputProps> = ({
 
   return (
     <div className={cn('flex items-center relative group', containerClassName)}>
-      <MagnifyingGlass
+      <Search
         size={iconSize}
         className="absolute left-3 text-muted-foreground transition-colors group-focus-within:text-primary"
       />

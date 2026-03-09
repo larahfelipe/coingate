@@ -1,6 +1,6 @@
 import { type ComponentProps, type FC } from 'react';
 
-import { CaretDown, CaretUp, Minus } from '@phosphor-icons/react';
+import { ChevronDown, ChevronUp, Minus } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -42,7 +42,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
         className,
       )}
     >
-      <CaretUp size={iconSize} />
+      <ChevronUp size={iconSize} />
 
       <span style={{ fontSize: textSize }}>{valuePercent}</span>
     </div>
@@ -53,7 +53,7 @@ export const PercentChangeIcon: FC<PercentChangeIconProps> = ({
         className,
       )}
     >
-      <CaretDown size={iconSize} />
+      <ChevronDown size={iconSize} />
 
       <span style={{ fontSize: textSize }}>{valuePercent}</span>
     </div>

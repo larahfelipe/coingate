@@ -1,7 +1,12 @@
 import { type ComponentProps, type FC, type ReactNode } from 'react';
 
-import { Books, GithubLogo, Scroll } from '@phosphor-icons/react';
-import { ExternalLink as ExternalLinkIcon, Info } from 'lucide-react';
+import {
+  ExternalLink as ExternalLinkIcon,
+  Github,
+  Info,
+  Scroll,
+  Telescope,
+} from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { type CoingeckoV3CoinResponseData } from '@/types';
@@ -58,13 +63,13 @@ const LinksSection: FC<Pick<CoinSheetAboutTabProps['coinData'], 'links'>> = ({
 
         <ExternalLink
           href={links.blockchain_site?.[0]}
-          icon={<Books className="size-3" />}
+          icon={<Telescope className="size-3" />}
           label="Explorer"
         />
 
         <ExternalLink
           href={links.repos_url?.github?.[0]}
-          icon={<GithubLogo className="size-3" />}
+          icon={<Github className="size-3" />}
           label="GitHub"
         />
       </div>
