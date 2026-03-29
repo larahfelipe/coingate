@@ -1,8 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 
 import Image from 'next/image';
 
 import { EllipsisVertical, Infinity, List, Star } from 'lucide-react';
+import {
+  debounce,
+  parseAsArrayOf,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryStates,
+} from 'nuqs';
 
 import { PercentChangeIcon } from '@/components/shared/percent-change-icon';
 import { THeadBtn } from '@/components/shared/table-header-btn';
@@ -19,7 +26,6 @@ import {
 } from '@/components/ui';
 import { type Coin, useCoinsList } from '@/hooks/use-coingecko';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { useParamsState } from '@/hooks/use-params-state';
 import { useWatchlist } from '@/hooks/use-watchlist';
 import {
   type ColumnDef,
@@ -66,41 +72,42 @@ const DEFAULT_VISIBLE_COLUMNS: Record<CoinColumns, boolean> = {
   fullyDilutedValue: false,
   circulatingSupply: false,
   maxSupply: false,
-};
-
-const COLUMN_PARAM_SEP = '&';
+} as const satisfies Record<CoinColumns, boolean>;
 
 export const useCoinsTable = () => {
-  const [
-    {
-      column: columnParam,
-      sort: sortParam,
-      order: orderParam,
-      search: searchParam,
-    },
-    setParams,
-  ] = useParamsState<'column' | 'sort' | 'order' | 'search'>();
-
   const { coinsQuery } = useCoinsList();
   const watchlist = useWatchlist();
   const isWideViewport = useMediaQuery('(min-width: 768px)');
 
-  const [starFilter, setStarFilter] = useState<StarFilterValue>('all');
+  const [urlParams, setUrlParams] = useQueryStates({
+    column: parseAsArrayOf(
+      parseAsStringLiteral(Object.keys(DEFAULT_VISIBLE_COLUMNS)),
+    ),
+    sort: parseAsStringLiteral(Object.keys(DEFAULT_VISIBLE_COLUMNS)),
+    order: parseAsStringLiteral(['asc', 'desc']),
+    search: parseAsString
+      .withDefault('')
+      .withOptions({ limitUrlUpdates: debounce(500) }),
+  });
+
+  const [starredCoinsFilter, setStarredCoinsFilter] =
+    useState<StarFilterValue>('all');
+
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const allFalseColumns = Object.fromEntries(
       Object.keys(DEFAULT_VISIBLE_COLUMNS).map((k) => [k, false]),
     ) as Record<CoinColumns, boolean>;
 
-    return columnParam
-      ? columnParam.split(COLUMN_PARAM_SEP).reduce((acc, columnId) => {
+    return urlParams.column
+      ? urlParams.column.reduce((acc, columnId) => {
           acc[columnId as CoinColumns] = true;
           return acc;
         }, allFalseColumns)
       : DEFAULT_VISIBLE_COLUMNS;
   });
 
-  useEffect(() => {
-    if (!columnParam) {
+  useLayoutEffect(() => {
+    if (!urlParams.column) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setColumnVisibility((prev) =>
         prev.star === isWideViewport && prev.rank === isWideViewport
@@ -108,30 +115,31 @@ export const useCoinsTable = () => {
           : { ...prev, star: isWideViewport, rank: isWideViewport },
       );
     }
-  }, [columnParam, isWideViewport]);
+  }, [urlParams.column, isWideViewport]);
 
   const columns = useMemo(
-    () => getCoinsTableColumns(setStarFilter),
-    [setStarFilter],
+    () => getCoinsTableColumns(setStarredCoinsFilter),
+    [setStarredCoinsFilter],
   );
 
   const coinsData = useMemo(() => {
     if (!coinsQuery.data) return [];
-    if (starFilter === 'all') return coinsQuery.data;
-    return coinsQuery.data.filter((coin) => watchlist.coins.includes(coin.id));
-  }, [coinsQuery.data, watchlist.coins, starFilter]);
+    const flattened = coinsQuery.data.pages.flat();
+    if (starredCoinsFilter === 'all') return flattened;
+    return flattened.filter((coin) => watchlist.coins.includes(coin.id));
+  }, [coinsQuery.data, watchlist.coins, starredCoinsFilter]);
 
   const sorting = useMemo<SortingState>(
     () =>
-      sortParam && orderParam
-        ? [{ id: sortParam, desc: orderParam === 'desc' }]
+      urlParams.sort && urlParams.order
+        ? [{ id: urlParams.sort, desc: urlParams.order === 'desc' }]
         : [],
-    [sortParam, orderParam],
+    [urlParams.sort, urlParams.order],
   );
 
   const columnFilters = useMemo<ColumnFiltersState>(
-    () => (searchParam ? [{ id: 'name', value: searchParam }] : []),
-    [searchParam],
+    () => (urlParams.search ? [{ id: 'name', value: urlParams.search }] : []),
+    [urlParams.search],
   );
 
   const handleSortingChange = useCallback(
@@ -140,14 +148,14 @@ export const useCoinsTable = () => {
         typeof updater === 'function' ? updater(sorting) : updater;
 
       if (!nextSorting.length) {
-        setParams({ sort: null, order: null });
+        setUrlParams({ sort: null, order: null });
         return;
       }
 
       const { id, desc } = nextSorting[0];
-      setParams({ sort: id, order: desc ? 'desc' : 'asc' });
+      setUrlParams({ sort: id, order: desc ? 'desc' : 'asc' });
     },
-    [sorting, setParams],
+    [sorting, setUrlParams],
   );
 
   const handleColumnVisibilityChange = useCallback(
@@ -156,26 +164,24 @@ export const useCoinsTable = () => {
         typeof updater === 'function' ? updater(columnVisibility) : updater;
 
       const updatedColumns = { ...DEFAULT_VISIBLE_COLUMNS };
-      let activeColumns = '';
+      let activeColumns: string[] = [];
 
       for (const key in nextVisibility) {
         updatedColumns[key as CoinColumns] = nextVisibility[key as CoinColumns];
         if (nextVisibility[key as CoinColumns]) {
-          activeColumns = activeColumns
-            ? `${activeColumns}${COLUMN_PARAM_SEP}${key}`
-            : key;
+          activeColumns = activeColumns ? [...activeColumns, key] : [key];
         }
       }
 
-      setParams({ column: activeColumns });
+      setUrlParams({ column: activeColumns });
       setColumnVisibility(updatedColumns);
     },
-    [columnVisibility, setParams],
+    [columnVisibility, setUrlParams],
   );
 
   const handleSearchCoin = useCallback(
-    (coin: string) => setParams({ search: coin }),
-    [setParams],
+    (searchedCoin: string) => setUrlParams({ search: searchedCoin }),
+    [setUrlParams],
   );
 
   const table = useReactTable({
@@ -193,17 +199,22 @@ export const useCoinsTable = () => {
   return {
     table,
     status: coinsQuery.status,
-    coin: searchParam,
+    isFetchingNextPage: coinsQuery.isFetchingNextPage,
+    hasNextPage: coinsQuery.hasNextPage,
+    fetchNextPage: coinsQuery.fetchNextPage,
+    isFetchNextPageError: coinsQuery.isFetchNextPageError,
+    coin: urlParams.search,
     searchCoin: handleSearchCoin,
   };
 };
 
 export const getCoinsTableColumns = (
-  setStarFilter: (filter: StarFilterValue) => void,
+  setStarredCoinsFilter: (filter: StarFilterValue) => void,
 ): ColumnDef<Coin>[] => [
   {
     id: 'star',
-    meta: { onSelect: setStarFilter },
+    size: 64,
+    meta: { onSelect: setStarredCoinsFilter },
     header: ({ column }) => {
       const { onSelect } = column.columnDef.meta as {
         onSelect: (value: StarFilterValue) => VoidFunction;
@@ -258,6 +269,7 @@ export const getCoinsTableColumns = (
   {
     accessorKey: 'rank',
     enableSorting: true,
+    size: 64,
     meta: { className: 'w-12 !px-0 text-center' },
     header: ({ column }) => (
       <THeadBtn
@@ -287,7 +299,7 @@ export const getCoinsTableColumns = (
       return (
         <div
           className={cn(
-            'flex items-center gap-4',
+            'w-[400px] flex items-center gap-4 truncate',
             !isWideViewport && 'w-[200px] truncate',
           )}
         >
@@ -307,6 +319,7 @@ export const getCoinsTableColumns = (
   {
     accessorKey: 'price',
     enableSorting: true,
+    size: 300,
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn column={column} aria-label="Current price">
@@ -322,6 +335,7 @@ export const getCoinsTableColumns = (
     accessorKey: 'priceChange1h',
     enableSorting: true,
     enableHiding: true,
+    size: 150,
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn
@@ -341,6 +355,7 @@ export const getCoinsTableColumns = (
     accessorKey: 'priceChange24h',
     enableSorting: true,
     enableHiding: true,
+    size: 150,
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn
@@ -360,6 +375,7 @@ export const getCoinsTableColumns = (
     accessorKey: 'priceChange7d',
     enableSorting: true,
     enableHiding: true,
+    size: 150,
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn
@@ -379,6 +395,7 @@ export const getCoinsTableColumns = (
     accessorKey: 'marketCap',
     enableSorting: true,
     enableHiding: true,
+    size: 120,
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn
@@ -416,6 +433,7 @@ export const getCoinsTableColumns = (
     accessorKey: 'volume24h',
     enableSorting: true,
     enableHiding: true,
+    size: 120,
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn
@@ -453,6 +471,7 @@ export const getCoinsTableColumns = (
     accessorKey: 'fullyDilutedValue',
     enableSorting: true,
     enableHiding: true,
+    size: 120,
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn
@@ -485,6 +504,7 @@ export const getCoinsTableColumns = (
     accessorKey: 'circulatingSupply',
     enableSorting: true,
     enableHiding: true,
+    size: 120,
     header: ({ column }) => (
       <div className="flex justify-end">
         <THeadBtn

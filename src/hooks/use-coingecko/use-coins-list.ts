@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { COINGECKO_BASE_URL } from './constants';
 import {
@@ -7,16 +7,18 @@ import {
 } from './use-coingecko.types';
 
 export const useCoinsList = () => {
-  const coinsQuery = useQuery({
+  const coinsQuery = useInfiniteQuery({
     staleTime: 60 * 1_000,
+    gcTime: 5 * 60 * 1_000,
     refetchInterval: 60 * 1_000,
+    initialPageParam: 1,
     queryKey: ['coingecko:coins/markets'],
-    queryFn: async () => {
+    queryFn: async ({ pageParam }) => {
       const requestParams = new URLSearchParams({
         vs_currency: 'usd',
         order: 'market_cap_desc',
         per_page: '50',
-        page: '1',
+        page: pageParam.toString(),
         price_change_percentage: '1h,24h,7d',
       });
 
@@ -47,6 +49,9 @@ export const useCoinsList = () => {
         circulatingSupply: coin.circulating_supply,
         maxSupply: coin.max_supply,
       }));
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.length === 50 ? allPages.length + 1 : undefined;
     },
   });
 

@@ -1,3 +1,5 @@
+import { type ComponentProps } from 'react';
+
 import { ArrowDown, ArrowUp } from 'lucide-react';
 
 import {
@@ -6,9 +8,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui';
-import { Column } from '@/lib/react-table';
+import { type Column } from '@/lib/react-table';
 import { type Children } from '@/types';
-import { ComponentProps } from 'react';
 
 type THeadBtnProps<T> = ComponentProps<'button'> &
   Children & {

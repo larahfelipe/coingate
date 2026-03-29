@@ -1,35 +1,41 @@
 'use client';
 
-import { useCallback } from 'react';
+import { use } from 'react';
+
+import { parseAsString, useQueryState } from 'nuqs';
 
 import { CoinSheet } from '@/components/coin-sheet/coin-sheet';
 import { CoinsTable } from '@/components/coins-table';
 import { useDisclosure } from '@/hooks/use-disclosure';
-import { useParamsState } from '@/hooks/use-params-state';
 
-export default function CoinsPage() {
-  const [{ id: coinIdParam }, setParams] = useParamsState<'id'>();
+type CoinsPageProps = {
+  searchParams: Promise<Record<'id', string>>;
+};
 
-  const [isCoinSheetOpened, { open: openCoinSheet, close: closeCoinSheet }] =
-    useDisclosure(!!coinIdParam);
-
-  const handleOpenCoinSheet = useCallback(
-    (coinId: string) => {
-      if (!coinIdParam || coinIdParam !== coinId) setParams({ id: coinId });
-      openCoinSheet();
-    },
-    [coinIdParam, setParams, openCoinSheet],
+export default function CoinsPage({ searchParams }: Readonly<CoinsPageProps>) {
+  const { id } = use(searchParams);
+  const [coinId, setCoinId] = useQueryState(
+    'id',
+    parseAsString.withDefault(id),
   );
 
-  const handleCloseCoinSheet = useCallback(() => {
-    if (coinIdParam) setParams({ id: null });
+  const [isCoinSheetOpened, { open: openCoinSheet, close: closeCoinSheet }] =
+    useDisclosure(!!coinId);
+
+  const handleOpenCoinSheet = (selectedCoinId: string) => {
+    if (selectedCoinId !== coinId) setCoinId(selectedCoinId);
+    openCoinSheet();
+  };
+
+  const handleCloseCoinSheet = () => {
+    if (coinId) setCoinId(null);
     closeCoinSheet();
-  }, [coinIdParam, setParams, closeCoinSheet]);
+  };
 
   return (
     <main>
       <CoinSheet
-        coinId={coinIdParam}
+        coinId={coinId}
         opened={isCoinSheetOpened}
         onClose={handleCloseCoinSheet}
       />

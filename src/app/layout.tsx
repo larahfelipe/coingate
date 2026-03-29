@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Poppins } from 'next/font/google';
 
 import { AppHeader } from '@/components/app-header';
+import { cn } from '@/lib/utils';
 import { AppProvider } from '@/providers/app-provider';
 import { type Children } from '@/types';
 import './globals.css';
@@ -27,7 +28,10 @@ export default function RootLayout({ children }: Children) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} font-sans antialiased min-h-screen bg-background text-foreground`}
+        className={cn(
+          poppins.className,
+          'font-sans antialiased min-h-screen bg-background text-foreground',
+        )}
       >
         <AppProvider>
           <AppHeader />

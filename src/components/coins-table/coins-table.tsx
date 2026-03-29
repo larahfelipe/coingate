@@ -1,8 +1,9 @@
 'use client';
 
-import { memo, type FC } from 'react';
+import { type FC } from 'react';
 
-import { Settings2 } from 'lucide-react';
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { RefreshCcw, Settings2 } from 'lucide-react';
 
 import { ErrorTableRow } from '@/components/shared/error-table-row';
 import { NoResultsTableRow } from '@/components/shared/no-results-table-row';
@@ -23,15 +24,53 @@ import {
 } from '@/components/ui';
 import { Switch } from '@/components/ui/switch';
 import { COLUMNS_NAMES, useCoinsTable } from '@/hooks/use-coins-table';
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { flexRender } from '@/lib/react-table';
 import { cn } from '@/lib/utils';
+
+import { CoinsTableRow } from './coins-table-row';
 
 type CoinsTableProps = {
   onRowClick: (coinId: string) => void;
 };
 
-const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
-  const { table, status, coin, searchCoin } = useCoinsTable();
+export const CoinsTable: FC<CoinsTableProps> = ({ onRowClick }) => {
+  const {
+    table,
+    status,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    isFetchNextPageError,
+    coin,
+    searchCoin,
+  } = useCoinsTable();
+
+  const loadMoreRef = useIntersectionObserver<HTMLTableRowElement>({
+    enabled: !!hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
+    onIntersect: fetchNextPage,
+  });
+
+  const rows = table.getRowModel().rows;
+
+  const rowVirtualizer = useWindowVirtualizer({
+    count: rows.length,
+    estimateSize: () => 60,
+    overscan: 10,
+  });
+
+  const virtualItems = rowVirtualizer.getVirtualItems();
+  const paddingTop =
+    virtualItems.length > 0 ? (virtualItems[0]?.start ?? 0) : 0;
+  const paddingBottom =
+    virtualItems.length > 0
+      ? rowVirtualizer.getTotalSize() -
+        (virtualItems[virtualItems.length - 1]?.end ?? 0)
+      : 0;
+
+  const visibleLeafColumns = table.getVisibleLeafColumns();
+  const visibleColumnIds = visibleLeafColumns.map((c) => c.id).join(',');
+  const visibleColumnsCount = visibleLeafColumns.length;
 
   return (
     <div className="w-full mt-10 space-y-6 sm:space-y-3 p-4 md:p-6 sm:pt-10">
@@ -70,7 +109,6 @@ const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
           </DropdownMenu>
 
           <SearchInput
-            debounced
             value={coin}
             onChange={searchCoin}
             disabled={status === 'pending'}
@@ -89,9 +127,11 @@ const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
+                    style={{ width: header.column.getSize() }}
                     className={cn(
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      (header.column.columnDef.meta as any)?.className,
+                      (header.column.columnDef.meta as { className: string })
+                        ?.className,
+                      'overflow-hidden',
                     )}
                     onClick={
                       header.column.getCanSort()
@@ -110,11 +150,13 @@ const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
           </TableHeader>
 
           <TableBody>
-            {status === 'error' && <ErrorTableRow />}
+            {status === 'error' && (
+              <ErrorTableRow colSpan={visibleColumnsCount} />
+            )}
 
             {status === 'pending' && <CoinsTableSkeletonLoadingRow />}
 
-            {status === 'success' && !table.getRowModel().rows?.length && (
+            {status === 'success' && !rows.length && (
               <NoResultsTableRow
                 message={
                   table.getColumn('name')?.getFilterValue()
@@ -124,34 +166,76 @@ const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
               />
             )}
 
-            {status === 'success' &&
-              !!table.getRowModel().rows?.length &&
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  onClick={() => onRowClick(row.original.id)}
-                  className="h-15 [&>td]:py-4 [&>td]:px-6"
-                >
-                  {row.getVisibleCells().map((cell) => (
+            {status === 'success' && !!rows.length && (
+              <>
+                {paddingTop > 0 && (
+                  <TableRow>
                     <TableCell
-                      key={cell.id}
-                      className={cn(
-                        (
-                          cell.column.columnDef.meta as Record<
-                            'className',
-                            string
-                          >
-                        )?.className,
-                      )}
+                      style={{ height: `${paddingTop}px` }}
+                      colSpan={visibleColumnsCount}
+                    />
+                  </TableRow>
+                )}
+
+                {virtualItems.map((virtualRow) => {
+                  const row = rows[virtualRow.index];
+                  return (
+                    <CoinsTableRow
+                      key={row.id}
+                      row={row}
+                      ref={rowVirtualizer.measureElement}
+                      onRowClick={onRowClick}
+                      data-index={virtualRow.index}
+                      visibleColumnIds={visibleColumnIds}
+                    />
+                  );
+                })}
+
+                {paddingBottom > 0 && (
+                  <TableRow>
+                    <TableCell
+                      style={{ height: `${paddingBottom}px` }}
+                      colSpan={visibleColumnsCount}
+                    />
+                  </TableRow>
+                )}
+
+                {isFetchNextPageError && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={visibleColumnsCount}
+                      className="text-center py-4"
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      <div className="flex flex-col items-center gap-2">
+                        <span className="text-sm text-red-400">
+                          Failed to load more coins.
+                        </span>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fetchNextPage()}
+                        >
+                          <RefreshCcw className="size-4 mr-2" />
+                          Retry
+                        </Button>
+                      </div>
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                  </TableRow>
+                )}
+
+                {!isFetchNextPageError && hasNextPage && (
+                  <TableRow ref={loadMoreRef}>
+                    <TableCell
+                      colSpan={visibleColumnsCount}
+                      className="text-center py-4"
+                    >
+                      <Skeleton className="h-4 w-32 mx-auto" />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
+            )}
           </TableBody>
         </Table>
       </div>
@@ -159,12 +243,9 @@ const CoinsTableComponent: FC<CoinsTableProps> = ({ onRowClick }) => {
   );
 };
 
-export const CoinsTable = memo(CoinsTableComponent);
-CoinsTable.displayName = 'CoinsTable';
-
 const CoinsTableSkeletonLoadingRow: FC = () =>
   Array.from({ length: 20 }).map((_, i) => (
-    <TableRow key={String(i)} className="[&>td]:py-4 [&>td]:px-6">
+    <TableRow key={i} className="[&>td]:py-4 [&>td]:px-6">
       <TableCell>
         <Skeleton className="size-6" />
       </TableCell>

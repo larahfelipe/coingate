@@ -5,6 +5,7 @@ import { Suspense, type FC } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Loader2 } from 'lucide-react';
+import { NuqsAdapter } from 'nuqs/adapters/next';
 
 import { TooltipProvider } from '@/components/ui';
 import { queryClient } from '@/lib/react-query';
@@ -19,9 +20,11 @@ export const AppProvider: FC<Children> = ({ children }) => (
       enableSystem
       disableTransitionOnChange
     >
-      <TooltipProvider>
-        <Suspense fallback={<Loading />}>{children}</Suspense>
-      </TooltipProvider>
+      <NuqsAdapter>
+        <TooltipProvider>
+          <Suspense fallback={<Loading />}>{children}</Suspense>
+        </TooltipProvider>
+      </NuqsAdapter>
 
       <ReactQueryDevtools initialIsOpen={false} />
     </ThemeProvider>

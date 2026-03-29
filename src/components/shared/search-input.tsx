@@ -58,7 +58,7 @@ export const SearchInput: FC<SearchInputProps> = ({
     <div className={cn('flex items-center relative group', containerClassName)}>
       <Search
         size={iconSize}
-        className="absolute left-3 text-muted-foreground transition-colors group-focus-within:text-primary"
+        className="absolute left-3 text-muted-foreground transition-colors group-focus-within:text-primary pointer-events-none"
       />
 
       <Input

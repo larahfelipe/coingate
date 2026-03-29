@@ -25,10 +25,10 @@ type CoinSheetProps = {
   onClose: VoidFunction;
 };
 
-const CoinSheetTabs = {
-  Overview: { value: 'overview', label: 'Overview' },
-  Stats: { value: 'stats', label: 'Statistics' },
-  About: { value: 'about', label: 'About' },
+const COIN_SHEET_TABS = {
+  OVERVIEW: { value: 'overview', label: 'Overview' },
+  STATS: { value: 'stats', label: 'Statistics' },
+  ABOUT: { value: 'about', label: 'About' },
 } as const;
 
 export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
@@ -52,9 +52,9 @@ export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
                 priceData={coinDetailsQuery.data.market_data.sparkline_7d.price}
               />
 
-              <Tabs defaultValue={CoinSheetTabs.Overview.value}>
+              <Tabs defaultValue={COIN_SHEET_TABS.OVERVIEW.value}>
                 <TabsList className="w-full">
-                  {Object.values(CoinSheetTabs).map((tab) => (
+                  {Object.values(COIN_SHEET_TABS).map((tab) => (
                     <TabsTrigger
                       key={tab.value}
                       value={tab.value}
@@ -67,20 +67,20 @@ export const CoinSheet: FC<CoinSheetProps> = ({ opened, coinId, onClose }) => {
 
                 <div className="space-y-4 mt-4">
                   <TabsContent
-                    value={CoinSheetTabs.Overview.value}
+                    value={COIN_SHEET_TABS.OVERVIEW.value}
                     className="space-y-4"
                   >
                     <CoinSheetOverviewTab coinData={coinDetailsQuery.data} />
                   </TabsContent>
 
                   <TabsContent
-                    value={CoinSheetTabs.Stats.value}
+                    value={COIN_SHEET_TABS.STATS.value}
                     className="space-y-4"
                   >
                     <CoinSheetStatsTab coinData={coinDetailsQuery.data} />
                   </TabsContent>
 
-                  <TabsContent value={CoinSheetTabs.About.value}>
+                  <TabsContent value={COIN_SHEET_TABS.ABOUT.value}>
                     <CoinSheetAboutTab coinData={coinDetailsQuery.data} />
                   </TabsContent>
                 </div>
